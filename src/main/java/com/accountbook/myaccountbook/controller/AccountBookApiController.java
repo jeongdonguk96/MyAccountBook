@@ -4,7 +4,6 @@ import com.accountbook.myaccountbook.domain.Expense;
 import com.accountbook.myaccountbook.domain.Income;
 import com.accountbook.myaccountbook.dto.ResponseDto;
 import com.accountbook.myaccountbook.service.AccountBookService;
-import com.accountbook.myaccountbook.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AccountBookApiController {
     private final AccountBookService accountBookService;
-    private final MemberService memberService;
 
     // 수입 작성
     @PostMapping("/writeIncome")
@@ -25,7 +23,7 @@ public class AccountBookApiController {
     }
 
     // 지출 작성
-    @PostMapping("/writeIncome")
+    @PostMapping("/writeExpense")
     public ResponseDto<Integer> writeExpense(int mid, Expense expense) {
         accountBookService.writeExpense(mid, expense);
 
@@ -33,7 +31,7 @@ public class AccountBookApiController {
     }
 
     // 수입 수정
-    @PutMapping("/modifyIncome/{abid}")
+    @PutMapping("/modifyIncome/{inid}")
     public ResponseDto<Integer> modifyIncome(int mid, Income income) {
         accountBookService.modifyIncome(mid, income);
 
@@ -41,7 +39,7 @@ public class AccountBookApiController {
     }
 
     // 지출 수정
-    @PutMapping("/modifyIncome/{abid}")
+    @PutMapping("/modifyExpense/{exid}")
     public ResponseDto<Integer> modifyExpense(int mid, Expense expense) {
         accountBookService.modifyExpense(mid, expense);
 
@@ -49,7 +47,7 @@ public class AccountBookApiController {
     }
 
     // 수입 삭제
-    @DeleteMapping("/deleteIncome/{abid}")
+    @DeleteMapping("/deleteIncome/{inid}")
     public ResponseDto<Integer> deleteIncome(int mid, int inid) {
         accountBookService.deleteIncome(mid, inid);
 
@@ -57,7 +55,7 @@ public class AccountBookApiController {
     }
 
     // 지출 삭제
-    @DeleteMapping("/deleteIncome/{abid}")
+    @DeleteMapping("/modifyExpense/{exid}")
     public ResponseDto<Integer> deleteExpense(int mid, int exid) {
         accountBookService.deleteExpense(mid, exid);
 

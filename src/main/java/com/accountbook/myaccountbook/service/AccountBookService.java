@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -109,6 +110,26 @@ public class AccountBookService {
         memberService.setRest(findMember, 0);
 
         expenseRepository.deleteById(exid);
+    }
+
+    /**
+     * 수입 전체 조회
+     * @param mid 사용자 id
+     * @return 사용자별 수입 전체 List
+     */
+    @Transactional
+    public List<Income> findAllIncome(int mid) {
+        return incomeRepository.findAllByMemberMid(mid);
+    }
+
+    /**
+     * 지출 전체 조회
+     * @param mid 사용자 id
+     * @return 사용자별 지출 전체 List
+     */
+    @Transactional
+    public List<Expense> findAllExpense(int mid) {
+        return expenseRepository.findAllByMemberMid(mid);
     }
 
 

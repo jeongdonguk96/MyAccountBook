@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{ /fragment/header :: header }"></div>
+<!-- header replace -->
+
+<!--
+    TODO: 아이디 중복확인, 정규식 검사, 폼 체크,
+-->
+
+<!-- 바디 시작 -->
+<body>
+    <div class="container">
+        <h2>회원가입</h2>
+        <form>
+            <div class="form-group">
+                <label for="id">Id:</label>
+                <input type="text" class="form-control" id="id" name="id" placeholder="아이디를 입력해주세요">
+                <input type="hidden" id="checked_id">
+                <input type="button" id="check_id" value="중복확인" class="btn btn-light">
+            </div>
+            <div class="form-group">
+                <label for="pwd">Password:</label>
+                <input type="password" class="form-control" id="pwd" name="pwd" placeholder="비밀번호를 입력해주세요">
+            </div>
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="이름을 입력해주세요">
+            </div>
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input type="text" class="form-control" id="age" name="age" placeholder="나이를 입력해주세요">
+            </div>
+            <div class="form-group">
+                <label for="field">Field:</label>
+                <input type="text" class="form-control" id="field" name="field" placeholder="직업을 입력해주세요">
+            </div>
+            <div class="form-group">
+                <label for="year">Year:</label>
+                <input type="text" class="form-control" id="year" name="year" placeholder="경력을 입력해주세요">
+            </div>
+            <div class="form-group">
+                <label for="salary">Salary:</label>
+                <input type="text" class="form-control" id="salary" name="salary" placeholder="급여를 입력해주세요">
+            </div>
+            <button type="button" class="btn btn-primary" id="join">회원가입</button>
+        </form>
+    </div>
+</body>
+<!-- 바디 끝 -->
+
+<!-- 자바스크립트 시작 -->
+<script type="text/javascript">
+    // 아이디 중복확인
+    $("#check_id").click(function() {
+        let id = $("#id").val();
+
+        if (id.trim() === "") {
+            alert("아이디를 입력해주세요");
+            return false;
+        } else {
+
+        }
+
+        }
+    )
+
+</script>
+<!-- 자바스크립트 끝 -->
+
+</html>
