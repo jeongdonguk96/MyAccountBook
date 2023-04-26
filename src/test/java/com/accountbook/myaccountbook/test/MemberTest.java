@@ -2,6 +2,7 @@ package com.accountbook.myaccountbook.test;
 
 import com.accountbook.myaccountbook.domain.Job;
 import com.accountbook.myaccountbook.domain.Member;
+import com.accountbook.myaccountbook.dto.member.LoginDto;
 import com.accountbook.myaccountbook.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
@@ -11,8 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestConstructor;
 
 import java.util.Date;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @RequiredArgsConstructor
@@ -34,8 +33,8 @@ public class MemberTest {
         member.setRest(0);
         member.setRegDate(new Date());
 
-        memberService.join(member);
         System.out.println("member = " + member);
+        memberService.join(member);
     }
 
     @Test
@@ -43,13 +42,11 @@ public class MemberTest {
     @Order(2)
 //    @Disabled
     public void loginTest() {
-        Member member = new Member();
-        member.setMid(1);
-        member.setLoginId("user1");
-        member.setPwd("1234");
+        LoginDto loginDto = new LoginDto();
+        loginDto.setLoginId("user1");
+        loginDto.setPwd("1234");
 
-        int result = memberService.login(member);
-        assertEquals(1, result);
+        Member member = memberService.login(loginDto);
     }
 
 }

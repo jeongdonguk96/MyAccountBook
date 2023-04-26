@@ -61,7 +61,7 @@
                 type: "post",
                 url: "/api/checkId",
                 data: {loginId: loginId},
-                dataType : 'json',
+                dataType : 'json'
             }).done(function (response) {
                 console.log("response = ", response);
                 if (response.data == 1) {
@@ -115,12 +115,14 @@
                 type: "post",
                 url: "api/member/join",
                 data: JSON.stringify(data),
-                contentType: "application/json; charset=utf-8",
+                contentType: "application/json; charset=utf-8"
             }).done(function (response){
                 console.log("response = ", response);
                 alert('회원가입이 완료되었습니다');
+                location.href = "/";
             }).fail(function (error) {
-                alert(JSON.stringify(error));
+                console.log("error = ", JSON.stringify(error));
+                alert('서버 장애로 인해 오류가 발생했습니다 \n 다시 시도해주세요');
             });
         }
     });

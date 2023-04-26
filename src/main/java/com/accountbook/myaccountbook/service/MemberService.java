@@ -1,6 +1,7 @@
 package com.accountbook.myaccountbook.service;
 
 import com.accountbook.myaccountbook.domain.Member;
+import com.accountbook.myaccountbook.dto.member.LoginDto;
 import com.accountbook.myaccountbook.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class MemberService {
     public void join(Member member) {
         memberRepository.save(member);
     }
+
 
     /**
      * 아이디 중복확인
@@ -43,21 +45,22 @@ public class MemberService {
 
     /**
      * 로그인
-     * @param member 로그인 시 입력하는 정보
-     * @return       성공 시 1, 실패 시 -1 반환
+     * @param loginDto 로그인 시 입력하는 정보
+     * @return 성공 시 Member 객체, 실패 시 Null 반환
      */
     @Transactional
-    public int login(Member member) {
-        Member findMember = memberRepository.findById(member.getMid()).get();
+    public Member login(LoginDto loginDto) {
+        Member findMember = memberRepository.findByLoginId(loginDto.getLoginId());
 
-        if (findMember.getLoginId().equals(member.getLoginId())) {
-            if (findMember.getPwd().equals(member.getPwd())) {
-                return 1;
+        if (findMember.getLoginId().equals(loginDto.getLoginId())) {
+            if (findMember.getPwd().equals(loginDto.getPwd())) {
+                return findMember;
             }
         }
 
-        return -1;
+        return null;
     }
+
 
     /**
      * 가계부 작성/수정 시 사용자 잔여금 계산

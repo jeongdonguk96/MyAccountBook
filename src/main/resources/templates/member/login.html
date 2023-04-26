@@ -9,14 +9,14 @@
         <h2>로그인</h2>
         <form>
             <div class="form-group">
-                <label for="id">Id:</label>
-                <input type="text" class="form-control" id="id" name="id" placeholder="아이디를 입력해주세요">
+                <label for="loginId">loginId:</label>
+                <input type="text" class="form-control" id="loginId" name="loginId" placeholder="아이디를 입력해주세요">
             </div>
             <div class="form-group">
                 <label for="pwd">Password:</label>
                 <input type="password" class="form-control" id="pwd" name="pwd" placeholder="비밀번호를 입력해주세요">
             </div>
-            <button type="button" class="btn btn-primary">로그인</button>
+            <button type="button" class="btn btn-primary" id="login">로그인</button>
         </form>
     </div>
 </body>
@@ -25,8 +25,41 @@
 <!-- 자바스크립트 시작 -->
 <script type="text/javascript">
 
+    // 로그인
+    $("#login").click(function () {
+        let data = {
+            loginId: $("#loginId").val(),
+            pwd: $("#pwd").val()
+        }
+        console.log("data = ", data);
+
+        if (data.loginId.trim() === "") {
+            alert('아이디를 입력해주세요');
+            return false;
+        } else if (data.pwd.trim() === "") {
+            alert('패스워드를 입력해주세요');
+            return false;
+        } else {
+            $.ajax({
+                type: "post",
+                url: "/api/member/login",
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8"
+            }).done(function (response) {
+                console.log("response = ", response);
+                if (response.data == 1) {
+                    location.href = "/";
+                } else {
+                    alert('로그인에 실패했습니다');
+                    location.reload();
+                }
+            }).fail(function (error) {
+                console.log("error = ", JSON.stringify(error));
+                alert('서버 장애로 인해 오류가 발생했습니다 \n 다시 시도해주세요');
+            });
+        }
+    })
 </script>
 <!-- 자바스크립트 끝 -->
 
-</html>
 </html>
