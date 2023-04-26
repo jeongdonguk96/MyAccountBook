@@ -22,6 +22,26 @@ public class MemberService {
     }
 
     /**
+     * 아이디 중복확인
+     * @param loginId 회원가입 시 작성한 아이디
+     * @return
+     */
+    @Transactional
+    public int checkId(String loginId) {
+        System.out.println("loginId = " + loginId);
+        Member findMember = memberRepository.findByLoginId(loginId);
+        int result = 0;
+        System.out.println("findMember = " + findMember);
+
+        if (findMember == null) {
+            result = 1;
+        }
+
+        return result;
+    }
+
+
+    /**
      * 로그인
      * @param member 로그인 시 입력하는 정보
      * @return       성공 시 1, 실패 시 -1 반환
@@ -30,7 +50,7 @@ public class MemberService {
     public int login(Member member) {
         Member findMember = memberRepository.findById(member.getMid()).get();
 
-        if (findMember.getId().equals(member.getId())) {
+        if (findMember.getLoginId().equals(member.getLoginId())) {
             if (findMember.getPwd().equals(member.getPwd())) {
                 return 1;
             }

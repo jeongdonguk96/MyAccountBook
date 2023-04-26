@@ -26,7 +26,7 @@ public class MemberTest {
 //    @Disabled
     public void joinTest() {
         Member member = new Member();
-        member.setId("user1");
+        member.setLoginId("user1");
         member.setPwd("1234");
         member.setName("김민수");
         member.setAge(20);
@@ -45,7 +45,7 @@ public class MemberTest {
     public void loginTest() {
         Member member = new Member();
         member.setMid(1);
-        member.setId("user1");
+        member.setLoginId("user1");
         member.setPwd("1234");
 
         int result = memberService.login(member);

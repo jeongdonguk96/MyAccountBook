@@ -19,7 +19,7 @@ public class HomeController {
     // 초기 화면
     @GetMapping("/")
     public String firstView() {
-        return "main";
+        return "index";
     }
 
     // 회원가입 화면

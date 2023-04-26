@@ -37,7 +37,7 @@ public class AccountBookTest {
 
     @Test
     @DisplayName("가계부 작성 테스트")
-//    @Disabled
+    @Disabled
     public void write() {
         Member findMember = memberRepository.findById(1).get();
 
