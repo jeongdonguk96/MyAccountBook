@@ -11,16 +11,8 @@ import javax.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 public class MemberService {
-    private final MemberRepository memberRepository;
 
-    /**
-     * 회원가입
-     * @param member 회원가입 시 입력하는 정보
-     */
-    @Transactional
-    public void join(Member member) {
-        memberRepository.save(member);
-    }
+    private final MemberRepository memberRepository;
 
 
     /**
@@ -30,16 +22,24 @@ public class MemberService {
      */
     @Transactional
     public int checkId(String loginId) {
-        System.out.println("loginId = " + loginId);
         Member findMember = memberRepository.findByLoginId(loginId);
         int result = 0;
-        System.out.println("findMember = " + findMember);
 
         if (findMember == null) {
             result = 1;
         }
 
         return result;
+    }
+
+
+    /**
+     * 회원가입
+     * @param member 회원가입 시 입력하는 정보
+     */
+    @Transactional
+    public void join(Member member) {
+        memberRepository.save(member);
     }
 
 

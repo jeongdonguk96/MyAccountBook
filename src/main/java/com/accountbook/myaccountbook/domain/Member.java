@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@ToString(exclude = {"incomes", "expenses"})
+@ToString(exclude = "accountBooks")
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,9 +25,7 @@ public class Member {
     private Job job;
     private int rest;
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<Income> incomes = new ArrayList<>();
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<Expense> expenses = new ArrayList<>();
+    private List<AccountBook> accountBooks = new ArrayList<>();
     @CreationTimestamp
     private Date regDate;
 

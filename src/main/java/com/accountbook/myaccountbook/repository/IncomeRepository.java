@@ -8,6 +8,8 @@ import java.util.List;
 
 @Repository
 public interface IncomeRepository extends JpaRepository<Income, Integer> {
-    List<Income> findAllByMemberMid(int mid);
+
+    // 사용자별 수입 조회
+    List<Income> findAllByAccountBook_Member_Mid(int mid);
 
 }

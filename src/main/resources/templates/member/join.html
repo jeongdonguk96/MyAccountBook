@@ -59,9 +59,9 @@
         } else {
             $.ajax({
                 type: "post",
-                url: "/api/checkId",
+                url: "/api/member/checkId",
                 data: {loginId: loginId},
-                dataType : 'json'
+                dataType : 'json',
             }).done(function (response) {
                 console.log("response = ", response);
                 if (response.data == 1) {

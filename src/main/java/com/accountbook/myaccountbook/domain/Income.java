@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -17,6 +16,5 @@ public class Income {
     private int money;
     private String reason;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private Member member;
-    private Date regDate;
+    private AccountBook accountBook;
 }

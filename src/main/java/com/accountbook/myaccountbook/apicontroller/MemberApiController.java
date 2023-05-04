@@ -1,4 +1,4 @@
-package com.accountbook.myaccountbook.controller;
+package com.accountbook.myaccountbook.apicontroller;
 
 import com.accountbook.myaccountbook.domain.Job;
 import com.accountbook.myaccountbook.domain.Member;
@@ -8,18 +8,32 @@ import com.accountbook.myaccountbook.dto.member.LoginDto;
 import com.accountbook.myaccountbook.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api/member")
+@SessionAttributes("user")
 @RequiredArgsConstructor
 public class MemberApiController {
+
     private final MemberService memberService;
+
+
+    // 아이디 중복확인
+    @PostMapping("/checkId")
+    public ResponseDto<Integer> checkId(String loginId) {
+        int result = memberService.checkId(loginId);
+
+        if (result == 1) {
+            return new ResponseDto<>(HttpStatus.OK.value(), 1);
+        } else {
+            return new ResponseDto<>(HttpStatus.OK.value(), 0);
+        }
+    }
+
 
     // 회원가입
     @PostMapping("/join")
@@ -35,11 +49,11 @@ public class MemberApiController {
 
     // 로그인
     @PostMapping("/login")
-    public ResponseDto<Integer> login(@RequestBody LoginDto loginDto, HttpSession session) {
+    public ResponseDto<Integer> login(@RequestBody LoginDto loginDto, Model model, HttpSession session) {
         Member findMember = memberService.login(loginDto);
 
         if (findMember != null) {
-            session.setAttribute("user", loginDto);
+            model.addAttribute("user", findMember);
             return new ResponseDto<>(HttpStatus.OK.value(), 1);
         } else {
             return new ResponseDto<>(HttpStatus.OK.value(), 0);
