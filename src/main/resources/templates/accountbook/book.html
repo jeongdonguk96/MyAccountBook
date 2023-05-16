@@ -21,14 +21,15 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="day: ${#numbers.sequence(1, days)}">
-                <td th:text="|${dayStat.count}일|"></td>
+            <tr th:each="day: ${ #numbers.sequence(1, days) }">
+                <td th:text="|${ dayStat.count }일|"></td>
                 <td>john@example.com</td>
                 <td>john@example.com</td>
                 <td>john@example.com</td>
                 <td>john@example.com</td>
-                <td style="border-top-style: hidden"><button type="button" class="btn btn-dark" name="input-btn" id="input-btn" value="수입 등록" th:onclick="'javascript:index.openIncome(this);'" data-toggle="modal" data-target="#incomeModal"> <!--th:data-odno="${ detail.odno }" th:data-pname="${ detail.product.name }"-->></button></td>
-                <td style="border-top-style: hidden"><button type="button" class="btn btn-dark" name="expense-btn" id="expense-btn" value="지출 등록" th:onclick="'javascript:index.openExpense(this);'" data-toggle="modal" data-target="#expenseModal"> <!--th:data-odno="${ detail.odno }" th:data-pname="${ detail.product.name }"-->></button></td>
+                <td style="border-top-style: hidden"><button type="button" class="btn btn-dark" name="input-btn" id="input-btn" value="수입 등록" th:onclick="'javascript:index.openIncome(this);'" data-toggle="modal" data-target="#incomeModal"></button></td>
+                <td style="border-top-style: hidden"><button type="button" class="btn btn-dark" name="expense-btn" id="expense-btn" value="지출 등록" th:onclick="'javascript:index.openExpense(this);'" data-toggle="modal" data-target="#expenseModal"></button></td>
+                <input type="text" th:object="${ user }" th:field="*{ mid }">
             </tr>
         </tbody>
     </table>
@@ -37,7 +38,7 @@
 <!-- 바디 끝 -->
 
 <!-- 수입 등록 모달 섹션 시작 -->
-<div class="modal fade" id="incomeModal" th:object="${income}">
+<div class="modal fade" id="incomeModal" th:object="${ income }">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -45,9 +46,9 @@
             </div>
             <div class="modal-body">
                 <label for="incomeMoney">금액</label>
-                <input type="text" th:field="*{incomeMoney}" class="form-control" placeholder="금액을 입력해주세요"/>
+                <input type="text" th:field="*{ incomeMoney }" class="form-control" placeholder="금액을 입력해주세요"/>
                 <label for="incomeReason">명목</label>
-                <input type="text" th:field="*{incomeReason}" class="form-control" placeholder="명목을 입력해주세요"/>
+                <input type="text" th:field="*{ incomeReason }" class="form-control" placeholder="명목을 입력해주세요"/>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-warning" id="income-save">등록</button>
@@ -58,8 +59,8 @@
 </div>
 <!-- 수입 등록 모달 섹션 끝 -->
 
-<!-- 수입 등록 모달 섹션 시작 -->
-<div class="modal fade" id="expenseModal" th:object="${expense}">
+<!-- 지출 등록 모달 섹션 시작 -->
+<div class="modal fade" id="expenseModal" th:object="${ expense }">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -67,9 +68,29 @@
             </div>
             <div class="modal-body">
                 <label for="expenseMoney">금액</label>
-                <input type="text" th:field="*{expenseMoney}" class="form-control" placeholder="금액을 입력해주세요"/>
+                <input type="text" th:field="*{ expenseMoney }" class="form-control" placeholder="금액을 입력해주세요"/>
                 <label for="expenseReason">명목</label>
-                <input type="text" th:field="*{expenseReason}" class="form-control" placeholder="명목을 입력해주세요"/>
+                <input type="text" th:field="*{ expenseReason }" class="form-control" placeholder="명목을 입력해주세요"/>
+                <label for="expenseCategory">분류</label>
+                <select th:field="*{ expenseCategory }" class="selectpicker">
+                    <option th:value="0">==카테고리==</option>
+                    <option th:value="GROCERY">식료품</option>
+                    <option th:value="EAT_OUT">외식</option>
+                    <option th:value="DELIVERY">배달</option>
+                    <option th:value="HOUSEWARES">생필품</option>
+                    <option th:value="ACTIVITY">여가활동</option>
+                    <option th:value="CLOTHES">의류</option>
+                    <option th:value="HEALTH">병원/약국비</option>
+                    <option th:value="PHONE">휴대폰요금</option>
+                    <option th:value="TRANSPORTATION">교통비</option>
+                    <option th:value="DEPOSIT">예/적금</option>
+                    <option th:value="INSURANCE">보험료</option>
+                    <option th:value="RENT">집세</option>
+                    <option th:value="UTILITIES">공과금</option>
+                    <option th:value="REPAYMENT">대출상환금</option>
+                    <option th:value="TRIBUTE">경조사비</option>
+                    <option th:value="ETC">기타</option>
+                </select>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-warning" id="expense-save">등록</button>
@@ -78,20 +99,79 @@
         </div>
     </div>
 </div>
-<!-- 수입 등록 모달 섹션 끝 -->
+<!-- 지출 등록 모달 섹션 끝 -->
 
 <!-- 자바스크립트 시작 -->
 <script type="text/javascript">
 
     // 수입 작성
-    $("#").click(function () {
+    $("#income-save").click(function () {
+        let data = {
+            mid: $("#mid").val(),
+            incomeMoney: $("#incomeMoney").val(),
+            incomeReason: $("#incomeReason").val()
+        }
+        console.log("data = ", data);
 
+        if (data.incomeMoney.trim() === "") {
+            alert('금액을 입력해주세요');
+            return false;
+        } else if (data.incomeReason.trim() === "") {
+            alert('명목을 입력해주세요');
+            return false;
+        } else {
+            $.ajax({
+                type: "post",
+                url: "/api/accountBook/writeIncome",
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8"
+            }).done(function (response) {
+                console.log("response = ", response);
+                alert('등록이 완료되었습니다');
+                location.reload();
+            }).fail(function (error) {
+                console.log("error = ", error);
+                alert('서버 장애로 인해 오류가 발생했습니다 \n 다시 시도해주세요');
+            });
+        }
     });
 
     // 지출 작성
-    $("#").click(function () {
+    $("#expense-save").click(function () {
+        let data = {
+            mid: $("#mid").val(),
+            expenseMoney: $("#expenseMoney").val(),
+            expenseReason: $("#expenseReasone").val(),
+            expenseCategory: $("#expenseCategory").val()
+        }
+        console.log("data = ", data);
 
+        if (data.expenseMoney.trim() === "") {
+            alert('금액을 입력해주세요');
+            return false;
+        } else if (data.expenseReason.trim() === "") {
+            alert('명목을 입력해주세요');
+            return false;
+        } else if (data.expenseCategory === 0) {
+            alert('명목을 입력해주세요');
+            return false;
+        } else {
+            $.ajax({
+                type: "post",
+                url: "api/accountBook/writeExpense",
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8"
+            }).done(function (response) {
+                console.log("response = ", response);
+                alert('등록이 완료되었습니다');
+                location.reload();
+            }).fail(function (error) {
+                console.log("error = ", error);
+                alert('서버 장애로 인해 오류가 발생했습니다 \n 다시 시도해주세요');
+            });
+        }
     });
+
 </script>
 <!-- 자바스크립트 끝 -->
 

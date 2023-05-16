@@ -4,11 +4,14 @@ import com.accountbook.myaccountbook.domain.AccountBook;
 import com.accountbook.myaccountbook.domain.Expense;
 import com.accountbook.myaccountbook.domain.Income;
 import com.accountbook.myaccountbook.domain.Member;
+import com.accountbook.myaccountbook.dto.accountbook.ExpenseWriteDto;
+import com.accountbook.myaccountbook.dto.accountbook.IncomeWriteDto;
 import com.accountbook.myaccountbook.repository.AccountBookRepository;
 import com.accountbook.myaccountbook.repository.ExpenseRepository;
 import com.accountbook.myaccountbook.repository.IncomeRepository;
 import com.accountbook.myaccountbook.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -16,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AccountBookService {
@@ -29,13 +33,14 @@ public class AccountBookService {
 
     /**
      * 수입 작성
-     * @param mid 사용자 id
-     * @param income 수입
+     * @param incomeWriteDto 수입 작성 Dto
      */
     @Transactional
-    public void writeIncome(int mid, Income income) {
-        Member findMember = memberRepository.findById(mid).get();
-        memberService.setRest(findMember, income.getIncomeMoney());
+    public void writeIncome(IncomeWriteDto incomeWriteDto) {
+        Income income = new Income(incomeWriteDto.getIncomeMoney(), incomeWriteDto.getIncomeReason());
+
+        Member findMember = memberRepository.findById(incomeWriteDto.getMid()).get();
+        memberService.setRest(findMember, incomeWriteDto.getIncomeMoney());
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         String date = formatter.format(new Date());
@@ -48,7 +53,7 @@ public class AccountBookService {
             income.setAccountBook(dupAccountBook);
         } else {
             income.setAccountBook(new AccountBook(findMember, year, month, date));
-        } 
+        }
 
         incomeRepository.save(income);
     }
@@ -56,13 +61,14 @@ public class AccountBookService {
 
     /**
      * 지출 작성
-     * @param mid 사용자 id
-     * @param expense 지출
+     * @param expenseWriteDto 지출 작성 Dto
      */
     @Transactional
-    public void writeExpense(int mid, Expense expense) {
-        Member findMember = memberRepository.findById(mid).get();
-        memberService.setRest(findMember, expense.getExpenseMoney());
+    public void writeExpense(ExpenseWriteDto expenseWriteDto) {
+        Expense expense = new Expense(expenseWriteDto.getExpenseMoney(), expenseWriteDto.getExpenseReason(), expenseWriteDto.getExpenseCategory());
+
+        Member findMember = memberRepository.findById(expenseWriteDto.getMid()).get();
+        memberService.setRest(findMember, expenseWriteDto.getExpenseMoney());
 
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         String date = format.format(new Date());
@@ -161,7 +167,7 @@ public class AccountBookService {
      */
     @Transactional
     public List<Income> findAllIncome(int mid) {
-        return incomeRepository.findAllByAccountBook_Member_Mid(mid);
+        return incomeRepository.findAllByAccountBookMemberMid(mid);
     }
 
 
@@ -172,7 +178,7 @@ public class AccountBookService {
      */
     @Transactional
     public List<Expense> findAllExpense(int mid) {
-        return expenseRepository.findAllByAccountBook_Member_Mid(mid);
+        return expenseRepository.findAllByAccountBookMemberMid(mid);
     }
 
 
@@ -183,12 +189,6 @@ public class AccountBookService {
      */
     @Transactional
     public AccountBook checkDuplicate(String date) {
-        AccountBook dupAccountBook = accountBookRepository.findByDate(date);
-
-        if (dupAccountBook != null) {
-            return dupAccountBook;
-        } else {
-            return null;
-        }
+        return accountBookRepository.findByDate(date);
     }
 }

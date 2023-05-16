@@ -15,12 +15,16 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 public class AccountBook {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int abid;
+
     @OneToMany(mappedBy = "accountBook", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Income> incomes = new ArrayList<>();
+
     @OneToMany(mappedBy = "accountBook", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Expense> expenses = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Member member;
     private String date;

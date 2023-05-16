@@ -5,6 +5,7 @@ import com.accountbook.myaccountbook.domain.Income;
 import com.accountbook.myaccountbook.domain.Member;
 import com.accountbook.myaccountbook.service.AccountBookService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 
+@Slf4j
 @Controller
 @SessionAttributes("user")
 @RequiredArgsConstructor
@@ -37,7 +39,6 @@ public class AccountBookController {
     @GetMapping("/book")
     public String getAccountBook(Model model) {
         int lengthOfMonth = getDays();
-        System.out.println("lengthOfMonth = " + lengthOfMonth);
 
         model.addAttribute("days", lengthOfMonth);
         model.addAttribute("income", new Income());

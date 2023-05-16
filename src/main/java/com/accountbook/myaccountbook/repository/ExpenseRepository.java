@@ -10,5 +10,5 @@ import java.util.List;
 public interface ExpenseRepository extends JpaRepository<Expense, Integer> {
 
     // 사용자별 지출 조회
-    List<Expense> findAllByAccountBook_Member_Mid(int mid);
+    List<Expense> findAllByAccountBookMemberMid(int mid);
 }

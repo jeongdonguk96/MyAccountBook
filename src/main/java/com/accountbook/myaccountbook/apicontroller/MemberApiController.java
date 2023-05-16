@@ -7,12 +7,14 @@ import com.accountbook.myaccountbook.dto.member.JoinDto;
 import com.accountbook.myaccountbook.dto.member.LoginDto;
 import com.accountbook.myaccountbook.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/member")
 @SessionAttributes("user")

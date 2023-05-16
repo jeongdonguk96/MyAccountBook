@@ -10,6 +10,6 @@ import java.util.List;
 public interface IncomeRepository extends JpaRepository<Income, Integer> {
 
     // 사용자별 수입 조회
-    List<Income> findAllByAccountBook_Member_Mid(int mid);
+    List<Income> findAllByAccountBookMemberMid(int mid);
 
 }

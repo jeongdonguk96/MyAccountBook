@@ -15,17 +15,21 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Member {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int mid;
     private String loginId;
     private String pwd;
     private String name;
     private int age;
+
     @Embedded
     private Job job;
     private int rest;
+
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<AccountBook> accountBooks = new ArrayList<>();
+
     @CreationTimestamp
     private Date regDate;
 
