@@ -35,10 +35,10 @@ public class AccountBookService {
     @Transactional
     public void writeIncome(int mid, Income income) {
         Member findMember = memberRepository.findById(mid).get();
-        memberService.setRest(findMember, income.getMoney());
+        memberService.setRest(findMember, income.getIncomeMoney());
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-        String date = format.format(new Date());
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+        String date = formatter.format(new Date());
         String year = date.substring(0, 4);
         String month = date.substring(0,6);
 
@@ -62,7 +62,7 @@ public class AccountBookService {
     @Transactional
     public void writeExpense(int mid, Expense expense) {
         Member findMember = memberRepository.findById(mid).get();
-        memberService.setRest(findMember, expense.getMoney());
+        memberService.setRest(findMember, expense.getExpenseMoney());
 
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         String date = format.format(new Date());
@@ -91,10 +91,10 @@ public class AccountBookService {
         Member findMember = memberRepository.findById(mid).get();
         Income findIncome = incomeRepository.findById(income.getInid()).get();
 
-        findIncome.setReason(income.getReason());
-        findIncome.setMoney(income.getMoney());
+        findIncome.setIncomeReason(income.getIncomeReason());
+        findIncome.setIncomeMoney(income.getIncomeMoney());
 
-        memberService.setRest(findMember, findIncome.getMoney());
+        memberService.setRest(findMember, findIncome.getIncomeMoney());
     }
 
 
@@ -108,10 +108,10 @@ public class AccountBookService {
         Member findMember = memberRepository.findById(mid).get();
         Expense findExpense = expenseRepository.findById(expense.getExid()).get();
 
-        findExpense.setReason(expense.getReason());
-        findExpense.setMoney(expense.getMoney());
+        findExpense.setExpenseReason(expense.getExpenseReason());
+        findExpense.setExpenseMoney(expense.getExpenseMoney());
 
-        memberService.setRest(findMember, findExpense.getMoney());
+        memberService.setRest(findMember, findExpense.getExpenseMoney());
     }
 
 

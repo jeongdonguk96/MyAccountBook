@@ -13,8 +13,8 @@ import javax.persistence.*;
 public class Expense {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int exid;
-    private int money;
-    private String reason;
+    private int expenseMoney;
+    private String expenseReason;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private AccountBook accountBook;
 }

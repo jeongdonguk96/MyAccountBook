@@ -21,14 +21,14 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="num : ${#numbers.sequence(1, 31)}">
-                <td th:text="${numStat.count}"></td>
+            <tr th:each="day: ${#numbers.sequence(1, days)}">
+                <td th:text="|${dayStat.count}일|"></td>
                 <td>john@example.com</td>
                 <td>john@example.com</td>
                 <td>john@example.com</td>
                 <td>john@example.com</td>
-                <td style="border-top-style: hidden"><button type="button" class="btn btn-dark" name="input_btn" id="input_btn" value="수입 등록" th:onclick="'javascript:index.openIncome(this);'" data-toggle="modal" data-target="#incomeModal"> <!--th:data-odno="${ detail.odno }" th:data-pname="${ detail.product.name }"-->></button></td>
-                <td style="border-top-style: hidden"><button type="button" class="btn btn-dark" name="expense_btn" id="expense_btn" value="지출 등록"></button></td>
+                <td style="border-top-style: hidden"><button type="button" class="btn btn-dark" name="input-btn" id="input-btn" value="수입 등록" th:onclick="'javascript:index.openIncome(this);'" data-toggle="modal" data-target="#incomeModal"> <!--th:data-odno="${ detail.odno }" th:data-pname="${ detail.product.name }"-->></button></td>
+                <td style="border-top-style: hidden"><button type="button" class="btn btn-dark" name="expense-btn" id="expense-btn" value="지출 등록" th:onclick="'javascript:index.openExpense(this);'" data-toggle="modal" data-target="#expenseModal"> <!--th:data-odno="${ detail.odno }" th:data-pname="${ detail.product.name }"-->></button></td>
             </tr>
         </tbody>
     </table>
@@ -37,29 +37,42 @@
 <!-- 바디 끝 -->
 
 <!-- 수입 등록 모달 섹션 시작 -->
-<div class="modal fade" id="qnaModal">
+<div class="modal fade" id="incomeModal" th:object="${income}">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">상품 문의</h2>
+                <h2 class="modal-title">수입 등록</h2>
             </div>
             <div class="modal-body">
-                <span>상품명 </span>
-                <input type="text" readonly="readonly" id="qnaname" class="form-control"/> <br>
-                <span>판매자 </span>
-                <input type="text" readonly="readonly" id="qnasid" class="form-control"/> <br>
-                <span>카테고리 </span>
-                <select id="question-category" class="form-control">
-                    <option th:value="상품">상품</option>
-                </select> <br><br>
-                <span>제목 </span>
-                <input type="text" id="question-title" class="form-control"><br>
-                <span>문의내용 </span><br>
-                <textarea rows="6"cols="75" id="question-content" class="form-control"></textarea>
+                <label for="incomeMoney">금액</label>
+                <input type="text" th:field="*{incomeMoney}" class="form-control" placeholder="금액을 입력해주세요"/>
+                <label for="incomeReason">명목</label>
+                <input type="text" th:field="*{incomeReason}" class="form-control" placeholder="명목을 입력해주세요"/>
             </div>
             <div class="modal-footer">
-                <input type="hidden" name="qnapno" id="qnapno" />
-                <button type="button" class="btn btn-warning" id="question-save">작성</button>
+                <button type="button" class="btn btn-warning" id="income-save">등록</button>
+                <button type="button" class="btn btn-light" data-dismiss="modal">취소</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 수입 등록 모달 섹션 끝 -->
+
+<!-- 수입 등록 모달 섹션 시작 -->
+<div class="modal fade" id="expenseModal" th:object="${expense}">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">지출 등록</h2>
+            </div>
+            <div class="modal-body">
+                <label for="expenseMoney">금액</label>
+                <input type="text" th:field="*{expenseMoney}" class="form-control" placeholder="금액을 입력해주세요"/>
+                <label for="expenseReason">명목</label>
+                <input type="text" th:field="*{expenseReason}" class="form-control" placeholder="명목을 입력해주세요"/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" id="expense-save">등록</button>
                 <button type="button" class="btn btn-light" data-dismiss="modal">취소</button>
             </div>
         </div>
