@@ -27,14 +27,14 @@ public class AccountBook {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Member member;
-    private String date;
     private String year;
     private String month;
+    private String date;
 
-    public AccountBook(Member member, String date, String year, String month) {
+    public AccountBook(Member member, String year, String month, String date) {
         this.member = member;
-        this.date = date;
         this.year = year;
         this.month = month;
+        this.date = date;
     }
 }

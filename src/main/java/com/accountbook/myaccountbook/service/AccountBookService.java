@@ -39,7 +39,6 @@ public class AccountBookService {
     public void writeIncome(IncomeWriteDto incomeWriteDto) {
         Income income = new Income(incomeWriteDto.getIncomeMoney(), incomeWriteDto.getIncomeReason());
 
-        System.out.println("incomeWriteDto.getMid() = " + incomeWriteDto.getMid());
         Member findMember = memberRepository.findById(incomeWriteDto.getMid()).get();
         memberService.setRest(findMember, incomeWriteDto.getIncomeMoney());
 
@@ -69,7 +68,7 @@ public class AccountBookService {
         Expense expense = new Expense(expenseWriteDto.getExpenseMoney(), expenseWriteDto.getExpenseReason(), expenseWriteDto.getExpenseCategory());
 
         Member findMember = memberRepository.findById(expenseWriteDto.getMid()).get();
-        memberService.setRest(findMember, expenseWriteDto.getExpenseMoney());
+        memberService.setRest(findMember, -expenseWriteDto.getExpenseMoney());
 
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         String date = format.format(new Date());

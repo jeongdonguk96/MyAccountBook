@@ -54,9 +54,11 @@ public class MemberService {
     public Member login(LoginDto loginDto) {
         Member findMember = memberRepository.findByLoginId(loginDto.getLoginId());
 
-        if (findMember.getLoginId().equals(loginDto.getLoginId())) {
-            if (findMember.getPwd().equals(loginDto.getPwd())) {
-                return findMember;
+        if (findMember != null) {
+            if (findMember.getLoginId().equals(loginDto.getLoginId())) {
+                if (findMember.getPwd().equals(loginDto.getPwd())) {
+                    return findMember;
+                }
             }
         }
 

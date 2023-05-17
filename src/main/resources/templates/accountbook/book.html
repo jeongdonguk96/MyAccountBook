@@ -6,6 +6,7 @@
 <!-- 바디 시작 -->
 <body>
 <div class="container">
+    <input type="hidden" th:object="${user}" th:field="*{mid}">
     <input type="text" th:object="${user}" th:field="*{mid}">
     <br><br> <h2><span th:text="${ month }"></span>월</h2> <br><br>
     <p>총 수입: </p>
@@ -28,8 +29,8 @@
                 <td>john@example.com</td>
                 <td>john@example.com</td>
                 <td>john@example.com</td>
-                <td style="border-top-style: hidden"><button type="button" class="btn btn-dark" name="input-btn" id="input-btn" value="수입 등록" th:onclick="'javascript:index.openIncome(this);'" data-toggle="modal" data-target="#incomeModal"></button></td>
-                <td style="border-top-style: hidden"><button type="button" class="btn btn-dark" name="expense-btn" id="expense-btn" value="지출 등록" th:onclick="'javascript:index.openExpense(this);'" data-toggle="modal" data-target="#expenseModal"></button></td>
+                <td style="border-top-style: hidden"><button type="button" class="btn btn-dark" name="input-btn" id="input-btn" value="수입 등록" th:onclick="'javascript:index.openIncome(this);'" data-toggle="modal" data-target="#incomeModal" th:data-day="${ dayStat.count }"></button></td>
+                <td style="border-top-style: hidden"><button type="button" class="btn btn-dark" name="expense-btn" id="expense-btn" value="지출 등록" th:onclick="'javascript:index.openExpense(this);'" data-toggle="modal" data-target="#expenseModal" th:data-day="${ dayStat.count }"></button></td>
             </tr>
         </tbody>
     </table>
@@ -49,6 +50,7 @@
                 <input type="text" th:field="*{incomeMoney}" class="form-control" placeholder="금액을 입력해주세요"/>
                 <label for="incomeReason">명목</label>
                 <input type="text" th:field="*{incomeReason}" class="form-control" placeholder="명목을 입력해주세요"/>
+                <input type="text" th:name="date" th:id="date">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-warning" id="income-save">등록</button>
@@ -103,6 +105,17 @@
 
 <!-- 자바스크립트 시작 -->
 <script type="text/javascript">
+    let index = {
+        openIncome: function (btn) {
+            let year = [[${ year }]];
+            let month = [[${ month }]];
+            let day = $(btn).data('day');
+            $("$date").val(year+month+day);
+            alert('year = ', year);
+            alert('month = ', month);
+            alert('day = ', day);
+        },
+    }
 
     // 수입 작성
     $("#income-save").click(function () {
@@ -126,7 +139,6 @@
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8"
             }).done(function (response) {
-                console.log("response = ", response);
                 alert('등록이 완료되었습니다');
                 location.reload();
             }).fail(function (error) {
@@ -141,7 +153,7 @@
         let data = {
             mid: $("#mid").val(),
             expenseMoney: $("#expenseMoney").val(),
-            expenseReason: $("#expenseReasone").val(),
+            expenseReason: $("#expenseReason").val(),
             expenseCategory: $("#expenseCategory").val()
         }
         console.log("data = ", data);
@@ -152,7 +164,7 @@
         } else if (data.expenseReason.trim() === "") {
             alert('명목을 입력해주세요');
             return false;
-        } else if (data.expenseCategory === 0) {
+        } else if (data.expenseCategory === "0") {
             alert('분류을 선택해주세요');
             return false;
         } else {
@@ -162,7 +174,6 @@
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8"
             }).done(function (response) {
-                console.log("response = ", response);
                 alert('등록이 완료되었습니다');
                 location.reload();
             }).fail(function (error) {
@@ -172,6 +183,7 @@
         }
     });
 
+    index.init();
 </script>
 <!-- 자바스크립트 끝 -->
 

@@ -12,3 +12,9 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MySQL8Dialect
+  devtools:
+    livereload:
+      enabled: true
+    remote:
+      restart:
+        enabled: true

@@ -12,7 +12,7 @@
                 <label for="loginId">loginId:</label>
                 <input type="text" class="form-control" id="loginId" name="loginId" placeholder="아이디를 입력해주세요">
                 <span>아이디 최대 15글자</span><br>
-                <input type="text" id="checked_id">
+                <input type="hidden" id="checked_id">
                 <input type="button" id="id_check" value="중복확인" class="btn btn-light">
             </div>
             <div class="form-group">
@@ -50,8 +50,8 @@
 
     // 아이디 중복확인
     $("#id_check").click(function() {
+        $("#checked_id").val('');
         let loginId = $("#loginId").val();
-        console.log("loginId = ", loginId);
 
         if (loginId.trim() === "") {
             alert('아이디를 입력해주세요');
@@ -63,7 +63,6 @@
                 data: {loginId: loginId},
                 dataType : 'json',
             }).done(function (response) {
-                console.log("response = ", response);
                 if (response.data == 1) {
                     alert('사용 가능한 아이디입니다.')
                     $("#checked_id").val(loginId);

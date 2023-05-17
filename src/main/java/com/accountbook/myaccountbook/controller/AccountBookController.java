@@ -36,11 +36,16 @@ public class AccountBookController {
     @GetMapping("/book")
     public String getAccountBook(Model model) {
 
-        int lengthOfMonth = getDays();
-        int findMonth = getMonth();
+        String findYear = getYear(); // 현재 연도
+        String findMonth = getMonth(); // 현재 달
+        String lengthOfMonth = getDays(); // 현재 달의 일수
+        System.out.println("findYear = " + findYear);
+        System.out.println("findMonth = " + findMonth);
+        System.out.println("lengthOfMonth = " + lengthOfMonth);
 
-        model.addAttribute("days", lengthOfMonth);
+        model.addAttribute("year", findYear);
         model.addAttribute("month", findMonth);
+        model.addAttribute("days", lengthOfMonth);
         model.addAttribute("income", new Income());
         model.addAttribute("expense", new Expense());
 
@@ -48,24 +53,33 @@ public class AccountBookController {
     }
 
 
-    // 현재 달 계산
-    private static int getMonth() {
+    // 현재 연도 계산
+    private static String getYear() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMM");
         String date = formatter.format(new Date());
 
-        return Integer.parseInt(date.substring(5, 6));
+        return date.substring(0, 4);
+    }
+
+
+    // 현재 달 계산
+    private static String getMonth() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMM");
+        String date = formatter.format(new Date());
+
+        return date.substring(4, 6);
     }
 
 
     // 현재 달의 일수 계산
-    private static int getDays() {
+    private static String getDays() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMM");
         String date = formatter.format(new Date());
         int year = Integer.parseInt(date.substring(0, 4));
-        int month = Integer.parseInt(date.substring(5, 6));
+        int month = Integer.parseInt(date.substring(4, 6));
 
         LocalDate findMonth = LocalDate.of(year, month, 1);
-        return findMonth.lengthOfMonth();
+        return String.valueOf(findMonth.lengthOfMonth());
     }
 
 

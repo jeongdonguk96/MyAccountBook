@@ -18,6 +18,8 @@ public class Expense {
     private int exid;
     private int expenseMoney;
     private String expenseReason;
+
+    @Enumerated(EnumType.STRING)
     private Category expenseCategory;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

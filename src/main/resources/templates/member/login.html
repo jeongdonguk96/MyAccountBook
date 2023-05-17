@@ -31,7 +31,6 @@
             loginId: $("#loginId").val(),
             pwd: $("#pwd").val()
         }
-        console.log("data = ", data);
 
         if (data.loginId.trim() === "") {
             alert('아이디를 입력해주세요');
@@ -46,7 +45,6 @@
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8"
             }).done(function (response) {
-                console.log("response = ", response);
                 if (response.data == 1) {
                     location.href = "/";
                 } else {
