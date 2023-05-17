@@ -6,7 +6,8 @@
 <!-- 바디 시작 -->
 <body>
 <div class="container">
-    <br><br> <h2>월</h2> <br><br>
+    <input type="text" th:object="${user}" th:field="*{mid}">
+    <br><br> <h2><span th:text="${ month }"></span>월</h2> <br><br>
     <p>총 수입: </p>
     <p>총 지출: </p>
     <p>총 합계: </p>
@@ -21,7 +22,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="day: ${ #numbers.sequence(1, days) }">
+        <tr th:each="day: ${ #numbers.sequence(1, days) }">
                 <td th:text="|${ dayStat.count }일|"></td>
                 <td>john@example.com</td>
                 <td>john@example.com</td>
@@ -29,7 +30,6 @@
                 <td>john@example.com</td>
                 <td style="border-top-style: hidden"><button type="button" class="btn btn-dark" name="input-btn" id="input-btn" value="수입 등록" th:onclick="'javascript:index.openIncome(this);'" data-toggle="modal" data-target="#incomeModal"></button></td>
                 <td style="border-top-style: hidden"><button type="button" class="btn btn-dark" name="expense-btn" id="expense-btn" value="지출 등록" th:onclick="'javascript:index.openExpense(this);'" data-toggle="modal" data-target="#expenseModal"></button></td>
-                <input type="text" th:object="${ user }" th:field="*{ mid }">
             </tr>
         </tbody>
     </table>
@@ -38,7 +38,7 @@
 <!-- 바디 끝 -->
 
 <!-- 수입 등록 모달 섹션 시작 -->
-<div class="modal fade" id="incomeModal" th:object="${ income }">
+<div class="modal fade" id="incomeModal" th:object="${income}">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -46,9 +46,9 @@
             </div>
             <div class="modal-body">
                 <label for="incomeMoney">금액</label>
-                <input type="text" th:field="*{ incomeMoney }" class="form-control" placeholder="금액을 입력해주세요"/>
+                <input type="text" th:field="*{incomeMoney}" class="form-control" placeholder="금액을 입력해주세요"/>
                 <label for="incomeReason">명목</label>
-                <input type="text" th:field="*{ incomeReason }" class="form-control" placeholder="명목을 입력해주세요"/>
+                <input type="text" th:field="*{incomeReason}" class="form-control" placeholder="명목을 입력해주세요"/>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-warning" id="income-save">등록</button>
@@ -60,7 +60,7 @@
 <!-- 수입 등록 모달 섹션 끝 -->
 
 <!-- 지출 등록 모달 섹션 시작 -->
-<div class="modal fade" id="expenseModal" th:object="${ expense }">
+<div class="modal fade" id="expenseModal" th:object="${expense}">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -68,11 +68,11 @@
             </div>
             <div class="modal-body">
                 <label for="expenseMoney">금액</label>
-                <input type="text" th:field="*{ expenseMoney }" class="form-control" placeholder="금액을 입력해주세요"/>
+                <input type="text" th:field="*{expenseMoney}" class="form-control" placeholder="금액을 입력해주세요"/>
                 <label for="expenseReason">명목</label>
-                <input type="text" th:field="*{ expenseReason }" class="form-control" placeholder="명목을 입력해주세요"/>
+                <input type="text" th:field="*{expenseReason}" class="form-control" placeholder="명목을 입력해주세요"/>
                 <label for="expenseCategory">분류</label>
-                <select th:field="*{ expenseCategory }" class="selectpicker">
+                <select th:field="*{expenseCategory}" class="selectpicker">
                     <option th:value="0">==카테고리==</option>
                     <option th:value="GROCERY">식료품</option>
                     <option th:value="EAT_OUT">외식</option>
@@ -153,7 +153,7 @@
             alert('명목을 입력해주세요');
             return false;
         } else if (data.expenseCategory === 0) {
-            alert('명목을 입력해주세요');
+            alert('분류을 선택해주세요');
             return false;
         } else {
             $.ajax({

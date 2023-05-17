@@ -27,20 +27,20 @@ public class AccountBookController {
 
     @ModelAttribute("user")
     public Member setMember(@ModelAttribute Member member) {
-        if (member != null) {
-            return member;
-        } else {
-            return null;
-        }
+
+        return member;
     }
 
 
     // 가계부 조회
     @GetMapping("/book")
     public String getAccountBook(Model model) {
+
         int lengthOfMonth = getDays();
+        int findMonth = getMonth();
 
         model.addAttribute("days", lengthOfMonth);
+        model.addAttribute("month", findMonth);
         model.addAttribute("income", new Income());
         model.addAttribute("expense", new Expense());
 
@@ -48,12 +48,21 @@ public class AccountBookController {
     }
 
 
+    // 현재 달 계산
+    private static int getMonth() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMM");
+        String date = formatter.format(new Date());
+
+        return Integer.parseInt(date.substring(5, 6));
+    }
+
+
     // 현재 달의 일수 계산
     private static int getDays() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMM");
         String date = formatter.format(new Date());
-        int year = Integer.valueOf(date.substring(0, 4));
-        int month = Integer.valueOf(date.substring(5, 6));
+        int year = Integer.parseInt(date.substring(0, 4));
+        int month = Integer.parseInt(date.substring(5, 6));
 
         LocalDate findMonth = LocalDate.of(year, month, 1);
         return findMonth.lengthOfMonth();

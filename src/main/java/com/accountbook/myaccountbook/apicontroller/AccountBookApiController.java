@@ -22,7 +22,7 @@ public class AccountBookApiController {
 
     // 수입 작성
     @PostMapping("/writeIncome")
-    public ResponseDto<Integer> writeIncome(IncomeWriteDto incomeWriteDto) {
+    public ResponseDto<Integer> writeIncome(@RequestBody IncomeWriteDto incomeWriteDto) {
         accountBookService.writeIncome(incomeWriteDto);
 
         return new ResponseDto<>(HttpStatus.OK.value(), 1);
@@ -31,7 +31,7 @@ public class AccountBookApiController {
 
     // 지출 작성
     @PostMapping("/writeExpense")
-    public ResponseDto<Integer> writeExpense(ExpenseWriteDto expenseWriteDto) {
+    public ResponseDto<Integer> writeExpense(@RequestBody ExpenseWriteDto expenseWriteDto) {
         accountBookService.writeExpense(expenseWriteDto);
 
         return new ResponseDto<>(HttpStatus.OK.value(), 1);

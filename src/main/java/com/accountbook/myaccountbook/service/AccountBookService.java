@@ -39,6 +39,7 @@ public class AccountBookService {
     public void writeIncome(IncomeWriteDto incomeWriteDto) {
         Income income = new Income(incomeWriteDto.getIncomeMoney(), incomeWriteDto.getIncomeReason());
 
+        System.out.println("incomeWriteDto.getMid() = " + incomeWriteDto.getMid());
         Member findMember = memberRepository.findById(incomeWriteDto.getMid()).get();
         memberService.setRest(findMember, incomeWriteDto.getIncomeMoney());
 
