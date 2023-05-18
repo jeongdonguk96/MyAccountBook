@@ -108,13 +108,10 @@
     let index = {
         openIncome: function (btn) {
             let year = [[${ year }]];
-            let month = [[${ month }]];
+            let month = [[${ month }]].toString();
             let day = $(btn).data('day');
-            $("$date").val(year+month+day);
-            alert('year = ', year);
-            alert('month = ', month);
-            alert('day = ', day);
-        },
+            $("#date").val(year+''+month+''+day);
+        }
     }
 
     // 수입 작성

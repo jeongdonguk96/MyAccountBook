@@ -39,9 +39,6 @@ public class AccountBookController {
         String findYear = getYear(); // 현재 연도
         String findMonth = getMonth(); // 현재 달
         String lengthOfMonth = getDays(); // 현재 달의 일수
-        System.out.println("findYear = " + findYear);
-        System.out.println("findMonth = " + findMonth);
-        System.out.println("lengthOfMonth = " + lengthOfMonth);
 
         model.addAttribute("year", findYear);
         model.addAttribute("month", findMonth);
