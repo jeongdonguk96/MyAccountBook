@@ -7,11 +7,10 @@
 <body>
 <div class="container">
     <input type="hidden" th:object="${user}" th:field="*{mid}">
-    <input type="text" th:object="${user}" th:field="*{mid}">
-    <br><br> <h2><span th:text="${ month }"></span>월</h2> <br><br>
-    <p>총 수입: </p>
-    <p>총 지출: </p>
-    <p>총 합계: </p>
+    <br><br> <h2><span th:text="${ month }" />월</h2> <br><br>
+    <p>총 수입: <span th:text="${ incomeSum }" />원</p>
+    <p>총 지출: <span th:text="${ expenseSum }" />원</p>
+    <p>총 합계: <span th:text="${ restSum }" />원</p>
     <table class="table">
         <thead>
             <tr>
@@ -46,11 +45,11 @@
                 <h2 class="modal-title">수입 등록</h2>
             </div>
             <div class="modal-body">
+                <input type="text" th:name="income-date" th:id="income-date">
                 <label for="incomeMoney">금액</label>
                 <input type="text" th:field="*{incomeMoney}" class="form-control" placeholder="금액을 입력해주세요"/>
                 <label for="incomeReason">명목</label>
                 <input type="text" th:field="*{incomeReason}" class="form-control" placeholder="명목을 입력해주세요"/>
-                <input type="text" th:name="date" th:id="date">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-warning" id="income-save">등록</button>
@@ -69,6 +68,7 @@
                 <h2 class="modal-title">지출 등록</h2>
             </div>
             <div class="modal-body">
+                <input type="text" th:name="expense-date" th:id="expense-date">
                 <label for="expenseMoney">금액</label>
                 <input type="text" th:field="*{expenseMoney}" class="form-control" placeholder="금액을 입력해주세요"/>
                 <label for="expenseReason">명목</label>
@@ -106,11 +106,37 @@
 <!-- 자바스크립트 시작 -->
 <script type="text/javascript">
     let index = {
+
+        // 수입 모달 오픈 시 해당 날짜 전달
         openIncome: function (btn) {
             let year = [[${ year }]];
             let month = [[${ month }]].toString();
-            let day = $(btn).data('day');
-            $("#date").val(year+''+month+''+day);
+            let day = $(btn).data('day').toString();
+
+            if (month.length === 1) {
+                month = 0 + month;
+            }
+            if (day.length === 1) {
+                day = 0 + day;
+            }
+
+            $("#income-date").val(year+''+month+''+day);
+        },
+
+        // 지출 모달 오픈 시 해당 날짜 전달
+        openExpense: function (btn) {
+            let year = [[${ year }]];
+            let month = [[${ month }]].toString();
+            let day = $(btn).data('day').toString();
+
+            if (month.length === 1) {
+                month = 0 + month;
+            }
+            if (day.length === 1) {
+                day = 0 + day;
+            }
+
+            $("#expense-date").val(year+''+month+''+day);
         }
     }
 
@@ -119,7 +145,8 @@
         let data = {
             mid: $("#mid").val(),
             incomeMoney: $("#incomeMoney").val(),
-            incomeReason: $("#incomeReason").val()
+            incomeReason: $("#incomeReason").val(),
+            date: $("#income-date").val()
         }
         console.log("data = ", data);
 
@@ -151,7 +178,8 @@
             mid: $("#mid").val(),
             expenseMoney: $("#expenseMoney").val(),
             expenseReason: $("#expenseReason").val(),
-            expenseCategory: $("#expenseCategory").val()
+            expenseCategory: $("#expenseCategory").val(),
+            date: $("#expense-date").val()
         }
         console.log("data = ", data);
 

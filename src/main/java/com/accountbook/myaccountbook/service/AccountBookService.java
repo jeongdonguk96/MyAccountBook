@@ -1,12 +1,10 @@
 package com.accountbook.myaccountbook.service;
 
-import com.accountbook.myaccountbook.domain.AccountBook;
 import com.accountbook.myaccountbook.domain.Expense;
 import com.accountbook.myaccountbook.domain.Income;
 import com.accountbook.myaccountbook.domain.Member;
 import com.accountbook.myaccountbook.dto.accountbook.ExpenseWriteDto;
 import com.accountbook.myaccountbook.dto.accountbook.IncomeWriteDto;
-import com.accountbook.myaccountbook.repository.AccountBookRepository;
 import com.accountbook.myaccountbook.repository.ExpenseRepository;
 import com.accountbook.myaccountbook.repository.IncomeRepository;
 import com.accountbook.myaccountbook.repository.MemberRepository;
@@ -15,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -24,7 +20,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AccountBookService {
 
-    private final AccountBookRepository accountBookRepository;
     private final IncomeRepository incomeRepository;
     private final ExpenseRepository expenseRepository;
     private final MemberRepository memberRepository;
@@ -37,24 +32,17 @@ public class AccountBookService {
      */
     @Transactional
     public void writeIncome(IncomeWriteDto incomeWriteDto) {
-        Income income = new Income(incomeWriteDto.getIncomeMoney(), incomeWriteDto.getIncomeReason());
 
+        // 잔여금 계산
         Member findMember = memberRepository.findById(incomeWriteDto.getMid()).get();
         memberService.setRest(findMember, incomeWriteDto.getIncomeMoney());
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-        String date = formatter.format(new Date());
-        String year = date.substring(0, 4);
+        // 년, 월, 일 계산
+        String date = incomeWriteDto.getDate();
+        String year = date.substring(0,4);
         String month = date.substring(0,6);
 
-        AccountBook dupAccountBook = checkDuplicate(date);
-
-        if (dupAccountBook != null) {
-            income.setAccountBook(dupAccountBook);
-        } else {
-            income.setAccountBook(new AccountBook(findMember, year, month, date));
-        }
-
+        Income income = new Income(incomeWriteDto.getIncomeMoney(), incomeWriteDto.getIncomeReason(), year, month, date, findMember);
         incomeRepository.save(income);
     }
 
@@ -65,24 +53,17 @@ public class AccountBookService {
      */
     @Transactional
     public void writeExpense(ExpenseWriteDto expenseWriteDto) {
-        Expense expense = new Expense(expenseWriteDto.getExpenseMoney(), expenseWriteDto.getExpenseReason(), expenseWriteDto.getExpenseCategory());
 
+        // 잔여금 계산
         Member findMember = memberRepository.findById(expenseWriteDto.getMid()).get();
         memberService.setRest(findMember, -expenseWriteDto.getExpenseMoney());
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-        String date = format.format(new Date());
+        // 년, 월, 일 계산
+        String date = expenseWriteDto.getDate();
         String year = date.substring(0, 4);
         String month = date.substring(0,6);
 
-        AccountBook dupAccountBook = checkDuplicate(date);
-
-        if (dupAccountBook != null) {
-            expense.setAccountBook(dupAccountBook);
-        } else {
-            expense.setAccountBook(new AccountBook(findMember, year, month, date));
-        }
-
+        Expense expense = new Expense(expenseWriteDto.getExpenseMoney(), expenseWriteDto.getExpenseReason(), expenseWriteDto.getExpenseCategory(), year, month, date, findMember);
         expenseRepository.save(expense);
     }
 
@@ -94,6 +75,7 @@ public class AccountBookService {
      */
     @Transactional
     public void modifyIncome(int mid, Income income) {
+
         Member findMember = memberRepository.findById(mid).get();
         Income findIncome = incomeRepository.findById(income.getInid()).get();
 
@@ -111,6 +93,7 @@ public class AccountBookService {
      */
     @Transactional
     public void modifyExpense(int mid, Expense expense) {
+
         Member findMember = memberRepository.findById(mid).get();
         Expense findExpense = expenseRepository.findById(expense.getExid()).get();
 
@@ -128,6 +111,7 @@ public class AccountBookService {
      */
     @Transactional
     public void deleteIncome(int mid, int inid) {
+
         Member findMember = memberRepository.findById(mid).get();
         memberService.setRest(findMember, 0);
 
@@ -142,21 +126,11 @@ public class AccountBookService {
      */
     @Transactional
     public void deleteExpense(int mid, int exid) {
+
         Member findMember = memberRepository.findById(mid).get();
         memberService.setRest(findMember, 0);
 
         expenseRepository.deleteById(exid);
-    }
-
-
-    /**
-     * 가계부 전체 조회
-     * @param mid 사용자 id
-     * @return 사용자별 가계부 전체 List
-     */
-    @Transactional
-    public List<AccountBook> findAllAccountBook(int mid) {
-        return accountBookRepository.findAllByMemberMid(mid);
     }
 
 
@@ -166,8 +140,8 @@ public class AccountBookService {
      * @return 사용자별 수입 전체 List
      */
     @Transactional
-    public List<Income> findAllIncome(int mid) {
-        return incomeRepository.findAllByAccountBookMemberMid(mid);
+    public List<Income> findAllIncome(String month, int mid) {
+        return incomeRepository.findAllByMonthAndMemberMid(month, mid);
     }
 
 
@@ -177,18 +151,9 @@ public class AccountBookService {
      * @return 사용자별 지출 전체 List
      */
     @Transactional
-    public List<Expense> findAllExpense(int mid) {
-        return expenseRepository.findAllByAccountBookMemberMid(mid);
+    public List<Expense> findAllExpense(String month, int mid) {
+        return expenseRepository.findAllByMonthAndMemberMid(month, mid);
     }
 
 
-    /**
-     * 동일한 날짜로 작성된 가계부가 있는지 체크
-     * @param date 작성 날짜
-     * @return 있으면 해당 AccountBook 객체, 없으면 null
-     */
-    @Transactional
-    public AccountBook checkDuplicate(String date) {
-        return accountBookRepository.findByDate(date);
-    }
 }

@@ -9,4 +9,5 @@ public class ExpenseWriteDto {
     private int expenseMoney;
     private String expenseReason;
     private Category expenseCategory;
+    private String date;
 }

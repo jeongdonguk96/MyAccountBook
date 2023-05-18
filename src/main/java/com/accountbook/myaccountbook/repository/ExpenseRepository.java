@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface ExpenseRepository extends JpaRepository<Expense, Integer> {
 
-    // 사용자별 지출 조회
-    List<Expense> findAllByAccountBookMemberMid(int mid);
+    // 수입 월별 조회
+    List<Expense> findAllByMonthAndMemberMid(String month, int mid);
 }

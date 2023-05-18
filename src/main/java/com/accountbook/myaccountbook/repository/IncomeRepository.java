@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface IncomeRepository extends JpaRepository<Income, Integer> {
 
-    // 사용자별 수입 조회
-    List<Income> findAllByAccountBookMemberMid(int mid);
+    // 수입 월별 조회
+    List<Income> findAllByMonthAndMemberMid(String month, int mid);
 
 }

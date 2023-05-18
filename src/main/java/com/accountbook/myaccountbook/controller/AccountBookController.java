@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -27,7 +28,6 @@ public class AccountBookController {
 
     @ModelAttribute("user")
     public Member setMember(@ModelAttribute Member member) {
-
         return member;
     }
 
@@ -40,11 +40,40 @@ public class AccountBookController {
         String findMonth = getMonth(); // 현재 달
         String lengthOfMonth = getDays(); // 현재 달의 일수
 
+        Member findMember = (Member) model.getAttribute("user");
+        System.out.println("findMember = " + findMember);
+
+        int incomeSum = 0;
+        int expenseSum = 0;
+        int restSum = 0;
+
+        // 총 수입 계산
+        List<Income> incomes = accountBookService.findAllIncome(findMonth, findMember.getMid());
+
+        for (Income income : incomes) {
+            incomeSum = income.getIncomeMoney();
+        }
+        System.out.println("incomeSum = " + incomeSum);
+
+        // 총 지출 계산
+        List<Expense> expenses = accountBookService.findAllExpense(findMonth, findMember.getMid());
+
+        for (Expense expense : expenses) {
+            expenseSum = expense.getExpenseMoney();
+        }
+        System.out.println("expenseSum = " + expenseSum);
+
+        // 총 합계 계산
+        restSum = incomeSum - expenseSum;
+
         model.addAttribute("year", findYear);
         model.addAttribute("month", findMonth);
         model.addAttribute("days", lengthOfMonth);
         model.addAttribute("income", new Income());
         model.addAttribute("expense", new Expense());
+        model.addAttribute("incomeSum", incomeSum);
+        model.addAttribute("expenseSum", expenseSum);
+        model.addAttribute("restSum", restSum);
 
         return "accountbook/book";
     }
