@@ -35,33 +35,29 @@ public class AccountBookController {
     // 가계부 조회
     @GetMapping("/book")
     public String getAccountBook(Model model) {
-
+        Member findMember = (Member) model.getAttribute("user");
         String findYear = getYear(); // 현재 연도
         String findMonth = getMonth(); // 현재 달
         String lengthOfMonth = getDays(); // 현재 달의 일수
-
-        Member findMember = (Member) model.getAttribute("user");
-        System.out.println("findMember = " + findMember);
+        String fullMonth = findYear + findMonth; // 연월
 
         int incomeSum = 0;
         int expenseSum = 0;
         int restSum = 0;
 
         // 총 수입 계산
-        List<Income> incomes = accountBookService.findAllIncome(findMonth, findMember.getMid());
+        List<Income> incomes = accountBookService.findAllMonthIncome(fullMonth, findMember.getMid());
 
         for (Income income : incomes) {
-            incomeSum = income.getIncomeMoney();
+            incomeSum += income.getIncomeMoney();
         }
-        System.out.println("incomeSum = " + incomeSum);
 
         // 총 지출 계산
-        List<Expense> expenses = accountBookService.findAllExpense(findMonth, findMember.getMid());
+        List<Expense> expenses = accountBookService.findAllMonthExpense(fullMonth, findMember.getMid());
 
         for (Expense expense : expenses) {
-            expenseSum = expense.getExpenseMoney();
+            expenseSum += expense.getExpenseMoney();
         }
-        System.out.println("expenseSum = " + expenseSum);
 
         // 총 합계 계산
         restSum = incomeSum - expenseSum;

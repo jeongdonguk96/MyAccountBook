@@ -140,7 +140,7 @@ public class AccountBookService {
      * @return 사용자별 수입 전체 List
      */
     @Transactional
-    public List<Income> findAllIncome(String month, int mid) {
+    public List<Income> findAllMonthIncome(String month, int mid) {
         return incomeRepository.findAllByMonthAndMemberMid(month, mid);
     }
 
@@ -151,7 +151,7 @@ public class AccountBookService {
      * @return 사용자별 지출 전체 List
      */
     @Transactional
-    public List<Expense> findAllExpense(String month, int mid) {
+    public List<Expense> findAllMonthExpense(String month, int mid) {
         return expenseRepository.findAllByMonthAndMemberMid(month, mid);
     }
 

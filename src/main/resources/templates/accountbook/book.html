@@ -47,7 +47,7 @@
             <div class="modal-body">
                 <input type="text" th:name="income-date" th:id="income-date">
                 <label for="incomeMoney">금액</label>
-                <input type="text" th:field="*{incomeMoney}" class="form-control" placeholder="금액을 입력해주세요"/>
+                <input type="text" th:name="incomeMoney" th:id="incomeMoney" class="form-control" placeholder="금액을 입력해주세요"/>
                 <label for="incomeReason">명목</label>
                 <input type="text" th:field="*{incomeReason}" class="form-control" placeholder="명목을 입력해주세요"/>
             </div>
@@ -70,7 +70,7 @@
             <div class="modal-body">
                 <input type="text" th:name="expense-date" th:id="expense-date">
                 <label for="expenseMoney">금액</label>
-                <input type="text" th:field="*{expenseMoney}" class="form-control" placeholder="금액을 입력해주세요"/>
+                <input type="text" th:name="expenseReason" th:id="expenseReason" class="form-control" placeholder="금액을 입력해주세요"/>
                 <label for="expenseReason">명목</label>
                 <input type="text" th:field="*{expenseReason}" class="form-control" placeholder="명목을 입력해주세요"/>
                 <label for="expenseCategory">분류</label>
@@ -163,8 +163,9 @@
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8"
             }).done(function (response) {
+                $("#incomeModal").modal('hide');
+                opener.location.reload();
                 alert('등록이 완료되었습니다');
-                location.reload();
             }).fail(function (error) {
                 console.log("error = ", error);
                 alert('서버 장애로 인해 오류가 발생했습니다 \n 다시 시도해주세요');
@@ -200,7 +201,8 @@
                 contentType: "application/json; charset=utf-8"
             }).done(function (response) {
                 alert('등록이 완료되었습니다');
-                location.reload();
+                $("#expenseModal").hide();
+                opener.location.reload();
             }).fail(function (error) {
                 console.log("error = ", error);
                 alert('서버 장애로 인해 오류가 발생했습니다 \n 다시 시도해주세요');
