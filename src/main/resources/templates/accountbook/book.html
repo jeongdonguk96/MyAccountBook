@@ -7,10 +7,12 @@
 <body>
 <div class="container">
     <input type="hidden" th:object="${user}" th:field="*{mid}">
-    <br><br> <h2><span th:text="${ month }" />월</h2> <br><br>
-    <p>총 수입: <span th:text="${ incomeSum }" />원</p>
-    <p>총 지출: <span th:text="${ expenseSum }" />원</p>
-    <p>총 합계: <span th:text="${ restSum }" />원</p>
+    <br><br><h4><span th:text="|${ user.getName() }님 환영합니다|"/></h4><br><br>
+    <h3><span th:text="${ message }"/></h3><br>
+    <h2><span th:text="${ month }" />월</h2> <br>
+    <p>총 수입: +<span th:text="|${ #numbers.formatInteger(incomeSum, 3, 'COMMA') }|" />원</p>
+    <p>총 지출: -<span th:text="|${ #numbers.formatInteger(expenseSum, 3, 'COMMA') }|" />원</p>
+    <p>총 합계: <span th:text="|${ #numbers.formatInteger(restSum, 3, 'COMMA') }|" />원</p>
     <table class="table">
         <thead>
             <tr>
@@ -70,7 +72,7 @@
             <div class="modal-body">
                 <input type="text" th:name="expense-date" th:id="expense-date">
                 <label for="expenseMoney">금액</label>
-                <input type="text" th:name="expenseReason" th:id="expenseReason" class="form-control" placeholder="금액을 입력해주세요"/>
+                <input type="text" th:name="expenseMoney" th:id="expenseMoney" class="form-control" placeholder="금액을 입력해주세요"/>
                 <label for="expenseReason">명목</label>
                 <input type="text" th:field="*{expenseReason}" class="form-control" placeholder="명목을 입력해주세요"/>
                 <label for="expenseCategory">분류</label>
@@ -163,9 +165,8 @@
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8"
             }).done(function (response) {
-                $("#incomeModal").modal('hide');
-                opener.location.reload();
                 alert('등록이 완료되었습니다');
+                window.location.reload();
             }).fail(function (error) {
                 console.log("error = ", error);
                 alert('서버 장애로 인해 오류가 발생했습니다 \n 다시 시도해주세요');
@@ -201,8 +202,7 @@
                 contentType: "application/json; charset=utf-8"
             }).done(function (response) {
                 alert('등록이 완료되었습니다');
-                $("#expenseModal").hide();
-                opener.location.reload();
+                window.location.reload();
             }).fail(function (error) {
                 console.log("error = ", error);
                 alert('서버 장애로 인해 오류가 발생했습니다 \n 다시 시도해주세요');

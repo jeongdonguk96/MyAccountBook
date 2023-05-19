@@ -3,6 +3,7 @@ package com.accountbook.myaccountbook.controller;
 import com.accountbook.myaccountbook.domain.Expense;
 import com.accountbook.myaccountbook.domain.Income;
 import com.accountbook.myaccountbook.domain.Member;
+import com.accountbook.myaccountbook.dto.MessageConstants;
 import com.accountbook.myaccountbook.service.AccountBookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 @Slf4j
 @Controller
@@ -40,6 +42,7 @@ public class AccountBookController {
         String findMonth = getMonth(); // 현재 달
         String lengthOfMonth = getDays(); // 현재 달의 일수
         String fullMonth = findYear + findMonth; // 연월
+        String message = getRandomMessage(); // 메시지 문구
 
         int incomeSum = 0;
         int expenseSum = 0;
@@ -70,6 +73,7 @@ public class AccountBookController {
         model.addAttribute("incomeSum", incomeSum);
         model.addAttribute("expenseSum", expenseSum);
         model.addAttribute("restSum", restSum);
+        model.addAttribute("message", message);
 
         return "accountbook/book";
     }
@@ -104,5 +108,12 @@ public class AccountBookController {
         return String.valueOf(findMonth.lengthOfMonth());
     }
 
+
+    // 랜덤 문구 추첨
+    private static String getRandomMessage() {
+        int index = new Random().nextInt(MessageConstants.MESSAGE.length);
+
+        return MessageConstants.MESSAGE[index];
+    }
 
 }
