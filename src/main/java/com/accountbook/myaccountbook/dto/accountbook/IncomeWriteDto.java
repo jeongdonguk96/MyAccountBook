@@ -7,5 +7,5 @@ public class IncomeWriteDto {
     private int mid;
     private int incomeMoney;
     private String incomeReason;
-    private String date;
+    private String month;
 }

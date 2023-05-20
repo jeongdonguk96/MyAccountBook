@@ -38,11 +38,10 @@ public class AccountBookService {
         memberService.setRest(findMember, incomeWriteDto.getIncomeMoney());
 
         // 년, 월, 일 계산
-        String date = incomeWriteDto.getDate();
-        String year = date.substring(0,4);
-        String month = date.substring(0,6);
+        String month = incomeWriteDto.getMonth();
+        String year = month.substring(0,4);
 
-        Income income = new Income(incomeWriteDto.getIncomeMoney(), incomeWriteDto.getIncomeReason(), year, month, date, findMember);
+        Income income = new Income(incomeWriteDto.getIncomeMoney(), incomeWriteDto.getIncomeReason(), year, month, findMember);
         incomeRepository.save(income);
     }
 

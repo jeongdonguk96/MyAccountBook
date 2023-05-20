@@ -1,0 +1,13 @@
+.welcome-message {
+    text-align: center;
+}
+
+.btn-dark {
+    height: 40px;
+    width: 95px;
+}
+
+.income {
+    float: right;
+    margin-right: 350px;
+}

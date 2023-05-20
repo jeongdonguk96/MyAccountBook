@@ -6,35 +6,65 @@
 <!-- 바디 시작 -->
 <body>
 <div class="container">
+
+
+    <!-- 상단 텍스트 시작 -->
     <input type="hidden" th:object="${user}" th:field="*{mid}">
-    <br><br><h4><span th:text="|${ user.getName() }님 환영합니다|"/></h4><br><br>
-    <h3><span th:text="${ message }"/></h3><br>
+    <div class="welcome-message">
+        <br><br><h4><span th:text="|${ user.getName() }님 환영합니다|"/></h4><br><br>
+        <h3><span th:text="${ message }"/></h3><br>
+    </div>
     <h2><span th:text="${ month }" />월</h2> <br>
-    <p>총 수입: +<span th:text="|${ #numbers.formatInteger(incomeSum, 3, 'COMMA') }|" />원</p>
-    <p>총 지출: -<span th:text="|${ #numbers.formatInteger(expenseSum, 3, 'COMMA') }|" />원</p>
-    <p>총 합계: <span th:text="|${ #numbers.formatInteger(restSum, 3, 'COMMA') }|" />원</p>
+    <p>총 수입: + <span th:text="|${ #numbers.formatInteger(incomeSum, 3, 'COMMA') }|" />원</p>
+    <p>총 지출: - <span th:text="|${ #numbers.formatInteger(expenseSum, 3, 'COMMA') }|" />원</p>
+    <p>총 합계: <span th:text="${ restSum >= 0 ? '+ ' + #numbers.formatInteger(restSum, 3, 'COMMA') : '- ' + #numbers.formatInteger(restSum, 3, 'COMMA') }" />원</p>
+    <!-- 상단 텍스트 시작 -->
+
+
+    <!-- 가계부 테이블 시작 -->
+    <input type="button" class="btn btn-dark income" name="input-btn" id="input-btn" value="수입 등록" th:onclick="'javascript:index.openIncome(this);'" data-toggle="modal" data-target="#incomeModal" /> <br><br>
     <table class="table">
         <thead>
             <tr>
                 <th>Date</th>
-                <th>Income</th>
+<!--                <th>Income</th>-->
                 <th>Expense</th>
                 <th>Sum</th>
                 <th>Rest</th>
             </tr>
         </thead>
         <tbody>
-        <tr th:each="day: ${ #numbers.sequence(1, days) }">
+            <tr th:each="day: ${ #numbers.sequence(1, days) }" th:with="sum=0">
                 <td th:text="|${ dayStat.count }일|"></td>
-                <td>john@example.com</td>
-                <td>john@example.com</td>
-                <td>john@example.com</td>
-                <td>john@example.com</td>
-                <td style="border-top-style: hidden"><button type="button" class="btn btn-dark" name="input-btn" id="input-btn" value="수입 등록" th:onclick="'javascript:index.openIncome(this);'" data-toggle="modal" data-target="#incomeModal" th:data-day="${ dayStat.count }"></button></td>
-                <td style="border-top-style: hidden"><button type="button" class="btn btn-dark" name="expense-btn" id="expense-btn" value="지출 등록" th:onclick="'javascript:index.openExpense(this);'" data-toggle="modal" data-target="#expenseModal" th:data-day="${ dayStat.count }"></button></td>
+<!--                <td>-->
+<!--                    <th:block th:each="income: ${ incomes }">-->
+<!--                        <th:block th:if="${ dayStat.count } == ${ income.getDate().substring(7, 8) }">-->
+<!--                            <span th:text="|${ income.getIncomeMoney() }원, ${ income.getIncomeReason }|"/>-->
+<!--                            <input id="theIncome" th:type="text" th:value="${ income.getIncomeMoney() }" />-->
+<!--                        </th:block>-->
+<!--                    </th:block>-->
+<!--                </td>-->
+                <td>
+                    <th:block th:each="expense: ${ expenses }">
+                        <th:block th:if="${ dayStat.count } == ${ expense.getDate().substring(6, 8) }">
+                            <span th:text="|${ expense.getExpenseMoney() }원, ${ expense.getExpenseReason() }, ${ expense.getExpenseCategory() }|" />
+                            <input type="hidden" th:id="|theExpense${ expenseStat.count }|" th:value="${ expense.getExpenseMoney() }" ><br>
+                        </th:block>
+                    </th:block>
+                </td>
+                <td>
+                    <span id="theSum" />
+                </td>
+                <td class="rest"></td>
+<!--                    <td th:if="${ dayStat.count } == ${ income.getDate().substring(7, 8) }"></td>-->
+<!--                <td style="border-top-style: hidden"><button type="button" class="btn btn-dark" name="input-btn" id="input-btn" value="수입 등록" th:onclick="'javascript:index.openIncome(this);'" data-toggle="modal" data-target="#incomeModal" th:data-day="${ dayStat.count }"></button></td>-->
+                <td style="border-top-style: hidden"><input type="button" class="btn btn-dark" name="expense-btn" id="expense-btn" value="지출 등록" th:onclick="'javascript:index.openExpense(this);'" data-toggle="modal" data-target="#expenseModal" th:data-day="${ dayStat.count }" /></td>
             </tr>
         </tbody>
     </table>
+    <!-- 가계부 테이블 끝 -->
+
+
 </div>
 </body>
 <!-- 바디 끝 -->
@@ -47,7 +77,7 @@
                 <h2 class="modal-title">수입 등록</h2>
             </div>
             <div class="modal-body">
-                <input type="text" th:name="income-date" th:id="income-date">
+                <input type="hidden" th:name="income-month" th:id="income-month">
                 <label for="incomeMoney">금액</label>
                 <input type="text" th:name="incomeMoney" th:id="incomeMoney" class="form-control" placeholder="금액을 입력해주세요"/>
                 <label for="incomeReason">명목</label>
@@ -70,12 +100,12 @@
                 <h2 class="modal-title">지출 등록</h2>
             </div>
             <div class="modal-body">
-                <input type="text" th:name="expense-date" th:id="expense-date">
+                <input type="hidden" th:name="expense-date" th:id="expense-date">
                 <label for="expenseMoney">금액</label>
                 <input type="text" th:name="expenseMoney" th:id="expenseMoney" class="form-control" placeholder="금액을 입력해주세요"/>
                 <label for="expenseReason">명목</label>
                 <input type="text" th:field="*{expenseReason}" class="form-control" placeholder="명목을 입력해주세요"/>
-                <label for="expenseCategory">분류</label>
+                <label for="expenseCategory">분류</label> <br>
                 <select th:field="*{expenseCategory}" class="selectpicker">
                     <option th:value="0">==카테고리==</option>
                     <option th:value="GROCERY">식료품</option>
@@ -107,22 +137,24 @@
 
 <!-- 자바스크립트 시작 -->
 <script type="text/javascript">
+    // $(document).ready(function () {
+    //     let sum = [[${sum}]];
+    //
+    //
+    // });
+
     let index = {
 
         // 수입 모달 오픈 시 해당 날짜 전달
         openIncome: function (btn) {
             let year = [[${ year }]];
             let month = [[${ month }]].toString();
-            let day = $(btn).data('day').toString();
 
             if (month.length === 1) {
                 month = 0 + month;
             }
-            if (day.length === 1) {
-                day = 0 + day;
-            }
 
-            $("#income-date").val(year+''+month+''+day);
+            $("#income-month").val(year+''+month);
         },
 
         // 지출 모달 오픈 시 해당 날짜 전달
@@ -148,7 +180,7 @@
             mid: $("#mid").val(),
             incomeMoney: $("#incomeMoney").val(),
             incomeReason: $("#incomeReason").val(),
-            date: $("#income-date").val()
+            month: $("#income-month").val()
         }
         console.log("data = ", data);
 
