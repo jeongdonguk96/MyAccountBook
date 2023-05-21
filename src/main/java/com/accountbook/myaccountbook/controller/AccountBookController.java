@@ -3,7 +3,7 @@ package com.accountbook.myaccountbook.controller;
 import com.accountbook.myaccountbook.domain.Expense;
 import com.accountbook.myaccountbook.domain.Income;
 import com.accountbook.myaccountbook.domain.Member;
-import com.accountbook.myaccountbook.dto.MessageConstants;
+import com.accountbook.myaccountbook.constant.MessageConstants;
 import com.accountbook.myaccountbook.dto.accountbook.ExpenseReturnDto;
 import com.accountbook.myaccountbook.service.AccountBookService;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,6 @@ public class AccountBookController {
     // 가계부 조회
     @GetMapping("/book")
     public String getAccountBook(Model model) {
-
         Member findMember = (Member) model.getAttribute("user"); // 세션
         String findYear = getYear(); // 현재 연도
         String findMonth = getMonth(); // 현재 달

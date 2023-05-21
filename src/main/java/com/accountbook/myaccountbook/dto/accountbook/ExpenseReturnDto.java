@@ -1,6 +1,5 @@
 package com.accountbook.myaccountbook.dto.accountbook;
 
-import com.accountbook.myaccountbook.domain.Category;
 import com.accountbook.myaccountbook.domain.Expense;
 import lombok.Data;
 
@@ -9,7 +8,7 @@ public class ExpenseReturnDto {
     private int exid;
     private int expenseMoney;
     private String expenseReason;
-    private Category expenseCategory;
+    private String expenseCategory;
     private String date;
 
     public void convetToDto(Expense expense) {

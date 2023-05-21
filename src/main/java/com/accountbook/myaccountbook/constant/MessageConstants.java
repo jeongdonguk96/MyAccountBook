@@ -1,4 +1,4 @@
-package com.accountbook.myaccountbook.dto;
+package com.accountbook.myaccountbook.constant;
 
 public final class MessageConstants {
     public static final String[] MESSAGE = {"오늘의 소비는 합리적이었나요?" , "꼭 했어야만 하는 지출이었나요?",
