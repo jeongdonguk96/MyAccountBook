@@ -5,6 +5,7 @@ import com.accountbook.myaccountbook.domain.Income;
 import com.accountbook.myaccountbook.domain.Member;
 import com.accountbook.myaccountbook.constant.MessageConstants;
 import com.accountbook.myaccountbook.dto.accountbook.ExpenseReturnDto;
+import com.accountbook.myaccountbook.dto.accountbook.IncomeReturnDto;
 import com.accountbook.myaccountbook.service.AccountBookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,11 +47,18 @@ public class AccountBookController {
         int expenseSum = 0; // 총 지출
         int restSum = 0; // 총 합계
 
-        // 총 수입 계산
+        // 총 수입 계산, Income 엔티티를 Dto로
         List<Income> incomes = accountBookService.findAllMonthIncome(fullMonth, findMember.getMid());
+        List<IncomeReturnDto> incomeReturnDtos = new ArrayList<>();
 
         for (Income income : incomes) {
             incomeSum += income.getIncomeMoney();
+        }
+
+        for (Income income : incomes) {
+            IncomeReturnDto incomeReturnDto = new IncomeReturnDto();
+            incomeReturnDto.convetToDto(income);
+            incomeReturnDtos.add(incomeReturnDto);
         }
 
         // 총 지출 계산, Expense 엔티티를 Dto로
@@ -79,6 +87,7 @@ public class AccountBookController {
         attribute.put("incomeSum", incomeSum);
         attribute.put("expenseSum", expenseSum);
         attribute.put("restSum", restSum);
+        attribute.put("incomes", incomeReturnDtos);
         attribute.put("expenses", expenseReturnDtos);
         attribute.put("message", message);
 

@@ -1,10 +1,7 @@
 package com.accountbook.myaccountbook.apicontroller;
 
-import com.accountbook.myaccountbook.domain.Expense;
-import com.accountbook.myaccountbook.domain.Income;
 import com.accountbook.myaccountbook.dto.ResponseDto;
-import com.accountbook.myaccountbook.dto.accountbook.ExpenseWriteDto;
-import com.accountbook.myaccountbook.dto.accountbook.IncomeWriteDto;
+import com.accountbook.myaccountbook.dto.accountbook.*;
 import com.accountbook.myaccountbook.service.AccountBookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,8 +37,10 @@ public class AccountBookApiController {
 
     // 수입 수정
     @PutMapping("/modifyIncome/{inid}")
-    public ResponseDto<Integer> modifyIncome(int mid, Income income) {
-        accountBookService.modifyIncome(mid, income);
+    public ResponseDto<Integer> modifyIncome(@RequestBody IncomeModifyDto incomeModifyDto) {
+        System.out.println("modifyIncome/{inid} 인입완료");
+        System.out.println("incomeModifyDto = " + incomeModifyDto);
+        accountBookService.modifyIncome(incomeModifyDto);
 
         return new ResponseDto<>(HttpStatus.OK.value(), 1);
     }
@@ -49,8 +48,9 @@ public class AccountBookApiController {
 
     // 지출 수정
     @PutMapping("/modifyExpense/{exid}")
-    public ResponseDto<Integer> modifyExpense(int mid, Expense expense) {
-        accountBookService.modifyExpense(mid, expense);
+    public ResponseDto<Integer> modifyExpense(@RequestBody ExpenseModifyDto expenseModifyDto) {
+        System.out.println("AccountBookApiController expenseModifyDto = " + expenseModifyDto);
+        accountBookService.modifyExpense(expenseModifyDto);
 
         return new ResponseDto<>(HttpStatus.OK.value(), 1);
     }
@@ -58,17 +58,17 @@ public class AccountBookApiController {
 
     // 수입 삭제
     @DeleteMapping("/deleteIncome/{inid}")
-    public ResponseDto<Integer> deleteIncome(int mid, int inid) {
-        accountBookService.deleteIncome(mid, inid);
+    public ResponseDto<Integer> deleteIncome(@RequestBody IncomeDeleteDto incomeDeleteDto) {
+        accountBookService.deleteIncome(incomeDeleteDto);
 
         return new ResponseDto<>(HttpStatus.OK.value(), 1);
     }
 
 
     // 지출 삭제
-    @DeleteMapping("/modifyExpense/{exid}")
-    public ResponseDto<Integer> deleteExpense(int mid, int exid) {
-        accountBookService.deleteExpense(mid, exid);
+    @DeleteMapping("/deleteExpense/{exid}")
+    public ResponseDto<Integer> deleteExpense(@RequestBody ExpenseDeleteDto expenseDeleteDto) {
+        accountBookService.deleteExpense(expenseDeleteDto);
 
         return new ResponseDto<>(HttpStatus.OK.value(), 1);
     }

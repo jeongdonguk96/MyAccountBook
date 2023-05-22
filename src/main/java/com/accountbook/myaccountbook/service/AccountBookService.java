@@ -3,14 +3,14 @@ package com.accountbook.myaccountbook.service;
 import com.accountbook.myaccountbook.domain.Expense;
 import com.accountbook.myaccountbook.domain.Income;
 import com.accountbook.myaccountbook.domain.Member;
-import com.accountbook.myaccountbook.dto.accountbook.ExpenseWriteDto;
-import com.accountbook.myaccountbook.dto.accountbook.IncomeWriteDto;
+import com.accountbook.myaccountbook.dto.accountbook.*;
 import com.accountbook.myaccountbook.repository.ExpenseRepository;
 import com.accountbook.myaccountbook.repository.IncomeRepository;
 import com.accountbook.myaccountbook.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -32,7 +32,6 @@ public class AccountBookService {
      */
     @Transactional
     public void writeIncome(IncomeWriteDto incomeWriteDto) {
-
         // 잔여금 계산
         Member findMember = memberRepository.findById(incomeWriteDto.getMid()).get();
         memberService.setRest(findMember, incomeWriteDto.getIncomeMoney());
@@ -52,7 +51,6 @@ public class AccountBookService {
      */
     @Transactional
     public void writeExpense(ExpenseWriteDto expenseWriteDto) {
-
         // 잔여금 계산
         Member findMember = memberRepository.findById(expenseWriteDto.getMid()).get();
         memberService.setRest(findMember, -expenseWriteDto.getExpenseMoney());
@@ -69,17 +67,18 @@ public class AccountBookService {
 
     /**
      * 수입 수정
-     * @param mid 사용자 id
-     * @param income 수정할 수입
+     * @param incomeModifyDto 수입 수정 Dto
      */
     @Transactional
-    public void modifyIncome(int mid, Income income) {
+    public void modifyIncome(IncomeModifyDto incomeModifyDto) {
+        Member findMember = memberRepository.findById(incomeModifyDto.getMid()).get();
+        Income findIncome = incomeRepository.findById(incomeModifyDto.getInid()).get();
 
-        Member findMember = memberRepository.findById(mid).get();
-        Income findIncome = incomeRepository.findById(income.getInid()).get();
+        // 기존 incomeMoney 롤백
+        memberService.rollbackRest(findMember, -findIncome.getIncomeMoney());
 
-        findIncome.setIncomeReason(income.getIncomeReason());
-        findIncome.setIncomeMoney(income.getIncomeMoney());
+        findIncome.setIncomeReason(incomeModifyDto.getIncomeReason());
+        findIncome.setIncomeMoney(incomeModifyDto.getIncomeMoney());
 
         memberService.setRest(findMember, findIncome.getIncomeMoney());
     }
@@ -87,49 +86,53 @@ public class AccountBookService {
 
     /**
      * 지출 수정
-     * @param mid 사용자 id
-     * @param expense 수정할 지출
+     * @param expenseModifyDto 지출 수정 Dto
      */
     @Transactional
-    public void modifyExpense(int mid, Expense expense) {
+    public void modifyExpense(ExpenseModifyDto expenseModifyDto) {
+        Member findMember = memberRepository.findById(expenseModifyDto.getMid()).get();
+        Expense findExpense = expenseRepository.findById(expenseModifyDto.getExid()).get();
 
-        Member findMember = memberRepository.findById(mid).get();
-        Expense findExpense = expenseRepository.findById(expense.getExid()).get();
+        // 기존 expenseMoney 롤백
+        memberService.rollbackRest(findMember, findExpense.getExpenseMoney());
 
-        findExpense.setExpenseReason(expense.getExpenseReason());
-        findExpense.setExpenseMoney(expense.getExpenseMoney());
+        findExpense.setExpenseMoney(expenseModifyDto.getExpenseMoney());
+        findExpense.setExpenseReason(expenseModifyDto.getExpenseReason());
+        findExpense.setExpenseCategory(expenseModifyDto.getExpenseCategory());
 
+        memberService.setRest(findMember, -findExpense.getExpenseMoney());
+    }
+
+
+    /**
+     * 수입 삭제
+     * @param incomeDeleteDto 수입 삭제 Dto
+     */
+    @Transactional
+    public void deleteIncome(@RequestBody IncomeDeleteDto incomeDeleteDto) {
+        Member findMember = memberRepository.findById(incomeDeleteDto.getMid()).get();
+        Income findIncome = incomeRepository.findById(incomeDeleteDto.getInid()).get();
+
+        // 삭제하는 수입금만큼 member의 rest 차감
+        memberService.setRest(findMember, -findIncome.getIncomeMoney());
+
+        incomeRepository.deleteById(incomeDeleteDto.getInid());
+    }
+
+
+    /**
+     * 지출 삭제
+     * @param expenseDeleteDto 지출 삭제 Dto
+     */
+    @Transactional
+    public void deleteExpense(ExpenseDeleteDto expenseDeleteDto) {
+        Member findMember = memberRepository.findById(expenseDeleteDto.getMid()).get();
+        Expense findExpense = expenseRepository.findById(expenseDeleteDto.getExid()).get();
+
+        // 삭제하는 지출금만큼 member의 rest 증가
         memberService.setRest(findMember, findExpense.getExpenseMoney());
-    }
 
-
-    /**
-     * 수입 삭제
-     * @param mid 사용자 id
-     * @param inid 삭제할 수입 id
-     */
-    @Transactional
-    public void deleteIncome(int mid, int inid) {
-
-        Member findMember = memberRepository.findById(mid).get();
-        memberService.setRest(findMember, 0);
-
-        incomeRepository.deleteById(inid);
-    }
-
-
-    /**
-     * 수입 삭제
-     * @param mid 사용자 id
-     * @param exid 삭제할 지출 id
-     */
-    @Transactional
-    public void deleteExpense(int mid, int exid) {
-
-        Member findMember = memberRepository.findById(mid).get();
-        memberService.setRest(findMember, 0);
-
-        expenseRepository.deleteById(exid);
+        expenseRepository.deleteById(expenseDeleteDto.getExid());
     }
 
 

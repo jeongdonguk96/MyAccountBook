@@ -75,4 +75,15 @@ public class MemberService {
     public void setRest(Member findMember, int money) {
         findMember.setRest(findMember.getRest()+money);
     }
+
+
+    /**
+     * 가계부 지출 수정 시 기존 지출금액 되돌리기
+     * @param findMember 사용자
+     * @param money 수정 전 기존 기입 금액
+     */
+    @Transactional
+    public void rollbackRest(Member findMember, int money) {
+        findMember.setRest(findMember.getRest()+money);
+    }
 }

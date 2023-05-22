@@ -22,33 +22,31 @@
 
 
     <!-- 가계부 테이블 시작 -->
-    <input type="button" class="btn btn-dark income" name="input-btn" id="input-btn" value="수입 등록" th:onclick="'javascript:index.openIncome(this);'" data-toggle="modal" data-target="#incomeModal" /> <br><br>
+    <input type="button" class="btn btn-dark income" value="수입 등록" th:onclick="'javascript:index.openIncome(this);'" data-toggle="modal" data-target="#income-modal" />
+    <input type="button" class="btn btn-dark income" value="수입 관리" data-toggle="modal" data-target="#income-history-modal" /> <br><br>
+
     <table class="table">
         <thead>
             <tr>
                 <th>Date</th>
-<!--                <th>Income</th>-->
                 <th>Expense</th>
                 <th>Sum</th>
                 <th>Rest</th>
             </tr>
         </thead>
+
         <tbody>
-            <tr th:each="day: ${ #numbers.sequence(1, days) }" th:with="sum=0">
+            <tr th:each="day: ${ #numbers.sequence(1, days) }">
                 <td th:text="|${ dayStat.count }일|"></td>
-<!--                <td>-->
-<!--                    <th:block th:each="income: ${ incomes }">-->
-<!--                        <th:block th:if="${ dayStat.count } == ${ income.getDate().substring(7, 8) }">-->
-<!--                            <span th:text="|${ income.getIncomeMoney() }원, ${ income.getIncomeReason }|"/>-->
-<!--                            <input id="theIncome" th:type="text" th:value="${ income.getIncomeMoney() }" />-->
-<!--                        </th:block>-->
-<!--                    </th:block>-->
-<!--                </td>-->
                 <td>
                     <th:block th:each="expense: ${ expenses }">
                         <th:block th:if="${ dayStat.count } == ${ expense.getDate().substring(6, 8) }">
-                            <span th:text="|${ expense.getExpenseMoney() }원, ${ expense.getExpenseReason() }|" />
-                            <input type="hidden" th:id="|theExpense${ expenseStat.count }|" th:value="${ expense.getExpenseMoney() }" ><br>
+                            <a href="#" th:onclick="'javascript:index.openExpenseHistory(this);'" data-toggle="modal" data-target="#expense-history-modal"
+                               th:data-exid="${expense.exid}" th:data-expenseMoney="${expense.expenseMoney}"
+                               th:data-expenseReason="${expense.expenseReason}" th:data-expenseCategory="${expense.expenseCategory}">
+                                <span th:text="|${ expense.getExpenseMoney() }원, ${ expense.getExpenseReason() }|" />
+                            </a>
+<!--                            <input type="hidden" id="|theExpense${ expenseStat.count }|" th:value="${ expense.getExpenseMoney() }" > <br>-->
                         </th:block>
                     </th:block>
                 </td>
@@ -56,9 +54,7 @@
                     <span id="theSum" />
                 </td>
                 <td class="rest"></td>
-<!--                    <td th:if="${ dayStat.count } == ${ income.getDate().substring(7, 8) }"></td>-->
-<!--                <td style="border-top-style: hidden"><button type="button" class="btn btn-dark" name="input-btn" id="input-btn" value="수입 등록" th:onclick="'javascript:index.openIncome(this);'" data-toggle="modal" data-target="#incomeModal" th:data-day="${ dayStat.count }"></button></td>-->
-                <td style="border-top-style: hidden"><input type="button" class="btn btn-dark" name="expense-btn" id="expense-btn" value="지출 등록" th:onclick="'javascript:index.openExpense(this);'" data-toggle="modal" data-target="#expenseModal" th:data-day="${ dayStat.count }" /></td>
+                <td style="border-top-style: hidden"><input type="button" class="btn btn-dark" name="expense-btn" id="expense-btn" value="지출 등록" th:onclick="'javascript:index.openExpense(this);'" data-toggle="modal" data-target="#expense-modal" th:data-day="${ dayStat.count }" /></td>
             </tr>
         </tbody>
     </table>
@@ -70,21 +66,21 @@
 <!-- 바디 끝 -->
 
 <!-- 수입 등록 모달 섹션 시작 -->
-<div class="modal fade" id="incomeModal" th:object="${income}">
+<div class="modal fade" id="income-modal" th:object="${income}">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title">수입 등록</h2>
             </div>
             <div class="modal-body">
-                <input type="hidden" th:name="income-month" th:id="income-month">
-                <label for="incomeMoney">금액</label>
-                <input type="text" th:name="incomeMoney" th:id="incomeMoney" class="form-control" placeholder="금액을 입력해주세요"/>
-                <label for="incomeReason">명목</label>
+                <input type="hidden" name="income-month" id="income-month">
+                <label>금액</label>
+                <input type="text" name="income-money" id="income-money" class="form-control" placeholder="금액을 입력해주세요"/>
+                <label>명목</label>
                 <input type="text" th:field="*{incomeReason}" class="form-control" placeholder="명목을 입력해주세요"/>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" id="income-save">등록</button>
+                <button type="button" class="btn btn-primary" id="income-save">등록</button>
                 <button type="button" class="btn btn-light" data-dismiss="modal">취소</button>
             </div>
         </div>
@@ -92,20 +88,47 @@
 </div>
 <!-- 수입 등록 모달 섹션 끝 -->
 
+<!-- 수입 관리 모달 섹션 시작 -->
+<div class="modal fade" id="income-history-modal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">수입 관리</h2>
+            </div>
+            <th:block th:each="income: ${ incomes }">
+                <div class="modal-body">
+                    <label>금액</label>
+                    <input type="text" name="modifying-income-money" id="modifying-income-money" th:value="${ income.incomeMoney }" class="form-control" />
+                    <label>명목</label>
+                    <input type="text" name="modifying-income-reason" id="modifying-income-reason" th:value="${ income.incomeReason }" class="form-control" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" th:onclick="'javascript:index.deleteIncome(this);'"
+                            th:data-inid="${ income.inid }">삭제</button>
+                    <button type="button" class="btn btn-primary" th:onclick="'javascript:index.modifyIncome(this);'"
+                            th:data-inid="${ income.inid }">수정</button>
+                    <button type="button" class="btn btn-light" data-dismiss="modal">취소</button>
+                </div>
+            </th:block>
+        </div>
+    </div>
+</div>
+<!-- 수입 관리 모달 섹션 끝 -->
+
 <!-- 지출 등록 모달 섹션 시작 -->
-<div class="modal fade" id="expenseModal" th:object="${expense}">
+<div class="modal fade" id="expense-modal" th:object="${expense}">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title">지출 등록</h2>
             </div>
             <div class="modal-body">
-                <input type="hidden" th:name="expense-date" th:id="expense-date">
-                <label for="expenseMoney">금액</label>
-                <input type="text" th:name="expenseMoney" th:id="expenseMoney" class="form-control" placeholder="금액을 입력해주세요"/>
-                <label for="expenseReason">명목</label>
+                <input type="hidden" name="expense-date" id="expense-date">
+                <label>금액</label>
+                <input type="text" name="expense-money" id="expense-money" class="form-control" placeholder="금액을 입력해주세요"/>
+                <label>명목</label>
                 <input type="text" th:field="*{expenseReason}" class="form-control" placeholder="명목을 입력해주세요"/>
-                <label for="expenseCategory">분류</label> <br>
+                <label>분류</label> <br>
                 <select th:field="*{expenseCategory}" class="selectpicker">
                     <option th:value="0">==카테고리==</option>
                     <option th:value="식료품">식료품</option>
@@ -129,7 +152,7 @@
                 </select>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" id="expense-save">등록</button>
+                <button type="button" class="btn btn-primary" id="expense-save">등록</button>
                 <button type="button" class="btn btn-light" data-dismiss="modal">취소</button>
             </div>
         </div>
@@ -137,8 +160,54 @@
 </div>
 <!-- 지출 등록 모달 섹션 끝 -->
 
+<!-- 지출 내역 모달 섹션 시작 -->
+<div class="modal fade" id="expense-history-modal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">지출 내역</h2>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="modifying-expense-exid" id="modifying-expense-exid" >
+                <label>금액</label>
+                <input type="text" name="modifying-expense-money" id="modifying-expense-money" class="form-control"/>
+                <label>명목</label>
+                <input type="text" name="modifying-expense-reason" id="modifying-expense-reason" class="form-control"/>
+                <label>분류</label> <br>
+                <select name="modifying-expense-category" id="modifying-expense-category" class="selectpicker">
+                    <option th:value="0">==카테고리==</option>
+                    <option th:value="식료품">식료품</option>
+                    <option th:value="외식">외식</option>
+                    <option th:value="배달">배달</option>
+                    <option th:value="생필품">생필품</option>
+                    <option th:value="가전제품">가전제품</option>
+                    <option th:value="전자제품">전자제품</option>
+                    <option th:value="의류">의류</option>
+                    <option th:value="병원약국비">병원/약국비</option>
+                    <option th:value="휴대폰요금">휴대폰요금</option>
+                    <option th:value="교통비">교통비</option>
+                    <option th:value="여가활동">여가활동</option>
+                    <option th:value="예적금">예/적금</option>
+                    <option th:value="보험료">보험료</option>
+                    <option th:value="집세">집세</option>
+                    <option th:value="공과금">공과금</option>
+                    <option th:value="대출상환금">대출상환금</option>
+                    <option th:value="경조사비">경조사비</option>
+                    <option th:value="기타">기타</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" id="expense-delete">삭제</button>
+                <button type="button" class="btn btn-primary" id="expense-modify">수정</button>
+                <button type="button" class="btn btn-light" data-dismiss="modal">취소</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 지출 내역 모달 섹션 끝 -->
+
 <!-- 자바스크립트 시작 -->
-<script type="text/javascript">
+<script type="text/javascript" th:inline="javascript">
     // $(document).ready(function () {
     //     let sum = [[${sum}]];
     //
@@ -163,7 +232,7 @@
         openExpense: function (btn) {
             let year = [[${ year }]];
             let month = [[${ month }]].toString();
-            let day = $(btn).data('day').toString();
+            let day = $(btn).data('day').toString(); // 1. th:data를 사용할 때 이렇게 사용도 가능하고
 
             if (month.length === 1) {
                 month = 0 + month;
@@ -173,18 +242,85 @@
             }
 
             $("#expense-date").val(year+''+month+''+day);
-        }
+        },
+
+        // 지출 내역 모달 오픈 시 해당 데이터 전달
+        openExpenseHistory: function (btn) {
+            let exid = btn.getAttribute('data-exid'); // 2. th:data를 사용할 때 이렇게 사용도 가능함
+            let expenseMoney = btn.getAttribute('data-expenseMoney');
+            let expenseReason = btn.getAttribute('data-expenseReason');
+            let expenseCategory = btn.getAttribute('data-expenseCategory');
+
+            $("#modifying-expense-exid").val(exid);
+            $("#modifying-expense-money").val(expenseMoney);
+            $("#modifying-expense-reason").val(expenseReason);
+            $("#modifying-expense-category").val(expenseCategory);
+        },
+
+        // 수입 수정
+        modifyIncome: function (btn) {
+            let data = {
+                mid: $("#mid").val(),
+                inid: btn.getAttribute('data-inid'),
+                incomeMoney: btn.parentElement.previousElementSibling.firstElementChild.nextElementSibling.value,
+                incomeReason: btn.parentElement.previousElementSibling.lastElementChild.value
+            }
+
+            if (data.incomeMoney.trim() === "") {
+                alert('금액을 입력해주세요');
+                return false;
+            } else if (data.incomeReason.trim() === "") {
+                alert('명목을 입력해주세요');
+                return false;
+            } else {
+                $.ajax({
+                    type: "put",
+                    url: "/api/accountBook/modifyIncome/${data.inid}",
+                    data: JSON.stringify(data),
+                    contentType: "application/json; charset=utf-8"
+                }).done(function (response) {
+                    alert('수정이 완료되었습니다');
+                    window.location.reload();
+                }).fail(function (error) {
+                    console.log("error = ", JSON.stringify(error));
+                    alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
+                });
+            }
+        },
+
+        // 수입 삭제
+        deleteIncome: function (btn) {
+            let data = {
+                mid: $("#mid").val(),
+                inid: btn.getAttribute('data-inid')
+            }
+
+            let check = confirm('삭제하면 되돌릴 수 없습니다 \n삭제하시겠습니까?')
+            if (check === true) {
+                $.ajax({
+                    type: "delete",
+                    url: "/api/accountBook/deleteIncome/${data.inid}",
+                    data: JSON.stringify(data),
+                    contentType: "application/json; charset=utf-8"
+                }).done(function (response) {
+                    alert('삭제 완료되었습니다');
+                    window.location.reload();
+                }).fail(function (error) {
+                    console.log("error = ", JSON.stringify(error));
+                    alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
+                });
+            }
+        },
     }
 
     // 수입 작성
     $("#income-save").click(function () {
         let data = {
             mid: $("#mid").val(),
-            incomeMoney: $("#incomeMoney").val(),
+            incomeMoney: $("#income-money").val(),
             incomeReason: $("#incomeReason").val(),
             month: $("#income-month").val()
         }
-        console.log("data = ", data);
 
         if (data.incomeMoney.trim() === "") {
             alert('금액을 입력해주세요');
@@ -202,8 +338,8 @@
                 alert('등록이 완료되었습니다');
                 window.location.reload();
             }).fail(function (error) {
-                console.log("error = ", error);
-                alert('서버 장애로 인해 오류가 발생했습니다 \n 다시 시도해주세요');
+                console.log("error = ", JSON.stringify(error));
+                alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
             });
         }
     });
@@ -212,12 +348,11 @@
     $("#expense-save").click(function () {
         let data = {
             mid: $("#mid").val(),
-            expenseMoney: $("#expenseMoney").val(),
+            expenseMoney: $("#expense-money").val(),
             expenseReason: $("#expenseReason").val(),
             expenseCategory: $("#expenseCategory").val(),
             date: $("#expense-date").val()
         }
-        console.log("data = ", data);
 
         if (data.expenseMoney.trim() === "") {
             alert('금액을 입력해주세요');
@@ -238,8 +373,67 @@
                 alert('등록이 완료되었습니다');
                 window.location.reload();
             }).fail(function (error) {
-                console.log("error = ", error);
-                alert('서버 장애로 인해 오류가 발생했습니다 \n 다시 시도해주세요');
+                console.log("error = ", JSON.stringify(error));
+                alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
+            });
+        }
+    });
+
+    // 지출 수정
+    $("#expense-modify").click(function () {
+        let data = {
+            mid: $("#mid").val(),
+            exid: $("#modifying-expense-exid").val(),
+            expenseMoney: $("#modifying-expense-money").val(),
+            expenseReason: $("#modifying-expense-reason").val(),
+            expenseCategory: $("#modifying-expense-category").val()
+        }
+
+        if (data.expenseMoney.trim() === "") {
+            alert('금액을 입력해주세요');
+            return false;
+        } else if (data.expenseReason.trim() === "") {
+            alert('명목을 입력해주세요');
+            return false;
+        } else if (data.expenseCategory === "0") {
+            alert('분류을 선택해주세요');
+            return false;
+        } else {
+            $.ajax({
+                type: "put",
+                url: "api/accountBook/modifyExpense/${data.exid}",
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8"
+            }).done(function (response) {
+                alert('수정이 완료되었습니다');
+                window.location.reload();
+            }).fail(function (error) {
+                console.log("error = ", JSON.stringify(error));
+                alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
+            });
+        }
+    });
+
+    // 지출 삭제
+    $("#expense-delete").click(function () {
+        let data = {
+            mid: $("#mid").val(),
+            exid: $("#modifying-expense-exid").val()
+        }
+
+        let check = confirm('삭제하면 되돌릴 수 없습니다 \n삭제하시겠습니까?')
+        if (check === true) {
+            $.ajax({
+                type: "delete",
+                url: "api/accountBook/deleteExpense/${data.exid}",
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8"
+            }).done(function (response) {
+                alert('삭제 완료되었습니다');
+                window.location.reload();
+            }).fail(function (error) {
+                console.log("error = ", JSON.stringify(error));
+                alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
             });
         }
     });

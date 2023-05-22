@@ -71,6 +71,7 @@
                     $("#loginId").val('');
                 }
             }).fail(function (error) {
+                console.log("error = ", JSON.stringify(error));
                 alert(JSON.stringify(error));
             });
         }
@@ -87,7 +88,6 @@
             year: $("#year").val(),
             salary: $("#salary").val()
         }
-        console.log("data = ", data);
 
         if (data.loginId.trim() === "") {
             alert('아이디를 입력해주세요');
@@ -117,12 +117,11 @@
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8"
             }).done(function (response){
-                console.log("response = ", response);
                 alert('회원가입이 완료되었습니다');
                 location.href = "/";
             }).fail(function (error) {
                 console.log("error = ", JSON.stringify(error));
-                alert('서버 장애로 인해 오류가 발생했습니다 \n 다시 시도해주세요');
+                alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
             });
         }
     });
