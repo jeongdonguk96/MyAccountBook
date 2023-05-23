@@ -4,6 +4,7 @@ import com.accountbook.myaccountbook.service.AccountBookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Slf4j
@@ -31,5 +32,12 @@ public class HomeController {
     @GetMapping("/login")
     public String getLoginView() {
         return "member/login";
+    }
+
+
+    // 지출 통계 화면
+    @GetMapping("/statistics")
+    public String getStatisticsView(Model model) {
+        return "accountbook/statistics";
     }
 }

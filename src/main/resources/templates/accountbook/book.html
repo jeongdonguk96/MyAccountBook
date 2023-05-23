@@ -15,15 +15,16 @@
         <h3><span th:text="${ message }"/></h3><br>
     </div>
     <h2><span th:text="${ month }" />월</h2> <br>
-    <p>총 수입: + <span th:text="|${ #numbers.formatInteger(incomeSum, 3, 'COMMA') }|" />원</p>
-    <p>총 지출: - <span th:text="|${ #numbers.formatInteger(expenseSum, 3, 'COMMA') }|" />원</p>
-    <p>총 합계: <span th:text="${ restSum >= 0 ? '+ ' + #numbers.formatInteger(restSum, 3, 'COMMA') : '- ' + #numbers.formatInteger(restSum, 3, 'COMMA') }" />원</p>
+    <p>총 수입: +<span th:text="|${ #numbers.formatInteger(incomeSum, 3, 'COMMA') }|" />원</p>
+    <p>총 지출: -<span th:text="|${ #numbers.formatInteger(expenseSum, 3, 'COMMA') }|" />원</p>
+    <p>총 합계: <span th:text="${ restSum >= 0 ? '+' + #numbers.formatInteger(restSum, 3, 'COMMA') : #numbers.formatInteger(restSum, 3, 'COMMA') }" />원</p>
     <!-- 상단 텍스트 시작 -->
 
 
     <!-- 가계부 테이블 시작 -->
-    <input type="button" class="btn btn-dark income" value="수입 등록" th:onclick="'javascript:index.openIncome(this);'" data-toggle="modal" data-target="#income-modal" />
+    <input type="button" class="btn btn-dark income" value="수입 등록" th:onclick="'javascript:index.openIncome(this);'" data-toggle="modal" data-target="#income-modal" /> <br><br>
     <input type="button" class="btn btn-dark income" value="수입 관리" data-toggle="modal" data-target="#income-history-modal" /> <br><br>
+    <input type="button" class="btn btn-dark income" value="지출 통계" th:onclick="'javascript:index.openStatistics(this);'" /> <br><br>
 
     <table class="table">
         <thead>
@@ -255,6 +256,14 @@
             $("#modifying-expense-money").val(expenseMoney);
             $("#modifying-expense-reason").val(expenseReason);
             $("#modifying-expense-category").val(expenseCategory);
+        },
+
+        // 지출 통계 팝업창 오픈
+        openStatistics: function (btn) {
+            let url = "/statistics";
+
+            window.open(url, "_blank_",
+                "toolbar=no, menubar=no, scrollbars=yes, resizable=no, width=550, height=550");
         },
 
         // 수입 수정
