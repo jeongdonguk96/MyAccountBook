@@ -39,8 +39,6 @@ public class AccountBookApiController {
     // 수입 수정
     @PutMapping("/modifyIncome/{inid}")
     public ResponseDto<Integer> modifyIncome(@RequestBody @Validated IncomeModifyDto incomeModifyDto) {
-        System.out.println("modifyIncome/{inid} 인입완료");
-        System.out.println("incomeModifyDto = " + incomeModifyDto);
         accountBookService.modifyIncome(incomeModifyDto);
 
         return new ResponseDto<>(HttpStatus.OK.value(), 1);
@@ -50,7 +48,6 @@ public class AccountBookApiController {
     // 지출 수정
     @PutMapping("/modifyExpense/{exid}")
     public ResponseDto<Integer> modifyExpense(@RequestBody @Validated ExpenseModifyDto expenseModifyDto) {
-        System.out.println("AccountBookApiController expenseModifyDto = " + expenseModifyDto);
         accountBookService.modifyExpense(expenseModifyDto);
 
         return new ResponseDto<>(HttpStatus.OK.value(), 1);

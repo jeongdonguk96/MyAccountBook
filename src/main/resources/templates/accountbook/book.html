@@ -28,35 +28,35 @@
 
     <table class="table">
         <thead>
-            <tr>
-                <th>Date</th>
-                <th>Expense</th>
-                <th>Sum</th>
-                <th>Rest</th>
-            </tr>
+        <tr>
+            <th>Date</th>
+            <th>Expense</th>
+            <th>Sum</th>
+            <th>Rest</th>
+        </tr>
         </thead>
 
         <tbody>
-            <tr th:each="day: ${ #numbers.sequence(1, days) }">
-                <td th:text="|${ dayStat.count }일|"></td>
-                <td>
-                    <th:block th:each="expense: ${ expenses }">
-                        <th:block th:if="${ dayStat.count } == ${ expense.getDate().substring(6, 8) }">
-                            <a href="#" th:onclick="'javascript:index.openExpenseHistory(this);'" data-toggle="modal" data-target="#expense-history-modal"
-                               th:data-exid="${expense.exid}" th:data-expenseMoney="${expense.expenseMoney}"
-                               th:data-expenseReason="${expense.expenseReason}" th:data-expenseCategory="${expense.expenseCategory}">
-                                <span th:text="|${ expense.getExpenseMoney() }원, ${ expense.getExpenseReason() }|" />
-                            </a> <br>
-<!--                            <input type="hidden" id="|theExpense${ expenseStat.count }|" th:value="${ expense.getExpenseMoney() }" > <br>-->
-                        </th:block>
+        <tr th:each="day: ${ #numbers.sequence(1, days) }">
+            <td th:text="|${ dayStat.count }일|"></td>
+            <td>
+                <th:block th:each="expense: ${ expenses }">
+                    <th:block th:if="${ dayStat.count } == ${ expense.getDate().substring(6, 8) }">
+                        <a href="#" th:onclick="'javascript:index.openExpenseHistory(this);'" data-toggle="modal" data-target="#expense-history-modal"
+                           th:data-exid="${expense.exid}" th:data-expenseMoney="${expense.expenseMoney}"
+                           th:data-expenseReason="${expense.expenseReason}" th:data-expenseCategory="${expense.expenseCategory}">
+                            <span th:text="|${ expense.getExpenseMoney() }원, ${ expense.getExpenseReason() }|" />
+                        </a> <br>
+                        <!--                            <input type="hidden" id="|theExpense${ expenseStat.count }|" th:value="${ expense.getExpenseMoney() }" > <br>-->
                     </th:block>
-                </td>
-                <td>
-                    <span id="theSum" />
-                </td>
-                <td class="rest"></td>
-                <td style="border-top-style: hidden"><input type="button" class="btn btn-dark" name="expense-btn" id="expense-btn" value="지출 등록" th:onclick="'javascript:index.openExpense(this);'" data-toggle="modal" data-target="#expense-modal" th:data-day="${ dayStat.count }" /></td>
-            </tr>
+                </th:block>
+            </td>
+            <td>
+                <span id="theSum" />
+            </td>
+            <td class="rest"></td>
+            <td style="border-top-style: hidden"><input type="button" class="btn btn-dark" name="expense-btn" id="expense-btn" value="지출 등록" th:onclick="'javascript:index.openExpense(this);'" data-toggle="modal" data-target="#expense-modal" th:data-day="${ dayStat.count }" /></td>
+        </tr>
         </tbody>
     </table>
     <!-- 가계부 테이블 끝 -->
@@ -225,7 +225,7 @@
 <script type="text/javascript" th:inline="javascript">
 
     // $(document).ready(function () {
-        // let sum = [[${sum}]];
+    // let sum = [[${sum}]];
     // });
 
     let index = {
