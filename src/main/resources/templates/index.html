@@ -5,8 +5,9 @@
 
 <body>
     <ul>
-        <li><a th:href="@{ /login }">로그인</a></li>
-        <li><a th:href="@{ /join }">회원가입</a></li>
+        <li th:if="${ session.user } == null"><a th:href="@{ /login }">로그인</a></li>
+        <li th:if="${ session.user } == null"><a th:href="@{ /join }">회원가입</a></li>
+        <li th:if="${ session.user } != null"><a th:href="@{ /logout }">로그아웃</a></li>
         <li><a th:href="@{ /book }">가계부</a></li>
     </ul>
 </body>

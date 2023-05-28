@@ -62,5 +62,4 @@ public class MemberApiController {
             return new ResponseDto<>(HttpStatus.OK.value(), 0);
         }
     }
-
 }
