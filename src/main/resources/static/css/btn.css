@@ -11,3 +11,9 @@
     float: right;
     margin-right: 300px;
 }
+
+.expense-category {
+    float: right;
+    margin-right: 300px;
+    width: 140px;
+}

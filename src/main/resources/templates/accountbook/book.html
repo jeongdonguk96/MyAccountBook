@@ -22,8 +22,9 @@
 
 
     <!-- 가계부 테이블 시작 -->
-    <input type="button" class="btn btn-dark income" value="수입 등록" th:onclick="'javascript:index.openIncome(this);'" data-toggle="modal" data-target="#income-modal" />
+    <input type="button" class="btn btn-dark income" value="수입 등록" th:onclick="'javascript:index.openIncome(this);'" data-toggle="modal" data-target="#income-modal" /> <br><br>
     <input type="button" class="btn btn-dark income" value="수입 관리" data-toggle="modal" data-target="#income-history-modal" /> <br><br>
+    <input type="button" class="btn btn-dark expense-category" value="카테고리별 지출" th:onclick="'javascript:index.openExpenseCategory(this);'" data-toggle="modal" data-target="#expense-category-modal" /> <br><br>
 
     <table class="table">
         <thead>
@@ -45,7 +46,7 @@
                                th:data-exid="${expense.exid}" th:data-expenseMoney="${expense.expenseMoney}"
                                th:data-expenseReason="${expense.expenseReason}" th:data-expenseCategory="${expense.expenseCategory}">
                                 <span th:text="|${ expense.getExpenseMoney() }원, ${ expense.getExpenseReason() }|" />
-                            </a>
+                            </a> <br>
 <!--                            <input type="hidden" id="|theExpense${ expenseStat.count }|" th:value="${ expense.getExpenseMoney() }" > <br>-->
                         </th:block>
                     </th:block>
@@ -183,8 +184,8 @@
                     <option th:value="가전제품">가전제품</option>
                     <option th:value="전자제품">전자제품</option>
                     <option th:value="의류">의류</option>
-                    <option th:value="병원약국비">병원/약국비</option>
-                    <option th:value="휴대폰요금">휴대폰요금</option>
+                    <option th:value="의료비">의료비</option>
+                    <option th:value="통신비">통신비</option>
                     <option th:value="교통비">교통비</option>
                     <option th:value="여가활동">여가활동</option>
                     <option th:value="예적금">예/적금</option>
@@ -206,12 +207,25 @@
 </div>
 <!-- 지출 내역 모달 섹션 끝 -->
 
+<!-- 카테고리별 지출 모달 섹션 시작 -->
+<div class="modal fade" id="expense-category-modal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">카테고리별 지출 차트</h2>
+            </div>
+            <div id="expense-category-piechart"></div>
+        </div>
+    </div>
+</div>
+<!-- 카테고리별 지출 모달 섹션 끝 -->
+
 <!-- 자바스크립트 시작 -->
+<script type="text/javascript" th:src="@{ https://www.gstatic.com/charts/loader.js }"></script>
 <script type="text/javascript" th:inline="javascript">
+
     // $(document).ready(function () {
-    //     let sum = [[${sum}]];
-    //
-    //
+        // let sum = [[${sum}]];
     // });
 
     let index = {
@@ -256,6 +270,50 @@
             $("#modifying-expense-reason").val(expenseReason);
             $("#modifying-expense-category").val(expenseCategory);
         },
+
+        // 카테고리별 지출 모달 오픈 시 파이 차트 데이터 요청
+        openExpenseCategory: function (btn) {
+            let data = {
+                mid: $("#mid").val()
+            }
+
+            $.ajax({
+                type: "post",
+                url: "book/expenseCategory/" + Number(data.mid),
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8"
+            }).done(function (response) {
+                console.log("response = ", response);
+                google.charts.load('current', {'packages': ['corechart']});
+                google.charts.setOnLoadCallback(function() {
+                    drawChart(response);
+                });
+            }).fail(function (error) {
+                console.log("error = ", JSON.stringify(error));
+                alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
+            });
+        },
+        // openExpenseCategory: function (btn) {
+        //     let data = {
+        //         mid: $("#mid").val()
+        //     }
+        //
+        //     $.ajax({
+        //         type: "post",
+        //         url: "book/expenseCategory/${data.mid}",
+        //         data: JSON.stringify(data),
+        //         contentType: "application/json; charset=utf-8"
+        //     }).done(function (response) {
+        //         console.log("response = ", response);
+        //         google.charts.load('current', {'packages': ['corechart']});
+        //         google.charts.setOnLoadCallback(function() {
+        //             drawChart(response);
+        //         });
+        //     }).fail(function (error) {
+        //         console.log("error = ", JSON.stringify(error));
+        //         alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
+        //     });
+        // },
 
         // 수입 수정
         modifyIncome: function (btn) {
@@ -437,6 +495,29 @@
             });
         }
     });
+
+    // 카테고리별 지출 모달 오픈 시 파이 차트 데이터 요청
+    function drawChart(response) {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'category');
+        data.addColumn('number', 'money');
+
+        for (var i = 0; i < response.length; i++) {
+            console.log("category = ", response[i]['category']);
+            console.log("money = ", response[i]['money']);
+            data.addRow([response[i]['category'], response[i]['money']]);
+        }
+
+        let options = {
+            'title': '카테고리별 지출',
+            is3D: true,
+            sliceVisibilityThreshold: .05
+        };
+
+        let chart = new google.visualization.PieChart(document.getElementById('expense-category-piechart'));
+
+        chart.draw(data, options);
+    }
 
     index.init();
 </script>
