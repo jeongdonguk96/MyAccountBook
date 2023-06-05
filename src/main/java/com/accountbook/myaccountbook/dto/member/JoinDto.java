@@ -1,7 +1,6 @@
 package com.accountbook.myaccountbook.dto.member;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
@@ -12,7 +11,7 @@ import javax.validation.constraints.Size;
 public class JoinDto {
 
     @NotBlank
-    @Size(max = 20)
+    @Size(max = 15)
     private String loginId;
 
     @NotBlank
@@ -30,7 +29,6 @@ public class JoinDto {
     private String field;
 
     @NotNull
-    @Range(max = 2)
     private int year;
 
     @NotNull

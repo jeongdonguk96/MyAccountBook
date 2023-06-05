@@ -13,7 +13,6 @@ import java.util.List;
 @ToString(exclude = {"incomes", "expenses"})
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
 public class Member {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

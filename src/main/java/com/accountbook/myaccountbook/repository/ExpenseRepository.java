@@ -14,5 +14,5 @@ public interface ExpenseRepository extends JpaRepository<Expense, Integer> {
     List<Expense> findAllByMonthAndMemberMid(String month, int mid);
 
     // 카테고리별 지출 목록 조회
-    List<ExpenseCategoryDto> findAllExpenseCategoryByMemberMid(int mid);
+    List<ExpenseCategoryDto> findAllExpenseCategoryByMonthAndMemberMid(String month, int mid);
 }

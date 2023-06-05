@@ -23,7 +23,7 @@ public class Expense {
     private String month;
     private String date;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
     public Expense(int expenseMoney, String expenseReason, String expenseCategory, String year, String month, String date, Member member) {

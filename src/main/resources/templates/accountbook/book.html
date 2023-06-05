@@ -15,9 +15,9 @@
         <h3><span th:text="${ message }"/></h3><br>
     </div>
     <h2><span th:text="${ month }" />월</h2> <br>
-    <p>총 수입: + <span th:text="|${ #numbers.formatInteger(incomeSum, 3, 'COMMA') }|" />원</p>
-    <p>총 지출: - <span th:text="|${ #numbers.formatInteger(expenseSum, 3, 'COMMA') }|" />원</p>
-    <p>총 합계: <span th:text="${ restSum >= 0 ? '+ ' + #numbers.formatInteger(restSum, 3, 'COMMA') : '- ' + #numbers.formatInteger(restSum, 3, 'COMMA') }" />원</p>
+    <p>총 수입: +<span th:text="|${ #numbers.formatInteger(incomeSum, 3, 'COMMA') }|" />원</p>
+    <p>총 지출: -<span th:text="|${ #numbers.formatInteger(expenseSum, 3, 'COMMA') }|" />원</p>
+    <p>총 합계: <span th:text="${ restSum >= 0 ? '+ ' + #numbers.formatInteger(restSum, 3, 'COMMA') : #numbers.formatInteger(restSum, 3, 'COMMA') }" />원</p>
     <!-- 상단 텍스트 시작 -->
 
 
@@ -133,14 +133,14 @@
                 <select th:field="*{expenseCategory}" class="selectpicker">
                     <option th:value="0">==카테고리==</option>
                     <option th:value="식료품">식료품</option>
-                    <option th:value="외식">외식</option>
-                    <option th:value="배달">배달</option>
+                    <option th:value="외식비">외식비</option>
+                    <option th:value="배달비">배달비</option>
                     <option th:value="생필품">생필품</option>
                     <option th:value="가전제품">가전제품</option>
                     <option th:value="전자제품">전자제품</option>
                     <option th:value="의류">의류</option>
-                    <option th:value="병원약국비">병원/약국비</option>
-                    <option th:value="휴대폰요금">휴대폰요금</option>
+                    <option th:value="의료비">의료비</option>
+                    <option th:value="통신비">통신비</option>
                     <option th:value="교통비">교통비</option>
                     <option th:value="여가활동">여가활동</option>
                     <option th:value="예적금">예/적금</option>
@@ -178,8 +178,8 @@
                 <select name="modifying-expense-category" id="modifying-expense-category" class="selectpicker">
                     <option th:value="0">==카테고리==</option>
                     <option th:value="식료품">식료품</option>
-                    <option th:value="외식">외식</option>
-                    <option th:value="배달">배달</option>
+                    <option th:value="외식비">외식비</option>
+                    <option th:value="배달비">배달비</option>
                     <option th:value="생필품">생필품</option>
                     <option th:value="가전제품">가전제품</option>
                     <option th:value="전자제품">전자제품</option>
@@ -214,7 +214,10 @@
             <div class="modal-header">
                 <h2 class="modal-title">카테고리별 지출 차트</h2>
             </div>
-            <div id="expense-category-piechart"></div>
+            <div id="expense-category-piechart">
+                <span id=""></span>
+
+            </div>
         </div>
     </div>
 </div>
@@ -293,27 +296,6 @@
                 alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
             });
         },
-        // openExpenseCategory: function (btn) {
-        //     let data = {
-        //         mid: $("#mid").val()
-        //     }
-        //
-        //     $.ajax({
-        //         type: "post",
-        //         url: "book/expenseCategory/${data.mid}",
-        //         data: JSON.stringify(data),
-        //         contentType: "application/json; charset=utf-8"
-        //     }).done(function (response) {
-        //         console.log("response = ", response);
-        //         google.charts.load('current', {'packages': ['corechart']});
-        //         google.charts.setOnLoadCallback(function() {
-        //             drawChart(response);
-        //         });
-        //     }).fail(function (error) {
-        //         console.log("error = ", JSON.stringify(error));
-        //         alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
-        //     });
-        // },
 
         // 수입 수정
         modifyIncome: function (btn) {
@@ -503,8 +485,6 @@
         data.addColumn('number', 'money');
 
         for (var i = 0; i < response.length; i++) {
-            console.log("category = ", response[i]['category']);
-            console.log("money = ", response[i]['money']);
             data.addRow([response[i]['category'], response[i]['money']]);
         }
 

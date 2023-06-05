@@ -102,9 +102,12 @@ public class AccountBookController {
     @ResponseBody
     @PostMapping ("/book/expenseCategory/{mid}")
     public List<Map<String, Object>> getPiechart(@PathVariable int mid) {
+        String findYear = getYear(); // yyyy
+        String findMonth = getMonth(); // MM
+        String month = findYear+findMonth; // yyyyMM
 
         // Expense 엔티티를 조회하지만, Dto로 필요한 컬럼만 가져옴
-        List<ExpenseCategoryDto> expenses = expenseRepository.findAllExpenseCategoryByMemberMid(mid);
+        List<ExpenseCategoryDto> expenses = expenseRepository.findAllExpenseCategoryByMonthAndMemberMid(month, mid);
 
         List<Map<String, Object>> mapList = new ArrayList<>();
 
@@ -117,13 +120,13 @@ public class AccountBookController {
                     map.put("money", expense.getExpenseMoney());
                 }
                 
-                case "외식" -> {
-                    map.put("category", "외식");
+                case "외식비" -> {
+                    map.put("category", "외식비");
                     map.put("money", expense.getExpenseMoney());
                 }
 
-                case "배달" -> {
-                    map.put("category", "배달");
+                case "배달비" -> {
+                    map.put("category", "배달비");
                     map.put("money", expense.getExpenseMoney());
                 }
 
@@ -199,6 +202,7 @@ public class AccountBookController {
             }
             mapList.add(map);
         }
+        System.out.println("mapList = " + mapList);
 
         return mapList;
     }
@@ -230,6 +234,7 @@ public class AccountBookController {
         int month = Integer.parseInt(date.substring(4, 6));
 
         LocalDate findMonth = LocalDate.of(year, month, 1);
+
         return String.valueOf(findMonth.lengthOfMonth());
     }
 

@@ -18,7 +18,7 @@ public class Income {
     private String year;
     private String month;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
     public Income(int incomeMoney, String incomeReason, String year, String month, Member member) {
