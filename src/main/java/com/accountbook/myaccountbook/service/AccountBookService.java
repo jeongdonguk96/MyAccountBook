@@ -137,7 +137,19 @@ public class AccountBookService {
 
 
     /**
-     * 수입 전체 조회
+     * 카테고리별 지출 목록
+     * @param month 이번 달
+     * @param mid 사용자 id
+     * @return 사용자별 지출 목록 List
+     */
+    @Transactional
+    public List<ExpenseCategoryDto> findAllExpenseCategoryByMonthAndMemberMid(String month, int mid) {
+        return expenseRepository.findAllExpenseCategoryByMonthAndMemberMid(month, mid);
+    }
+
+
+    /**
+     * 이 달의 수입 전체 조회
      * @param mid 사용자 id
      * @return 사용자별 수입 전체 List
      */
@@ -148,7 +160,7 @@ public class AccountBookService {
 
 
     /**
-     * 지출 전체 조회
+     * 이 달의 지출 전체 조회
      * @param mid 사용자 id
      * @return 사용자별 지출 전체 List
      */
@@ -158,4 +170,48 @@ public class AccountBookService {
     }
 
 
+    /**
+     * 올해의 수입 전체 조회
+     * @param year 올해의 년도
+     * @param mid 사용자 id
+     * @return 사용자별 올해 수입 전체 List
+     */
+    @Transactional
+    public List<IncomeByYearDto> findAllIncomeByYear(String year, int mid) {
+        return incomeRepository.findAllByYearAndMemberMid(year, mid);
+    }
+
+
+    /**
+     * 올해의 지출 전체 조회
+     * @param year 올해의 년도
+     * @param mid 사용자 id
+     * @return 사용자별 올해 지출 전체 List
+     */
+    @Transactional
+    public List<ExpenseByYearDto> findAllExpenseByYear(String year, int mid) {
+        return expenseRepository.findAllByYearAndMemberMid(year, mid);
+    }
+
+
+    /**
+     * 올해 전체 수입에서 월별로 조회
+     * @param month
+     * @return 사용자별 월별 수입 전체 List
+     */
+    @Transactional
+    public List<IncomeByYearDto> findAllIncomeByMonth(String month) {
+        return incomeRepository.findAllByMonth(month);
+    }
+
+
+    /**
+     * 올해 전체 지출에서 월별로 조회
+     * @param month
+     * @return 사용자별 월별 지출 전체 List
+     */
+    @Transactional
+    public List<ExpenseByYearDto> findAllExpenseByMonth(String month) {
+        return expenseRepository.findAllByMonth(month);
+    }
 }

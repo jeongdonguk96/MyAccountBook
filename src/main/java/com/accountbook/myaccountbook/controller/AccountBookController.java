@@ -5,9 +5,7 @@ import com.accountbook.myaccountbook.domain.Expense;
 import com.accountbook.myaccountbook.domain.Income;
 import com.accountbook.myaccountbook.domain.Member;
 import com.accountbook.myaccountbook.dto.ResponseDto;
-import com.accountbook.myaccountbook.dto.accountbook.ExpenseCategoryDto;
-import com.accountbook.myaccountbook.dto.accountbook.ExpenseReturnDto;
-import com.accountbook.myaccountbook.dto.accountbook.IncomeReturnDto;
+import com.accountbook.myaccountbook.dto.accountbook.*;
 import com.accountbook.myaccountbook.repository.ExpenseRepository;
 import com.accountbook.myaccountbook.service.AccountBookService;
 import lombok.RequiredArgsConstructor;
@@ -109,7 +107,7 @@ public class AccountBookController {
         String month = findYear+findMonth; // yyyyMM
 
         // Expense 엔티티를 조회하지만, Dto로 필요한 컬럼만 가져옴
-        List<ExpenseCategoryDto> expenses = expenseRepository.findAllExpenseCategoryByMonthAndMemberMid(month, mid);
+        List<ExpenseCategoryDto> expenses = accountBookService.findAllExpenseCategoryByMonthAndMemberMid(month, mid);
 
         // 중복된 카테고리명으로 된 지출을 동일한 카테고리로 합산해줌
         Map<String, Integer> expenseMap = new HashMap<>();
@@ -146,8 +144,22 @@ public class AccountBookController {
 
     // 월별 지출 내역 모달 조회
     @ResponseBody
-    @GetMapping("/book/expenseListByMonth/{mid}")
-    public ResponseDto<Integer> getExpenseListByMonth(@PathVariable int mid) {
+    @PostMapping("/book/expenseCategoryByMonth/{mid}")
+    public ResponseDto<Integer> getExpenseCategoryByMonth(@PathVariable int mid) {
+        String year = getYear();
+        String month = getMonth();
+        String fullMonth = "";
+
+        List<IncomeByYearDto> incomeByYear = accountBookService.findAllIncomeByYear(year, mid);
+        List<ExpenseByYearDto> expenseByYear = accountBookService.findAllExpenseByYear(year, mid);
+
+        for (ExpenseByYearDto expenseByYearDto : expenseByYear) {
+            System.out.println("expenseByYear = " + expenseByYearDto.getExpenseCategory() + ", " + expenseByYearDto.getExpenseMoney() + ", " + expenseByYearDto.getMonth());
+        }
+
+//        for (ExpenseByYearDto expense : expenseByYear) {
+//            accountBookService.findAllExpenseByMonth(fullMonth);
+//        }
 
         return new ResponseDto<>(HttpStatus.OK.value(), 1);
     }

@@ -25,8 +25,8 @@
     <input type="button" class="btn btn-dark income" value="수입 등록"
            th:onclick="'javascript:index.openIncome(this);'" data-toggle="modal" data-target="#income-modal" /> <br><br>
     <input type="button" class="btn btn-dark income" value="수입 관리" data-toggle="modal" data-target="#income-history-modal" /> <br><br>
-    <input type="button" class="btn btn-dark expense-list-by-month" value="월별 지출"
-           th:onclick="'javascript:index.openExpenseListByMonth(this);'" data-toggle="modal" data-target="#expense-list-by-month-modal" /> <br><br>
+    <input type="button" class="btn btn-dark expense-category-by-month" value="월별 지출"
+           th:onclick="'javascript:index.openExpenseCategoryByMonth(this);'" data-toggle="modal" data-target="#expense-list-by-month-modal" /> <br><br>
     <input type="button" class="btn btn-dark expense-category" value="카테고리별 지출"
            th:onclick="'javascript:index.openExpenseCategory(this);'" data-toggle="modal" data-target="#expense-category-modal" /> <br><br>
     <!-- 상단 버튼 끝 -->
@@ -333,19 +333,18 @@
         },
 
         // 월별 지출 내역 모달 오픈 시 데이터 요청
-        openExpenseListByMonth: function (btn) {
+        openExpenseCategoryByMonth: function (btn) {
             let data = {
                 mid: $("#mid").val()
             }
 
             $.ajax({
                 type: "post",
-                url: "book/expenseListByMonth/" + Number(data.mid),
+                url: "book/expenseCategoryByMonth/" + Number(data.mid),
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8"
             }).done(function (response) {
-
-
+                alert('good!');
             }).fail(function (error) {
                 console.log("error = ", JSON.stringify(error));
                 alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
