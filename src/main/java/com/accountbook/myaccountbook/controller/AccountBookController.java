@@ -4,6 +4,7 @@ import com.accountbook.myaccountbook.constant.MessageConstants;
 import com.accountbook.myaccountbook.domain.Expense;
 import com.accountbook.myaccountbook.domain.Income;
 import com.accountbook.myaccountbook.domain.Member;
+import com.accountbook.myaccountbook.dto.ResponseDto;
 import com.accountbook.myaccountbook.dto.accountbook.ExpenseCategoryDto;
 import com.accountbook.myaccountbook.dto.accountbook.ExpenseReturnDto;
 import com.accountbook.myaccountbook.dto.accountbook.IncomeReturnDto;
@@ -11,6 +12,7 @@ import com.accountbook.myaccountbook.repository.ExpenseRepository;
 import com.accountbook.myaccountbook.service.AccountBookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -39,10 +41,10 @@ public class AccountBookController {
     @GetMapping("/book")
     public String getAccountBook(Model model) {
         Member findMember = (Member) model.getAttribute("user"); // 세션
-        String findYear = getYear(); // 현재 연도
-        String findMonth = getMonth(); // 현재 달
+        String findYear = getYear(); // 현재 연도 yyyy
+        String findMonth = getMonth(); // 현재 달 MM
         String lengthOfMonth = getDays(); // 현재 달의 일수
-        String fullMonth = findYear + findMonth; // 연월
+        String fullMonth = findYear + findMonth; // 연월 yyyyMM
         String message = getRandomMessage(); // 메시지 문구
         int incomeSum = 0; // 총 수입
         int expenseSum = 0; // 총 지출
@@ -98,9 +100,9 @@ public class AccountBookController {
     }
 
 
-    // 카테고리별 지출 파이차트 조회
+    // 카테고리별 지출 파이차트 모달 조회
     @ResponseBody
-    @PostMapping ("/book/expenseCategory/{mid}")
+    @PostMapping("/book/expenseCategory/{mid}")
     public List<Map<String, Object>> getPiechart(@PathVariable int mid) {
         String findYear = getYear(); // yyyy
         String findMonth = getMonth(); // MM
@@ -109,111 +111,53 @@ public class AccountBookController {
         // Expense 엔티티를 조회하지만, Dto로 필요한 컬럼만 가져옴
         List<ExpenseCategoryDto> expenses = expenseRepository.findAllExpenseCategoryByMonthAndMemberMid(month, mid);
 
-        List<Map<String, Object>> mapList = new ArrayList<>();
-
+        // 중복된 카테고리명으로 된 지출을 동일한 카테고리로 합산해줌
+        Map<String, Integer> expenseMap = new HashMap<>();
         for (ExpenseCategoryDto expense : expenses) {
-            Map<String, Object> map = new HashMap<>();
+            String category = expense.getExpenseCategory();
+            int money = expense.getExpenseMoney();
 
-            switch (expense.getExpenseCategory()) {
-                case "식료품" -> {
-                    map.put("category", "식료품");
-                    map.put("money", expense.getExpenseMoney());
-                }
-                
-                case "외식비" -> {
-                    map.put("category", "외식비");
-                    map.put("money", expense.getExpenseMoney());
-                }
-
-                case "배달비" -> {
-                    map.put("category", "배달비");
-                    map.put("money", expense.getExpenseMoney());
-                }
-
-                case "생필품" -> {
-                    map.put("category", "생필품");
-                    map.put("money", expense.getExpenseMoney());
-                }
-
-                case "가전제품" -> {
-                    map.put("category", "가전제품");
-                    map.put("money", expense.getExpenseMoney());
-                }
-
-                case "전자제품" -> {
-                    map.put("category", "전자제품");
-                    map.put("money", expense.getExpenseMoney());
-                }
-
-                case "의류" -> {
-                    map.put("category", "의류");
-                    map.put("money", expense.getExpenseMoney());
-                }
-
-                case "의료비" -> {
-                    map.put("category", "의료비");
-                    map.put("money", expense.getExpenseMoney());
-                }
-
-                case "통신비" -> {
-                    map.put("category", "통신비");
-                    map.put("money", expense.getExpenseMoney());
-                }
-
-                case "여가활동" -> {
-                    map.put("category", "여가활동");
-                    map.put("money", expense.getExpenseMoney());
-                }
-
-                case "예적금" -> {
-                    map.put("category", "예적금");
-                    map.put("money", expense.getExpenseMoney());
-                }
-
-                case "보험료" -> {
-                    map.put("category", "보험료");
-                    map.put("money", expense.getExpenseMoney());
-                }
-
-                case "집세" -> {
-                    map.put("category", "집세");
-                    map.put("money", expense.getExpenseMoney());
-                }
-
-                case "공과금" -> {
-                    map.put("category", "공과금");
-                    map.put("money", expense.getExpenseMoney());
-                }
-
-                case "대출상환금" -> {
-                    map.put("category", "대출상환금");
-                    map.put("money", expense.getExpenseMoney());
-                }
-
-                case "경조사비" -> {
-                    map.put("category", "경조사비");
-                    map.put("money", expense.getExpenseMoney());
-                }
-
-                case "기타" -> {
-                    map.put("category", "기타");
-                    map.put("money", expense.getExpenseMoney());
-                }
+            // Map에서 같은 key를 가진 value들은 합산해서 적용
+            if (expenseMap.containsKey(category)) {
+                int totalMoney = expenseMap.get(category);
+                totalMoney += money;
+                expenseMap.put(category, totalMoney);
+            } else {
+                expenseMap.put(category, money);
             }
+        }
+
+        // 지출을 담은 Map을 List에 담음
+        List<Map<String, Object>> mapList = new ArrayList<>();
+        for (Map.Entry<String, Integer> expense : expenseMap.entrySet()) {
+            String category = expense.getKey();
+            int money = expense.getValue();
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("category", category);
+            map.put("money", money);
+
             mapList.add(map);
         }
-        System.out.println("mapList = " + mapList);
 
         return mapList;
     }
 
 
+    // 월별 지출 내역 모달 조회
+    @ResponseBody
+    @GetMapping("/book/expenseListByMonth/{mid}")
+    public ResponseDto<Integer> getExpenseListByMonth(@PathVariable int mid) {
+
+        return new ResponseDto<>(HttpStatus.OK.value(), 1);
+    }
+
+
     // 현재 연도 계산
     private static String getYear() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMM");
-        String date = formatter.format(new Date());
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy");
 
-        return date.substring(0, 4);
+        return formatter.format(new Date());
     }
 
 
