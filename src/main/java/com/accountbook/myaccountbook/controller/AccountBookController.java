@@ -7,6 +7,8 @@ import com.accountbook.myaccountbook.domain.Member;
 import com.accountbook.myaccountbook.dto.ResponseDto;
 import com.accountbook.myaccountbook.dto.accountbook.*;
 import com.accountbook.myaccountbook.repository.ExpenseRepository;
+import com.accountbook.myaccountbook.repository.IncomeRepository;
+import com.accountbook.myaccountbook.repository.MemberRepository;
 import com.accountbook.myaccountbook.service.AccountBookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +27,9 @@ import java.util.*;
 @RequiredArgsConstructor
 public class AccountBookController {
 
+    private final MemberRepository memberRepository;
     private final AccountBookService accountBookService;
+    private final IncomeRepository incomeRepository;
     private final ExpenseRepository expenseRepository;
 
 
@@ -148,17 +152,32 @@ public class AccountBookController {
     public ResponseDto<Integer> getExpenseCategoryByMonth(@PathVariable int mid) {
         String year = getYear();
         String month = getMonth();
-        String fullMonth = "";
+        String fullMonth = year+month;
 
-        List<IncomeByYearDto> incomeByYear = accountBookService.findAllIncomeByYear(year, mid);
-        List<ExpenseByYearDto> expenseByYear = accountBookService.findAllExpenseByYear(year, mid);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMM");
+        String date = formatter.format(new Date());
+        int findDate = Integer.parseInt(date);
+        String stringDate = String.valueOf(findDate - 1);
+        System.out.println("stringDate = " + stringDate.substring(4, 6));
 
-        for (ExpenseByYearDto expenseByYearDto : expenseByYear) {
-            System.out.println("expenseByYear = " + expenseByYearDto.getExpenseCategory() + ", " + expenseByYearDto.getExpenseMoney() + ", " + expenseByYearDto.getMonth());
-        }
 
-//        for (ExpenseByYearDto expense : expenseByYear) {
-//            accountBookService.findAllExpenseByMonth(fullMonth);
+//        // 현재 전체 사용자의 mid값을 리스트로 받음
+//        List<Integer> mids = memberRepository.findAllMemberMid();
+//
+//        for (Integer id : mids) {
+//            int incomeSum = 0;
+//            int expenseSum = 0;
+//
+//            List<Integer> incomes = incomeRepository.findAllIncomeMoney(id, fullMonth);
+//            List<Integer> expenses = expenseRepository.findAllExpenseMoney(id, fullMonth);
+//
+//            for (Integer incomeMoney : incomes) {
+//                incomeSum += incomeMoney;
+//            }
+//
+//            for (Integer expenseMoney : expenses) {
+//                expenseSum += expenseMoney;
+//            }
 //        }
 
         return new ResponseDto<>(HttpStatus.OK.value(), 1);
