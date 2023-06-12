@@ -1,17 +1,16 @@
 package com.accountbook.myaccountbook.domain;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Getter
 @Setter
+@Builder
 @ToString
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 public class Expense {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,14 +24,4 @@ public class Expense {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
-
-    public Expense(int expenseMoney, String expenseReason, String expenseCategory, String year, String month, String date, Member member) {
-        this.expenseMoney = expenseMoney;
-        this.expenseReason = expenseReason;
-        this.expenseCategory = expenseCategory;
-        this.year = year;
-        this.month = month;
-        this.date = date;
-        this.member = member;
-    }
 }

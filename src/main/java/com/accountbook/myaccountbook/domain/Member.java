@@ -10,9 +10,11 @@ import java.util.List;
 
 @Getter
 @Setter
+@Builder
 @ToString(exclude = {"incomes", "expenses"})
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 public class Member {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,13 +36,4 @@ public class Member {
 
     @CreationTimestamp
     private Date regDate;
-
-    // JoinDto to Member
-    public Member(String loginId, String pwd, String name, int age, Job job) {
-        this.loginId = loginId;
-        this.pwd = pwd;
-        this.name = name;
-        this.age = age;
-        this.job = job;
-    }
 }

@@ -6,9 +6,11 @@ import javax.persistence.*;
 
 @Getter
 @Setter
+@Builder
 @ToString
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 public class Income {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,12 +22,4 @@ public class Income {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
-
-    public Income(int incomeMoney, String incomeReason, String year, String month, Member member) {
-        this.incomeMoney = incomeMoney;
-        this.incomeReason = incomeReason;
-        this.year = year;
-        this.month = month;
-        this.member = member;
-    }
 }

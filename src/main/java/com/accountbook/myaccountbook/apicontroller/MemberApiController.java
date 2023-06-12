@@ -42,7 +42,13 @@ public class MemberApiController {
     @PostMapping("/join")
     public ResponseDto<Integer> join(@RequestBody @Validated JoinDto joinDto) {
         Job job = new Job(joinDto.getField(), joinDto.getYear(), joinDto.getSalary());
-        Member member = new Member(joinDto.getLoginId(), joinDto.getPwd(), joinDto.getName(), joinDto.getAge(), job);
+
+        Member member = Member.builder()
+                            .loginId(joinDto.getLoginId())
+                            .pwd(joinDto.getPwd())
+                            .age(joinDto.getAge())
+                            .job(job)
+                            .build();
 
         memberService.join(member);
 

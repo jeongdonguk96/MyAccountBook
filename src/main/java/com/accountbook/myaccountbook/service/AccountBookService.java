@@ -40,7 +40,14 @@ public class AccountBookService {
         String month = incomeWriteDto.getMonth();
         String year = month.substring(0,4);
 
-        Income income = new Income(incomeWriteDto.getIncomeMoney(), incomeWriteDto.getIncomeReason(), year, month, findMember);
+        Income income = Income.builder()
+                            .incomeMoney(incomeWriteDto.getIncomeMoney())
+                            .incomeReason(incomeWriteDto.getIncomeReason())
+                            .year(year)
+                            .month(month)
+                            .member(findMember)
+                            .build();
+
         incomeRepository.save(income);
     }
 
@@ -60,7 +67,16 @@ public class AccountBookService {
         String year = date.substring(0, 4);
         String month = date.substring(0,6);
 
-        Expense expense = new Expense(expenseWriteDto.getExpenseMoney(), expenseWriteDto.getExpenseReason(), expenseWriteDto.getExpenseCategory(), year, month, date, findMember);
+        Expense expense = Expense.builder()
+                            .expenseMoney(expenseWriteDto.getExpenseMoney())
+                            .expenseReason(expenseWriteDto.getExpenseReason())
+                            .expenseCategory(expenseWriteDto.getExpenseCategory())
+                            .year(year)
+                            .month(month)
+                            .date(date)
+                            .member(findMember)
+                            .build();
+
         expenseRepository.save(expense);
     }
 
