@@ -15,7 +15,8 @@
         <h3><span th:text="${ message }"/></h3><br>
     </div>
     <h2><span th:text="${ month }" />월</h2> <br>
-    <p>총 수입: +<span th:text="|${ #numbers.formatInteger(incomeSum, 3, 'COMMA') }|" />원</p>
+<!--    <p>총 수입: +<span th:text="|${ #numbers.formatInteger(incomeSum, 3, 'COMMA') }|" />원</p>-->
+    <p>총 수입: +<span th:text="${ incomeSum } != 0 ? ${ #numbers.formatInteger(incomeSum, 3, 'COMMA') } : 0" />원</p>
     <p>총 지출: -<span th:text="|${ #numbers.formatInteger(expenseSum, 3, 'COMMA') }|" />원</p>
     <p>총 합계: <span th:text="${ restSum >= 0 ? '+ ' + #numbers.formatInteger(restSum, 3, 'COMMA') : #numbers.formatInteger(restSum, 3, 'COMMA') }" />원</p>
     <!-- 상단 텍스트 끝 -->
@@ -25,8 +26,8 @@
     <input type="button" class="btn btn-dark income" value="수입 등록"
            th:onclick="'javascript:index.openIncome(this);'" data-toggle="modal" data-target="#income-modal" /> <br><br>
     <input type="button" class="btn btn-dark income" value="수입 관리" data-toggle="modal" data-target="#income-history-modal" /> <br><br>
-    <input type="button" class="btn btn-dark expense-category-by-month" value="월별 지출"
-           th:onclick="'javascript:index.openExpenseCategoryByMonth(this);'" data-toggle="modal" data-target="#expense-list-by-month-modal" /> <br><br>
+    <input type="button" class="btn btn-dark expenses-by-month" value="월별 지출"
+           th:onclick="'javascript:index.openExpensesByMonth(this);'" data-toggle="modal" data-target="#expenses-by-month-modal" /> <br><br>
     <input type="button" class="btn btn-dark expense-category" value="카테고리별 지출"
            th:onclick="'javascript:index.openExpenseCategory(this);'" data-toggle="modal" data-target="#expense-category-modal" /> <br><br>
     <!-- 상단 버튼 끝 -->
@@ -52,7 +53,7 @@
                         <a href="#" th:onclick="'javascript:index.openExpenseHistory(this);'" data-toggle="modal" data-target="#expense-history-modal"
                            th:data-exid="${expense.exid}" th:data-expenseMoney="${expense.expenseMoney}"
                            th:data-expenseReason="${expense.expenseReason}" th:data-expenseCategory="${expense.expenseCategory}">
-                            <span th:text="|${ expense.getExpenseMoney() }원, ${ expense.getExpenseReason() }|" />
+                            <span th:text="|${ #numbers.formatInteger(expense.getExpenseMoney(), 3, 'COMMA') }원, ${ expense.getExpenseReason() }|" />
                         </a> <br>
                     </th:block>
                 </th:block>
@@ -118,6 +119,9 @@
                             th:data-inid="${ income.inid }">수정</button>
                     <button type="button" class="btn btn-light" data-dismiss="modal">취소</button>
                 </div>
+            </th:block>
+            <th:block th:if="${ incomes.size() } == 0">
+                <br><br> <h4>등록한 수입이 없습니다</h4> <br><br>
             </th:block>
         </div>
     </div>
@@ -218,11 +222,11 @@
 <!-- 지출 내역 모달 섹션 끝 -->
 
 <!-- 월별 지출 내역 모달 섹션 시작 -->
-<div class="modal fade" id="expense-list-by-month-modal">
+<div class="modal fade" id="expenses-by-month-modal">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">월별 지출 내역</h2>
+                <h2 class="modal-title" th:text="|${year}년 월별 지출 내역|"></h2>
             </div>
             <div class="modal-body">
                 <table class="table">
@@ -235,28 +239,8 @@
                     </tr>
                     </thead>
 
-                    <tbody>
-                    <!--                    <tr th:each="day: ${ #numbers.sequence(1, days) }">-->
-                    <!--                        <td th:text="|${ dayStat.count }일|"></td>-->
-                    <!--                        <td>-->
-                    <!--                            <th:block th:each="expense: ${ expenses }">-->
-                    <!--                                <th:block th:if="${ dayStat.count } == ${ expense.getDate().substring(6, 8) }">-->
-                    <!--                                    <a href="#" th:onclick="'javascript:index.openExpenseHistory(this);'" data-toggle="modal" data-target="#expense-history-modal"-->
-                    <!--                                       th:data-exid="${expense.exid}" th:data-expenseMoney="${expense.expenseMoney}"-->
-                    <!--                                       th:data-expenseReason="${expense.expenseReason}" th:data-expenseCategory="${expense.expenseCategory}">-->
-                    <!--                                        <span th:text="|${ expense.getExpenseMoney() }원, ${ expense.getExpenseReason() }|" />-->
-                    <!--                                    </a> <br>-->
-                    <!--                                </th:block>-->
-                    <!--                            </th:block>-->
-                    <!--                        </td>-->
-                    <!--                        <td>-->
-                    <!--                            <span id="theSum" />-->
-                    <!--                        </td>-->
-                    <!--                        <td class="rest"></td>-->
-                    <!--                        <td style="border-top-style: hidden">-->
-                    <!--                            <input type="button" class="btn btn-dark" name="expense-btn" id="expense-btn" value="지출 등록" th:onclick="'javascript:index.openExpense(this);'"-->
-                    <!--                                   data-toggle="modal" data-target="#expense-modal" th:data-day="${ dayStat.count }" /></td>-->
-                    <!--                    </tr>-->
+                    <tbody id="ebm-tbody">
+                        <!-- 아래 ajax 응답에서 처리 -->
                     </tbody>
                 </table>
             </div>
@@ -333,18 +317,46 @@
         },
 
         // 월별 지출 내역 모달 오픈 시 데이터 요청
-        openExpenseCategoryByMonth: function (btn) {
+        openExpensesByMonth: function (btn) {
             let data = {
                 mid: $("#mid").val()
             }
+            let table = $('#ebm-tbody');
 
             $.ajax({
                 type: "post",
-                url: "book/expenseCategoryByMonth/" + Number(data.mid),
+                url: "book/expensesByMonth/" + Number(data.mid),
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8"
             }).done(function (response) {
-                alert('good!');
+                let histories = response.data;
+                table.empty();
+
+                $.each(histories, function (index, history) {
+                    // 월 파싱
+                    let month = history.month.substring(4);
+                    let parsedMonth = month.substring(0, 1) === '0' ? month.substring(1) : month;
+
+                    // 수입금 파싱
+                    let monthIncome = history.monthIncome;
+                    let formattedIncome = parseFloat(monthIncome).toLocaleString();
+
+                    // 지출금 파싱
+                    let monthExpense = history.monthExpense;
+                    let formattedExpense = parseFloat(monthExpense).toLocaleString();
+
+                    // 합계금 파싱
+                    let monthSum = history.monthSum;
+                    let formattedSum = parseFloat(monthSum).toLocaleString();
+
+                    let row = $("<tr></tr>");
+                    row.append("<td>" + parsedMonth + '월' + "</td>");
+                    row.append("<td>" + formattedIncome + '원' + "</td>");
+                    row.append("<td>" + formattedExpense + '원' + "</td>");
+                    row.append("<td>" + formattedSum + '원' + "</td>");
+
+                    table.append(row);
+                });
             }).fail(function (error) {
                 console.log("error = ", JSON.stringify(error));
                 alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
@@ -364,7 +376,6 @@
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8"
             }).done(function (response) {
-                console.log("response = ", response);
                 google.charts.load('current', {'packages': ['corechart']});
                 google.charts.setOnLoadCallback(function() {
                     drawChart(response);
@@ -579,7 +590,7 @@
         chart.draw(data, options);
     }
 
-    index.init();
+    // index.init();
 </script>
 <!-- 자바스크립트 끝 -->
 

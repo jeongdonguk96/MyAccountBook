@@ -1,15 +1,17 @@
 package com.accountbook.myaccountbook.controller;
 
 import com.accountbook.myaccountbook.constant.MessageConstants;
+import com.accountbook.myaccountbook.domain.AccountHistory;
 import com.accountbook.myaccountbook.domain.Expense;
 import com.accountbook.myaccountbook.domain.Income;
 import com.accountbook.myaccountbook.domain.Member;
 import com.accountbook.myaccountbook.dto.ResponseDto;
-import com.accountbook.myaccountbook.dto.accountbook.*;
-import com.accountbook.myaccountbook.repository.ExpenseRepository;
-import com.accountbook.myaccountbook.repository.IncomeRepository;
-import com.accountbook.myaccountbook.repository.MemberRepository;
+import com.accountbook.myaccountbook.dto.accountbook.ExpenseCategoryDto;
+import com.accountbook.myaccountbook.dto.accountbook.ExpenseReturnDto;
+import com.accountbook.myaccountbook.dto.accountbook.IncomeReturnDto;
+import com.accountbook.myaccountbook.dto.accounthistory.AccountHistoryDto;
 import com.accountbook.myaccountbook.service.AccountBookService;
+import com.accountbook.myaccountbook.service.AccountHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,10 +29,8 @@ import java.util.*;
 @RequiredArgsConstructor
 public class AccountBookController {
 
-    private final MemberRepository memberRepository;
     private final AccountBookService accountBookService;
-    private final IncomeRepository incomeRepository;
-    private final ExpenseRepository expenseRepository;
+    private final AccountHistoryService accountHistoryService;
 
 
     @ModelAttribute("user")
@@ -148,39 +148,18 @@ public class AccountBookController {
 
     // 월별 지출 내역 모달 조회
     @ResponseBody
-    @PostMapping("/book/expenseCategoryByMonth/{mid}")
-    public ResponseDto<Integer> getExpenseCategoryByMonth(@PathVariable int mid) {
-        String year = getYear();
-        String month = getMonth();
-        String fullMonth = year+month;
+    @PostMapping("/book/expensesByMonth/{mid}")
+    public ResponseDto<List<AccountHistoryDto>> getExpenseCategoryByMonth(@PathVariable int mid) {
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMM");
-        String date = formatter.format(new Date());
-        int findDate = Integer.parseInt(date);
-        String stringDate = String.valueOf(findDate - 1);
-        System.out.println("stringDate = " + stringDate.substring(4, 6));
+        // DB에서 엔티티 조회
+        List<AccountHistory> accountHistories = accountHistoryService.findAllAccountHistory(mid);
 
+        // 엔티티를 Dto로 변환
+        List<AccountHistoryDto> accountHistoryDtos = accountHistories.stream()
+                .map(AccountHistoryDto::accountHistoryToDto)
+                .toList();
 
-//        // 현재 전체 사용자의 mid값을 리스트로 받음
-//        List<Integer> mids = memberRepository.findAllMemberMid();
-//
-//        for (Integer id : mids) {
-//            int incomeSum = 0;
-//            int expenseSum = 0;
-//
-//            List<Integer> incomes = incomeRepository.findAllIncomeMoney(id, fullMonth);
-//            List<Integer> expenses = expenseRepository.findAllExpenseMoney(id, fullMonth);
-//
-//            for (Integer incomeMoney : incomes) {
-//                incomeSum += incomeMoney;
-//            }
-//
-//            for (Integer expenseMoney : expenses) {
-//                expenseSum += expenseMoney;
-//            }
-//        }
-
-        return new ResponseDto<>(HttpStatus.OK.value(), 1);
+        return new ResponseDto<>(HttpStatus.OK.value(), accountHistoryDtos);
     }
 
 

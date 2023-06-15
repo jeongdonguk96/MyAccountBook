@@ -34,15 +34,15 @@ public class AccountHistoryScheduler {
      */
     @Scheduled(cron = "0 0 0 1 * *")
     public void insertAccountHistory() {
-        String year = getYear(); // 현재 년도
-        String lastYear = getLastYear(); // 지난 년도
+        String year = getYear(); // 현재 연도
+        String lastYear = getLastYear(); // 지난 연도
         String month = getMonth(); // 현재 달
         String lastMonth = month.equals("1") ? "12": getLastMonth(); // 지난 달
         String fullMonth = (month.equals("1") ? lastYear : year) + lastMonth; // 지난 달 yyyyMM
 
         log.info("========== {}년 {}월 1일 0시 0분 0초 진입 ==========", year, month);
         log.info("========== AccountHistoryScheduler 동작 START ==========");
-        log.info("AccountHistoryScheduler Start Time = {}", LocalDateTime.now());
+        log.info("========== AccountHistoryScheduler Start Time = {} ==========", LocalDateTime.now());
 
         // 빈 AccountHistory List 객체 생성
         List<AccountHistory> accountHistories = new ArrayList<>();
@@ -83,6 +83,7 @@ public class AccountHistoryScheduler {
                                                     .monthSum(incomeSum - expenseSum)
                                                     .year(year)
                                                     .month(lastMonth)
+                                                    .regDate(new Date())
                                                     .build();
 
                 // AccountHistory List 객체에 값 저장
@@ -93,7 +94,7 @@ public class AccountHistoryScheduler {
             accountHistoryRepository.saveAll(accountHistories);
         }
 
-        log.info("AccountHistoryScheduler End Time = {}", LocalDateTime.now());
+        log.info("========== AccountHistoryScheduler End Time = {} ==========", LocalDateTime.now());
         log.info("========== AccountHistoryScheduler 동작 END ==========");
     }
 

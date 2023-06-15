@@ -153,7 +153,7 @@ public class AccountBookService {
 
 
     /**
-     * 카테고리별 지출 목록
+     * 카테고리별 지출 목록 조회
      * @param month 이번 달
      * @param mid 사용자 id
      * @return 사용자별 지출 목록 List
