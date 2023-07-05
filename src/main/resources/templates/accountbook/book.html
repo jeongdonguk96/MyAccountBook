@@ -17,8 +17,9 @@
     <h2><span th:text="${ month }" />월</h2> <br>
 <!--    <p>총 수입: +<span th:text="|${ #numbers.formatInteger(incomeSum, 3, 'COMMA') }|" />원</p>-->
     <p>총 수입: +<span th:text="${ incomeSum } != 0 ? ${ #numbers.formatInteger(incomeSum, 3, 'COMMA') } : 0" />원</p>
-    <p>총 지출: -<span th:text="|${ #numbers.formatInteger(expenseSum, 3, 'COMMA') }|" />원</p>
-    <p>총 합계: <span th:text="${ restSum >= 0 ? '+ ' + #numbers.formatInteger(restSum, 3, 'COMMA') : #numbers.formatInteger(restSum, 3, 'COMMA') }" />원</p>
+    <p>총 지출: -<span th:text="${ incomeSum } != 0 ? ${ #numbers.formatInteger(expenseSum, 3, 'COMMA') } : 0" />원</p>
+    <p>총 합계: <span th:if="${ restSum } != 0" th:text="${ restSum >= 0 ? '+' + #numbers.formatInteger(restSum, 3, 'COMMA') : #numbers.formatInteger(restSum, 3, 'COMMA') }" />
+                <span th:if="${ restSum } == 0" th:text="0" />원</p>
     <!-- 상단 텍스트 끝 -->
 
 
@@ -334,7 +335,7 @@
 
                 $.each(histories, function (index, history) {
                     // 월 파싱
-                    let month = history.month.substring(4);
+                    let month = history.month;
                     let parsedMonth = month.substring(0, 1) === '0' ? month.substring(1) : month;
 
                     // 수입금 파싱

@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,7 +30,7 @@ public class AccountHistoryScheduler {
 
     /**
      * 매달 1일 0시 0분 0초에 동작하는 스케줄러
-     * 지난 달의 수입/지출 금액을 토대로
+     * 지난 달의 수입/지출 금액을 계산해
      * AccountHistory 엔티티에 값을 저장
      */
     @Scheduled(cron = "0 0 0 1 * *")
@@ -42,7 +43,8 @@ public class AccountHistoryScheduler {
 
         log.info("========== {}년 {}월 1일 0시 0분 0초 진입 ==========", year, month);
         log.info("========== AccountHistoryScheduler 동작 START ==========");
-        log.info("========== AccountHistoryScheduler Start Time = {} ==========", LocalDateTime.now());
+        LocalDateTime startTime = LocalDateTime.now();
+        log.info("========== AccountHistoryScheduler Start Time = {} ==========", startTime);
 
         // 빈 AccountHistory List 객체 생성
         List<AccountHistory> accountHistories = new ArrayList<>();
@@ -94,8 +96,12 @@ public class AccountHistoryScheduler {
             accountHistoryRepository.saveAll(accountHistories);
         }
 
-        log.info("========== AccountHistoryScheduler End Time = {} ==========", LocalDateTime.now());
+        LocalDateTime endTime = LocalDateTime.now();
+        log.info("========== AccountHistoryScheduler End Time = {} ==========", endTime);
         log.info("========== AccountHistoryScheduler 동작 END ==========");
+
+        Duration timeDiff = Duration.between(startTime, endTime);
+        log.info("========== AccountHistoryScheduler 소요 시간 = {} ==========", timeDiff);
     }
 
 

@@ -17,6 +17,8 @@ public class Expense {
     private int exid;
     private int expenseMoney;
     private String expenseReason;
+//    @Enumerated(EnumType.STRING)
+//    private ExpenseCategory expenseCategory;
     private String expenseCategory;
     private String year;
     private String month;
