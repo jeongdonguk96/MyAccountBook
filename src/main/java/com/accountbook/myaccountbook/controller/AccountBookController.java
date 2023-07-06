@@ -25,6 +25,7 @@ import java.util.*;
 
 @Slf4j
 @Controller
+@RequestMapping("/book")
 @SessionAttributes("user")
 @RequiredArgsConstructor
 public class AccountBookController {
@@ -40,7 +41,7 @@ public class AccountBookController {
 
 
     // 가계부 조회
-    @GetMapping("/book")
+    @GetMapping("/")
     public String getAccountBook(Model model) {
         Member findMember = (Member) model.getAttribute("user"); // 세션
         String findYear = getYear(); // 현재 연도 yyyy
@@ -104,7 +105,7 @@ public class AccountBookController {
 
     // 카테고리별 지출 파이차트 모달 조회
     @ResponseBody
-    @PostMapping("/book/expenseCategory/{mid}")
+    @PostMapping("/expenseCategory/{mid}")
     public List<Map<String, Object>> getPiechart(@PathVariable int mid) {
         String findYear = getYear(); // yyyy
         String findMonth = getMonth(); // MM
