@@ -15,4 +15,5 @@ public class LoginDto {
     @NotBlank
     @Size(max = 12)
     private String pwd;
+
 }
