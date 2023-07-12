@@ -33,10 +33,10 @@ public class SecurityConfig {
 //                .loginPage("/member/login.html");
         http
                 .authorizeHttpRequests()
-                .antMatchers("/api/member/**", "/api/accountBook/**", "/book/**")
-                .authenticated()
-                .antMatchers("/", "/join", "/login", "/logout", "/api/member/join", "/api/member/login", "/api/member/checkId", "/error")
-                .permitAll();
+                .antMatchers("/", "/join", "/login", "/logout", "/api/join", "/api/login", "/api/checkId", "/error")
+                .permitAll()
+                .anyRequest()
+                .authenticated();
 
         return http.build();
     }

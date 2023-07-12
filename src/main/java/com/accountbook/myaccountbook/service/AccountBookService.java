@@ -13,7 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -186,5 +189,118 @@ public class AccountBookService {
     }
 
 
+    /**
+     * 카테고리별 지출 정리
+     * @param expenses 월별 소비 List (카테고리, 금액)
+     * @return 카테고리별 지출 Map
+     */
+    public Map<String, Integer> categorize(List<ExpenseCategoryDto> expenses) {
+        Map<String, Integer> expenseMap = new HashMap<>();
 
+        for (ExpenseCategoryDto expense : expenses) {
+            String category = expense.getExpenseCategory().toString();
+            int money = expense.getExpenseMoney();
+
+            // Map에서 같은 key를 가진 value들은 합산해서 적용
+            if (expenseMap.containsKey(category)) {
+                int totalMoney = expenseMap.get(category);
+                totalMoney += money;
+                expenseMap.put(category, totalMoney);
+            } else {
+                expenseMap.put(category, money);
+            }
+        }
+
+        return expenseMap;
+    }
+
+
+    /**
+     * 카테고리별 지출 Map을 List로 변환
+     * @param expenseMap 카테고리별 지출 Map
+     * @return 카테고리별 지출 MapList
+     */
+    public List<Map<String, Object>> expenseMapToMapList(Map<String, Integer> expenseMap) {
+        List<Map<String, Object>> mapList = new ArrayList<>();
+
+        for (Map.Entry<String, Integer> expense : expenseMap.entrySet()) {
+            String category = expense.getKey();
+            int money = expense.getValue();
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("category", category);
+            map.put("money", money);
+
+            mapList.add(map);
+        }
+
+        return mapList;
+    }
+
+
+    /**
+     * Income 엔티티를 Dto로 변환
+     * @param incomes Income 엔티티
+     * @return 변환한 Income Dto
+     */
+    public List<IncomeReturnDto> imcomesToDto(List<Income> incomes) {
+        List<IncomeReturnDto> incomeReturnDtos = new ArrayList<>();
+
+
+        for (Income income : incomes) {
+            IncomeReturnDto incomeReturnDto = new IncomeReturnDto();
+            incomeReturnDto.convetToDto(income);
+            incomeReturnDtos.add(incomeReturnDto);
+        }
+
+        return incomeReturnDtos;
+    }
+
+    
+    /**
+     * Expense 엔티티를 Dto로 변환
+     * @param expenses Expense 엔티티
+     * @return 변환한 Expense Dto
+     */
+    public List<ExpenseReturnDto> expensesToDto(List<Expense> expenses) {
+        List<ExpenseReturnDto> expenseReturnDtos = new ArrayList<>();
+        
+        for (Expense expense : expenses) {
+            ExpenseReturnDto expenseReturnDto = new ExpenseReturnDto();
+            expenseReturnDto.convetToDto(expense);
+            expenseReturnDtos.add(expenseReturnDto);
+        }
+
+        return expenseReturnDtos;
+    }
+
+
+    /**
+     * 수입 총액 계산
+     * @param incomes Expense 엔티티
+     * @param incomeSum 빈 수입 총액 변수
+     * @return 수입 총액
+     */
+    public int totalizeIncome(List<Income> incomes, int incomeSum) {
+        for (Income income : incomes) {
+            incomeSum += income.getIncomeMoney();
+        }
+
+        return incomeSum;
+    }
+
+
+    /**
+     * 지출 총액 계산
+     * @param expenses Expense 엔티티
+     * @param expenseSum 빈 지출 총액 변수
+     * @return 지출 총액
+     */
+    public int totalizeExpense(List<Expense> expenses, int expenseSum) {
+        for (Expense expense : expenses) {
+            expenseSum += expense.getExpenseMoney();
+        }
+
+        return expenseSum;
+    }
 }

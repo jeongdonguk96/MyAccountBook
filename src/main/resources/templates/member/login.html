@@ -25,43 +25,6 @@
 <!-- 자바스크립트 시작 -->
 <script type="text/javascript">
 
-    // 로그인
-    $("#login").click(function () {
-        let data = {
-            username: $("#username").val(),
-            pwd: $("#pwd").val()
-        }
-
-        if (data.username.trim() === "") {
-            alert('아이디를 입력해주세요');
-            return false;
-        } else if (data.pwd.trim() === "") {
-            alert('패스워드를 입력해주세요');
-            return false;
-        } else {
-            $.ajax({
-                type: "post",
-                url: "/api/login",
-                data: JSON.stringify(data),
-                contentType: "application/json; charset=utf-8"
-            }).done(function (response) {
-                console.log('response = ', response);
-                if (response.code === 1) {
-                    location.href = "/";
-                    // document.cookie = "jwt=" + response.data + "; path=/";
-                } else {
-                    alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
-                }
-            }).fail(function (error) {
-                console.log("error = ", JSON.stringify(error));
-                if (error.status === 401) {
-                    alert('로그인에 실패했습니다');
-                } else {
-                    alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
-                }
-            });
-        }
-    });
 </script>
 <!-- 자바스크립트 끝 -->
 

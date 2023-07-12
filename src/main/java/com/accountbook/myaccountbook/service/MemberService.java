@@ -4,8 +4,6 @@ import com.accountbook.myaccountbook.domain.Job;
 import com.accountbook.myaccountbook.domain.Member;
 import com.accountbook.myaccountbook.domain.RoleEnum;
 import com.accountbook.myaccountbook.dto.member.RequestJoinDto;
-import com.accountbook.myaccountbook.dto.member.RequestLoginDto;
-import com.accountbook.myaccountbook.exception.CustomApiException;
 import com.accountbook.myaccountbook.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,25 +55,6 @@ public class MemberService {
                             .build();
 
         memberRepository.save(member);
-    }
-
-
-    /**
-     * 로그인
-     * @param loginDto 로그인 시 입력하는 정보
-     * @return 성공 시 Member 객체, 실패 시 Null 반환
-     */
-    @Transactional
-    public Member login(RequestLoginDto loginDto) {
-        Member findMember = memberRepository.findByUsername(loginDto.getUsername()).orElseThrow(
-                ()-> new CustomApiException("등록된 아이디가 없습니다")
-        );
-
-        if (findMember.getPwd().equals(loginDto.getPwd())) {
-            return findMember;
-        }
-
-        return null;
     }
 
 

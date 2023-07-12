@@ -63,7 +63,7 @@
                 data: {username: username},
                 dataType : 'json',
             }).done(function (response) {
-                if (response.data == 1) {
+                if (response.code === 200) {
                     alert('사용 가능한 아이디입니다.')
                     $("#checked_id").val(username);
                 } else {

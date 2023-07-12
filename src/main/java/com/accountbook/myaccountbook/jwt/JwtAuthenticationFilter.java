@@ -5,7 +5,6 @@ import com.accountbook.myaccountbook.userdetails.CustomUserDetails;
 import com.accountbook.myaccountbook.util.CustomResponseUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,11 +14,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
-import java.util.Base64;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -64,25 +62,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // JWT 토큰 생성
         CustomUserDetails userDetails = (CustomUserDetails) authResult.getPrincipal();
         String jwtToken = JwtProcess.create(userDetails);
-        System.out.println("jwtToken = " + jwtToken);
-        String encodedJwtToken = Base64.getEncoder().encodeToString(jwtToken.getBytes());
-        System.out.println("encodedJwtToken = " + encodedJwtToken);
 
-        // 생성한 JWT 토큰을 쿠키로 변환
-        ResponseCookie cookie = ResponseCookie.from("jwt", encodedJwtToken)
-                                        .httpOnly(true)
-                                        .secure(true)
-                                        .path("/")
-                                        .sameSite("Lax")
-                                        .maxAge(JwtVo.EXPIRATION_TIME)
-                                        .build();
-        System.out.println("cookie = " + cookie);
+        // 생성한 JWT 토큰을 쿠키에 저장
+        Cookie cookie = new Cookie("jwt", jwtToken);
+        cookie.setPath("/");
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(JwtVo.EXPIRATION_TIME);
+        response.addCookie(cookie);
 
-        // 쿠키를 HttpServletResponseWrapper 객체에 담아 응답
-        HttpServletResponseWrapper responseWrapper = new HttpServletResponseWrapper(response);
-        responseWrapper.addHeader("Set-Cookie", cookie.toString());
-
-//        ResponseLoginDto responseLoginDto = new ResponseLoginDto(userDetails);
+        // 응답
         CustomResponseUtil.success(response, jwtToken, "로그인 성공");
     }
 

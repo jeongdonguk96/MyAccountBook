@@ -23,6 +23,7 @@ public class JwtProcess {
         return JwtVo.TOKEN_PREFIX + jwtToken;
     }
 
+
     // 토큰 검증
     public static CustomUserDetails verify(String token) {
         DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(JwtVo.SECRET)).build().verify(token);
@@ -32,12 +33,4 @@ public class JwtProcess {
 
         return new CustomUserDetails(member);
     }
-//    public static CustomUserDetails verify(String token) {
-//        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(JwtVo.SECRET)).build().verify(token);
-//        Integer mid = decodedJWT.getClaim("mid").asInt();
-//        String role = decodedJWT.getClaim("role").asString();
-//        Member member = Member.builder().mid(mid).role(RoleEnum.valueOf(role)).build();
-//
-//        return new CustomUserDetails(member);
-//    }
 }
