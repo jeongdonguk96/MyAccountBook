@@ -6,12 +6,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Integer> {
     
     // 아이디 중복 조회
-    Member findByLoginId(String loginId);
+    Optional<Member> findByUsername(String username);
 
     // 전체 사용자의 id 조회
     @Query(value = "SELECT m.mid FROM Member m")

@@ -117,7 +117,7 @@ public class AccountBookController {
         // 중복된 카테고리명으로 된 지출을 동일한 카테고리로 합산해줌
         Map<String, Integer> expenseMap = new HashMap<>();
         for (ExpenseCategoryDto expense : expenses) {
-            String category = expense.getExpenseCategory();
+            String category = expense.getExpenseCategory().toString();
             int money = expense.getExpenseMoney();
 
             // Map에서 같은 key를 가진 value들은 합산해서 적용
@@ -160,7 +160,7 @@ public class AccountBookController {
                 .map(AccountHistoryDto::accountHistoryToDto)
                 .toList();
 
-        return new ResponseDto<>(HttpStatus.OK.value(), accountHistoryDtos);
+        return new ResponseDto<>(HttpStatus.OK.value(), accountHistoryDtos, "success");
     }
 
 

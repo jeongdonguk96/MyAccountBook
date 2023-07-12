@@ -1,6 +1,8 @@
 package com.accountbook.myaccountbook.dto.accountbook;
 
+import com.accountbook.myaccountbook.domain.ExpenseCategory;
+
 public interface ExpenseCategoryDto {
-    String getExpenseCategory();
+    ExpenseCategory getExpenseCategory();
     int getExpenseMoney();
 }

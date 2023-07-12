@@ -19,7 +19,7 @@ public class Member {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int mid;
-    private String loginId;
+    private String username;
     private String pwd;
     private String name;
     private int age;
@@ -36,4 +36,7 @@ public class Member {
 
     @CreationTimestamp
     private Date regDate;
+
+    @Enumerated(EnumType.STRING)
+    private RoleEnum role;
 }

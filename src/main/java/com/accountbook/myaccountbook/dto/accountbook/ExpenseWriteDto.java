@@ -1,5 +1,6 @@
 package com.accountbook.myaccountbook.dto.accountbook;
 
+import com.accountbook.myaccountbook.domain.ExpenseCategory;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -18,7 +19,7 @@ public class ExpenseWriteDto {
     private String expenseReason;
 
     @NotBlank
-    private String expenseCategory;
+    private ExpenseCategory expenseCategory;
 
     @NotBlank
     private String date;

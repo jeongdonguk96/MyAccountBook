@@ -9,8 +9,8 @@
     <h2>로그인</h2>
     <form>
         <div class="form-group">
-            <label for="loginId">loginId:</label>
-            <input type="text" class="form-control" id="loginId" name="loginId" placeholder="아이디를 입력해주세요">
+            <label for="username">username:</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="아이디를 입력해주세요">
         </div>
         <div class="form-group">
             <label for="pwd">Password:</label>
@@ -28,11 +28,11 @@
     // 로그인
     $("#login").click(function () {
         let data = {
-            loginId: $("#loginId").val(),
+            username: $("#username").val(),
             pwd: $("#pwd").val()
         }
 
-        if (data.loginId.trim() === "") {
+        if (data.username.trim() === "") {
             alert('아이디를 입력해주세요');
             return false;
         } else if (data.pwd.trim() === "") {
@@ -41,19 +41,24 @@
         } else {
             $.ajax({
                 type: "post",
-                url: "/api/member/login",
+                url: "/api/login",
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8"
             }).done(function (response) {
-                if (response.data === 1) {
+                console.log('response = ', response);
+                if (response.code === 1) {
                     location.href = "/";
+                    // document.cookie = "jwt=" + response.data + "; path=/";
                 } else {
-                    alert('로그인에 실패했습니다');
-                    location.reload();
+                    alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
                 }
             }).fail(function (error) {
                 console.log("error = ", JSON.stringify(error));
-                alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
+                if (error.status === 401) {
+                    alert('로그인에 실패했습니다');
+                } else {
+                    alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
+                }
             });
         }
     });

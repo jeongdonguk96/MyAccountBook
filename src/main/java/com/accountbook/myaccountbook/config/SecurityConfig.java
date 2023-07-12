@@ -1,45 +1,58 @@
 package com.accountbook.myaccountbook.config;
 
+import com.accountbook.myaccountbook.jwt.JwtAuthenticationFilter;
+import com.accountbook.myaccountbook.jwt.JwtAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final AuthenticationSuccessHandler customAuthenticationSuccessHandler;
-    private final AuthenticationFailureHandler customAuthenticationFailureHandler;
-
-
     // 로그인 시큐리티 설정
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .formLogin()
-                .loginPage("/member/login.html")
-                .loginProcessingUrl("/api/member/login")
-                .successHandler(customAuthenticationSuccessHandler)
-                .failureHandler(customAuthenticationFailureHandler);
-
+                .apply(new CustomSecurityFilterManager());
+        http
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http
+                .httpBasic();
+//        http
+//                .formLogin()
+//                .loginPage("/member/login.html");
         http
                 .authorizeHttpRequests()
                 .antMatchers("/api/member/**", "/api/accountBook/**", "/book/**")
                 .authenticated()
-                .antMatchers("/", "/join", "/login*", "/logout", "/api/member/join", "/api/member/login", "/api/member/checkId", "/error")
+                .antMatchers("/", "/join", "/login", "/logout", "/api/member/join", "/api/member/login", "/api/member/checkId", "/error")
                 .permitAll();
 
-        http
-                .csrf().disable(); // enable 시 포스트맨 작동하지 않음
-
         return http.build();
+    }
+
+
+    // JWT 필터 등록
+    public static class CustomSecurityFilterManager
+            extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
+
+        @Override
+        public void configure(HttpSecurity builder) throws Exception {
+            AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
+            builder.addFilter(new JwtAuthenticationFilter(authenticationManager));
+            builder.addFilter(new JwtAuthorizationFilter(authenticationManager));
+            super.configure(builder);
+        }
     }
 
 

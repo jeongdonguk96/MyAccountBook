@@ -23,7 +23,7 @@ public class AccountBookApiController {
     public ResponseDto<Integer> writeIncome(@RequestBody @Validated IncomeWriteDto incomeWriteDto) {
         accountBookService.writeIncome(incomeWriteDto);
 
-        return new ResponseDto<>(HttpStatus.OK.value(), 1);
+        return new ResponseDto<>(HttpStatus.OK.value(), 1, "success");
     }
 
 
@@ -32,7 +32,7 @@ public class AccountBookApiController {
     public ResponseDto<Integer> writeExpense(@RequestBody @Validated ExpenseWriteDto expenseWriteDto) {
         accountBookService.writeExpense(expenseWriteDto);
 
-        return new ResponseDto<>(HttpStatus.OK.value(), 1);
+        return new ResponseDto<>(HttpStatus.OK.value(), 1, "success");
     }
 
 
@@ -41,7 +41,7 @@ public class AccountBookApiController {
     public ResponseDto<Integer> modifyIncome(@RequestBody @Validated IncomeModifyDto incomeModifyDto) {
         accountBookService.modifyIncome(incomeModifyDto);
 
-        return new ResponseDto<>(HttpStatus.OK.value(), 1);
+        return new ResponseDto<>(HttpStatus.OK.value(), 1, "success");
     }
 
 
@@ -50,7 +50,7 @@ public class AccountBookApiController {
     public ResponseDto<Integer> modifyExpense(@RequestBody @Validated ExpenseModifyDto expenseModifyDto) {
         accountBookService.modifyExpense(expenseModifyDto);
 
-        return new ResponseDto<>(HttpStatus.OK.value(), 1);
+        return new ResponseDto<>(HttpStatus.OK.value(), 1, "success");
     }
 
 
@@ -59,7 +59,7 @@ public class AccountBookApiController {
     public ResponseDto<Integer> deleteIncome(@RequestBody @Validated IncomeDeleteDto incomeDeleteDto) {
         accountBookService.deleteIncome(incomeDeleteDto);
 
-        return new ResponseDto<>(HttpStatus.OK.value(), 1);
+        return new ResponseDto<>(HttpStatus.OK.value(), 1, "success");
     }
 
 
@@ -68,6 +68,6 @@ public class AccountBookApiController {
     public ResponseDto<Integer> deleteExpense(@RequestBody @Validated ExpenseDeleteDto expenseDeleteDto) {
         accountBookService.deleteExpense(expenseDeleteDto);
 
-        return new ResponseDto<>(HttpStatus.OK.value(), 1);
+        return new ResponseDto<>(HttpStatus.OK.value(), 1, "success");
     }
 }
