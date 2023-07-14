@@ -64,7 +64,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String jwtToken = JwtProcess.create(userDetails);
 
         // 생성한 JWT 토큰을 쿠키에 저장
-        Cookie cookie = new Cookie("jwt", jwtToken);
+        Cookie cookie = new Cookie("accessToken", jwtToken);
         cookie.setPath("/");
         cookie.setSecure(true);
         cookie.setHttpOnly(true);

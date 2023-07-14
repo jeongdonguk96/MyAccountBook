@@ -27,9 +27,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain chain) throws IOException, ServletException {
 
-        if (isTokenIncluded(request, response)) {
-            // 토큰으로 사용자를 검증하고 CustomUserDetails를 반환
+        if (isTokenIncluded(request)) {
+            // 토큰으로 사용자를 검증
+            // 토큰 만료 시 토큰 삭제
+            // CustomUserDetails를 반환
             String replacedToken = getJwtToken(request);
+            JwtProcess.checkTokenExpirationAndDelete(response, replacedToken);
             CustomUserDetails userDetails = JwtProcess.verify(replacedToken);
 
             // 토큰에서 반환한 CustomUserDetails로 Authentication 객체를 생성하고 시큐리티 컨텍스트에 저장
@@ -43,12 +46,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 
     // 토큰 존재 여부 확인
-    private boolean isTokenIncluded(HttpServletRequest request, HttpServletResponse response) {
+    private boolean isTokenIncluded(HttpServletRequest request) {
         String jwtToken = null;
         Cookie[] header = request.getCookies();
 
         for (Cookie cookie : header) {
-            if ("jwt".equals(cookie.getName())) {
+            if ("accessToken".equals(cookie.getName())) {
                 jwtToken = cookie.getValue();
                 break;
             }
@@ -64,7 +67,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         Cookie[] header = request.getCookies();
 
         for (Cookie cookie : header) {
-            if ("jwt".equals(cookie.getName())) {
+            if ("accessToken".equals(cookie.getName())) {
                 jwtToken = cookie.getValue();
                 break;
             }

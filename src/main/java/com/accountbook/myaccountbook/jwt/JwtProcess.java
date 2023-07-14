@@ -7,9 +7,13 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
 public class JwtProcess {
+
+
 
     // 토큰 생성
     public static String create(CustomUserDetails userDetails) {
@@ -18,6 +22,7 @@ public class JwtProcess {
                 .withExpiresAt(new Date(System.currentTimeMillis() + JwtVo.EXPIRATION_TIME))
                 .withClaim("mid", userDetails.getMember().getMid())
                 .withClaim("role", userDetails.getMember().getRole().toString())
+                .withClaim("expiration", new Date(System.currentTimeMillis() + JwtVo.EXPIRATION_TIME))
                 .sign(Algorithm.HMAC256(JwtVo.SECRET));
 
         return JwtVo.TOKEN_PREFIX + jwtToken;
@@ -33,4 +38,24 @@ public class JwtProcess {
 
         return new CustomUserDetails(member);
     }
+
+
+    // 토큰 만료 시 토큰 삭제
+    public static void checkTokenExpirationAndDelete(HttpServletResponse response, String replacedToken) {
+        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(JwtVo.SECRET)).build().verify(replacedToken);
+        String expireTimeString = String.valueOf(decodedJWT.getClaim("expiration"));
+        Date expireTime = new Date(expireTimeString);
+        Date currentTime = new Date();
+        System.out.println("expireTimeString = " + expireTimeString);
+        System.out.println("expireTime = " + expireTime);
+        System.out.println("currentTime = " + currentTime);
+        if (currentTime.after(expireTime)) {
+            Cookie cookie = new Cookie("accessToken", null);
+            cookie.setPath("/");
+            cookie.setMaxAge(0);
+
+            response.addCookie(cookie);
+        }
+    }
+
 }
