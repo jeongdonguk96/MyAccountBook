@@ -42,20 +42,28 @@ public class JwtProcess {
 
     // 토큰 만료 시 토큰 삭제
     public static void checkTokenExpirationAndDelete(HttpServletResponse response, String replacedToken) {
-        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(JwtVo.SECRET)).build().verify(replacedToken);
-        String expireTimeString = String.valueOf(decodedJWT.getClaim("expiration"));
-        Date expireTime = new Date(expireTimeString);
-        Date currentTime = new Date();
-        System.out.println("expireTimeString = " + expireTimeString);
-        System.out.println("expireTime = " + expireTime);
-        System.out.println("currentTime = " + currentTime);
-        if (currentTime.after(expireTime)) {
+        DecodedJWT decodedJWT = JWT.decode(replacedToken);
+        System.out.println(new Date());
+        System.out.println(decodedJWT.getExpiresAt());
+        if (decodedJWT.getExpiresAt().before(new Date())) {
             Cookie cookie = new Cookie("accessToken", null);
             cookie.setPath("/");
             cookie.setMaxAge(0);
 
             response.addCookie(cookie);
         }
+//        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(JwtVo.SECRET)).build().verify(replacedToken);
+//        Date expireTime = decodedJWT.getClaim("expiration").asDate();
+//        Date currentTime = new Date();
+//        System.out.println("expireTime = " + expireTime);
+//        System.out.println("currentTime = " + currentTime);
+//        if (currentTime.after(expireTime)) {
+//            Cookie cookie = new Cookie("accessToken", null);
+//            cookie.setPath("/");
+//            cookie.setMaxAge(0);
+//
+//            response.addCookie(cookie);
+//        }
     }
 
 }

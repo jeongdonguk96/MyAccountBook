@@ -45,12 +45,7 @@ $("#login").click(function () {
             data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8"
         }).done(function (response) {
-            if (response.data === 1) {
                 location.href = "/";
-            } else {
-                alert('로그인에 실패했습니다');
-                location.reload();
-            }
         }).fail(function (error) {
             console.log("error = ", JSON.stringify(error));
             alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
