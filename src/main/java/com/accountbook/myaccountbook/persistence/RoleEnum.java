@@ -1,4 +1,4 @@
-package com.accountbook.myaccountbook.domain;
+package com.accountbook.myaccountbook.persistence;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

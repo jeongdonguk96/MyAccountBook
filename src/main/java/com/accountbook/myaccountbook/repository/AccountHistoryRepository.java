@@ -1,6 +1,6 @@
 package com.accountbook.myaccountbook.repository;
 
-import com.accountbook.myaccountbook.domain.AccountHistory;
+import com.accountbook.myaccountbook.persistence.AccountHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

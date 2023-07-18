@@ -1,6 +1,6 @@
 package com.accountbook.myaccountbook.scheduler;
 
-import com.accountbook.myaccountbook.domain.AccountHistory;
+import com.accountbook.myaccountbook.persistence.AccountHistory;
 import com.accountbook.myaccountbook.repository.AccountHistoryRepository;
 import com.accountbook.myaccountbook.repository.ExpenseRepository;
 import com.accountbook.myaccountbook.repository.IncomeRepository;

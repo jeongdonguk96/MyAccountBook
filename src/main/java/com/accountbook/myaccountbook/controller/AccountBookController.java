@@ -1,9 +1,9 @@
 package com.accountbook.myaccountbook.controller;
 
-import com.accountbook.myaccountbook.domain.AccountHistory;
-import com.accountbook.myaccountbook.domain.Expense;
-import com.accountbook.myaccountbook.domain.Income;
-import com.accountbook.myaccountbook.domain.Member;
+import com.accountbook.myaccountbook.persistence.AccountHistory;
+import com.accountbook.myaccountbook.persistence.Expense;
+import com.accountbook.myaccountbook.persistence.Income;
+import com.accountbook.myaccountbook.persistence.Member;
 import com.accountbook.myaccountbook.dto.ResponseDto;
 import com.accountbook.myaccountbook.dto.accountbook.ExpenseCategoryDto;
 import com.accountbook.myaccountbook.dto.accountbook.ExpenseReturnDto;

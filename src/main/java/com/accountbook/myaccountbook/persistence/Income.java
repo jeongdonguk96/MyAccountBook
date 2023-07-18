@@ -1,4 +1,4 @@
-package com.accountbook.myaccountbook.domain;
+package com.accountbook.myaccountbook.persistence;
 
 import lombok.*;
 
@@ -11,18 +11,14 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Expense {
+public class Income {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int exid;
-    private int expenseMoney;
-    private String expenseReason;
-    
-    @Enumerated(EnumType.STRING)
-    private ExpenseCategory expenseCategory;
+    private int inid;
+    private int incomeMoney;
+    private String incomeReason;
     private String year;
     private String month;
-    private String date;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;

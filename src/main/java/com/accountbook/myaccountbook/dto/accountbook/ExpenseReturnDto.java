@@ -1,7 +1,7 @@
 package com.accountbook.myaccountbook.dto.accountbook;
 
-import com.accountbook.myaccountbook.domain.Expense;
-import com.accountbook.myaccountbook.domain.ExpenseCategory;
+import com.accountbook.myaccountbook.persistence.Expense;
+import com.accountbook.myaccountbook.persistence.ExpenseCategory;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;

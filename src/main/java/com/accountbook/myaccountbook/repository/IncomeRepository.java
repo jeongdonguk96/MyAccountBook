@@ -1,6 +1,6 @@
 package com.accountbook.myaccountbook.repository;
 
-import com.accountbook.myaccountbook.domain.Income;
+import com.accountbook.myaccountbook.persistence.Income;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

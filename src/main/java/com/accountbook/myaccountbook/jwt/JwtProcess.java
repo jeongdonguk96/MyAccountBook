@@ -1,7 +1,7 @@
 package com.accountbook.myaccountbook.jwt;
 
-import com.accountbook.myaccountbook.domain.Member;
-import com.accountbook.myaccountbook.domain.RoleEnum;
+import com.accountbook.myaccountbook.persistence.Member;
+import com.accountbook.myaccountbook.persistence.RoleEnum;
 import com.accountbook.myaccountbook.userdetails.CustomUserDetails;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -15,22 +15,22 @@ public class JwtProcess {
 
 
 
-    // 토큰 생성
-    public static String create(CustomUserDetails userDetails) {
-        String jwtToken = JWT.create()
+    // 액세스 토큰 생성
+    public static String createAccessToken(CustomUserDetails userDetails) {
+        String accessToken = JWT.create()
                 .withSubject("accountBook")
-                .withExpiresAt(new Date(System.currentTimeMillis() + JwtVo.EXPIRATION_TIME))
+                .withExpiresAt(new Date(System.currentTimeMillis() + JwtVo.ACCESS_TOKEN_EXPIRATION_TIME))
                 .withClaim("mid", userDetails.getMember().getMid())
                 .withClaim("role", userDetails.getMember().getRole().toString())
-                .withClaim("expiration", new Date(System.currentTimeMillis() + JwtVo.EXPIRATION_TIME))
+                .withClaim("expiration", new Date(System.currentTimeMillis() + JwtVo.ACCESS_TOKEN_EXPIRATION_TIME))
                 .sign(Algorithm.HMAC256(JwtVo.SECRET));
 
-        return JwtVo.TOKEN_PREFIX + jwtToken;
+        return JwtVo.TOKEN_PREFIX + accessToken;
     }
 
 
-    // 토큰 검증
-    public static CustomUserDetails verify(String token) {
+    // 액세스 토큰 검증
+    public static CustomUserDetails verifyAccessToken(String token) {
         DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(JwtVo.SECRET)).build().verify(token);
         Integer mid = decodedJWT.getClaim("mid").asInt();
         String role = decodedJWT.getClaim("role").asString();
@@ -52,18 +52,17 @@ public class JwtProcess {
 
             response.addCookie(cookie);
         }
-//        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(JwtVo.SECRET)).build().verify(replacedToken);
-//        Date expireTime = decodedJWT.getClaim("expiration").asDate();
-//        Date currentTime = new Date();
-//        System.out.println("expireTime = " + expireTime);
-//        System.out.println("currentTime = " + currentTime);
-//        if (currentTime.after(expireTime)) {
-//            Cookie cookie = new Cookie("accessToken", null);
-//            cookie.setPath("/");
-//            cookie.setMaxAge(0);
-//
-//            response.addCookie(cookie);
-//        }
+    }
+
+
+    // 리프레시 토큰 생성
+    public static String createRefreshToken(CustomUserDetails userDetails) {
+        return JWT.create()
+                .withSubject("accountBook")
+                .withExpiresAt(new Date(System.currentTimeMillis() + JwtVo.REFRESH_TOKEN_EXPIRATION_TIME))
+                .withClaim("mid", userDetails.getMember().getMid())
+                .withClaim("expiration", new Date(System.currentTimeMillis() + JwtVo.REFRESH_TOKEN_EXPIRATION_TIME))
+                .sign(Algorithm.HMAC256(JwtVo.SECRET));
     }
 
 }

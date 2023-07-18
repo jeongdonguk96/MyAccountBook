@@ -1,4 +1,4 @@
-package com.accountbook.myaccountbook.domain;
+package com.accountbook.myaccountbook.persistence;
 
 public enum ExpenseCategory {
     GROCERY,

@@ -1,6 +1,6 @@
 package com.accountbook.myaccountbook.repository;
 
-import com.accountbook.myaccountbook.domain.Member;
+import com.accountbook.myaccountbook.persistence.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

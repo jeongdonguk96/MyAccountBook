@@ -1,6 +1,6 @@
 package com.accountbook.myaccountbook.repository;
 
-import com.accountbook.myaccountbook.domain.Expense;
+import com.accountbook.myaccountbook.persistence.Expense;
 import com.accountbook.myaccountbook.dto.accountbook.ExpenseCategoryDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

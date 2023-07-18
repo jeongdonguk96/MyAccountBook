@@ -31,9 +31,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             // 토큰으로 사용자를 검증
             // 토큰 만료 시 토큰 삭제
             // CustomUserDetails를 반환
-            String replacedToken = getJwtToken(request);
-            JwtProcess.checkTokenExpirationAndDelete(response, replacedToken);
-            CustomUserDetails userDetails = JwtProcess.verify(replacedToken);
+            String replacedAccessToken = getAccessToken(request);
+            JwtProcess.checkTokenExpirationAndDelete(response, replacedAccessToken);
+            CustomUserDetails userDetails = JwtProcess.verifyAccessToken(replacedAccessToken);
 
             // 토큰에서 반환한 CustomUserDetails로 Authentication 객체를 생성하고 시큐리티 컨텍스트에 저장
             Authentication authentication =
@@ -47,32 +47,32 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     // 토큰 존재 여부 확인
     private boolean isTokenIncluded(HttpServletRequest request) {
-        String jwtToken = null;
+        String accessToken = null;
         Cookie[] header = request.getCookies();
 
         for (Cookie cookie : header) {
             if ("accessToken".equals(cookie.getName())) {
-                jwtToken = cookie.getValue();
+                accessToken = cookie.getValue();
                 break;
             }
         }
 
-        return jwtToken != null && jwtToken.startsWith(JwtVo.TOKEN_PREFIX);
+        return accessToken != null && accessToken.startsWith(JwtVo.TOKEN_PREFIX);
     }
 
 
     // 토큰 파싱 (쿠키에서 꺼내기)
-    private String getJwtToken(HttpServletRequest request) {
-        String jwtToken = "";
+    private String getAccessToken(HttpServletRequest request) {
+        String accessToken = "";
         Cookie[] header = request.getCookies();
 
         for (Cookie cookie : header) {
             if ("accessToken".equals(cookie.getName())) {
-                jwtToken = cookie.getValue();
+                accessToken = cookie.getValue();
                 break;
             }
         }
 
-        return jwtToken.replace(JwtVo.TOKEN_PREFIX, "");
+        return accessToken.replace(JwtVo.TOKEN_PREFIX, "");
     }
 }

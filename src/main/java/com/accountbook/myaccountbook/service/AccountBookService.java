@@ -1,8 +1,8 @@
 package com.accountbook.myaccountbook.service;
 
-import com.accountbook.myaccountbook.domain.Expense;
-import com.accountbook.myaccountbook.domain.Income;
-import com.accountbook.myaccountbook.domain.Member;
+import com.accountbook.myaccountbook.persistence.Expense;
+import com.accountbook.myaccountbook.persistence.Income;
+import com.accountbook.myaccountbook.persistence.Member;
 import com.accountbook.myaccountbook.dto.accountbook.*;
 import com.accountbook.myaccountbook.repository.ExpenseRepository;
 import com.accountbook.myaccountbook.repository.IncomeRepository;

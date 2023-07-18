@@ -1,8 +1,8 @@
 package com.accountbook.myaccountbook.service;
 
-import com.accountbook.myaccountbook.domain.Job;
-import com.accountbook.myaccountbook.domain.Member;
-import com.accountbook.myaccountbook.domain.RoleEnum;
+import com.accountbook.myaccountbook.persistence.Job;
+import com.accountbook.myaccountbook.persistence.Member;
+import com.accountbook.myaccountbook.persistence.RoleEnum;
 import com.accountbook.myaccountbook.dto.member.RequestJoinDto;
 import com.accountbook.myaccountbook.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

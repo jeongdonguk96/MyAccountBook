@@ -1,6 +1,6 @@
 package com.accountbook.myaccountbook.dto.accountbook;
 
-import com.accountbook.myaccountbook.domain.ExpenseCategory;
+import com.accountbook.myaccountbook.persistence.ExpenseCategory;
 
 public interface ExpenseCategoryDto {
     ExpenseCategory getExpenseCategory();

@@ -59,20 +59,24 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain chain, Authentication authResult) throws IOException, ServletException {
 
-        // JWT 토큰 생성
+        // 액세스/리프레시 토큰을 생성한다.
         CustomUserDetails userDetails = (CustomUserDetails) authResult.getPrincipal();
-        String jwtToken = JwtProcess.create(userDetails);
+        String accessToken = JwtProcess.createAccessToken(userDetails);
+        String refreshToken = JwtProcess.createRefreshToken(userDetails);
 
-        // 생성한 JWT 토큰을 쿠키에 저장
-        Cookie cookie = new Cookie("accessToken", jwtToken);
+        // 생성한 액세스 토큰을 쿠키에 저장한다.
+        Cookie cookie = new Cookie("accessToken", accessToken);
         cookie.setPath("/");
         cookie.setSecure(true);
         cookie.setHttpOnly(true);
-        cookie.setMaxAge(JwtVo.EXPIRATION_TIME);
+        cookie.setMaxAge(JwtVo.ACCESS_TOKEN_EXPIRATION_TIME);
         response.addCookie(cookie);
 
-        // 응답
-        CustomResponseUtil.success(response, jwtToken, "로그인 성공");
+        // 레디스에 리프레시 토큰을 저장한다.
+
+
+        // 프론트에 응답한다.
+        CustomResponseUtil.success(response, accessToken, "로그인 성공");
     }
 
 

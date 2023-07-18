@@ -1,6 +1,6 @@
 package com.accountbook.myaccountbook.dto.accounthistory;
 
-import com.accountbook.myaccountbook.domain.AccountHistory;
+import com.accountbook.myaccountbook.persistence.AccountHistory;
 import lombok.Data;
 
 import java.util.Date;
