@@ -1,27 +1,29 @@
 package com.accountbook.myaccountbook.jwt;
 
+import com.accountbook.myaccountbook.exception.CustomApiException;
 import com.accountbook.myaccountbook.persistence.Member;
 import com.accountbook.myaccountbook.persistence.RoleEnum;
 import com.accountbook.myaccountbook.redis.RefreshTokenRepository;
 import com.accountbook.myaccountbook.userdetails.CustomUserDetails;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.UUID;
 
+@Service
 @RequiredArgsConstructor
 public class JwtProcess {
 
-    private static RefreshTokenRepository refreshTokenRepository;
-
-
     // 액세스 토큰을 생성한다.
-    public static String createAccessToken(CustomUserDetails userDetails) {
+    public static String generateAccessToken(CustomUserDetails userDetails) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + JwtVo.ACCESS_TOKEN_EXPIRATION_TIME);
 
@@ -37,14 +39,19 @@ public class JwtProcess {
     }
 
 
-    // 액세스 토큰을 검증한다.
+    // 액세스 토큰을 검증해 CustomUserDetails 객체를 반환한다.
     public static CustomUserDetails verifyAccessToken(String token) {
-        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(JwtVo.SECRET)).build().verify(token);
-        Integer mid = decodedJWT.getClaim("mid").asInt();
-        String role = decodedJWT.getClaim("role").asString();
-        Member member = Member.builder().mid(mid).role(RoleEnum.valueOf(role)).build();
 
-        return new CustomUserDetails(member);
+        try {
+            DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(JwtVo.SECRET)).build().verify(token);
+            Integer mid = decodedJWT.getClaim("mid").asInt();
+            String role = decodedJWT.getClaim("role").asString();
+            Member member = Member.builder().mid(mid).role(RoleEnum.valueOf(role)).build();
+
+            return new CustomUserDetails(member);
+        } catch (TokenExpiredException e) {
+
+        }
     }
 
 
@@ -62,10 +69,13 @@ public class JwtProcess {
 
 
     // 레디스에 리프레시 토큰을 저장하고 생성한다.
-    public static String createRefreshToken(CustomUserDetails userDetails) {
+    public static String generateRefreshToken(CustomUserDetails userDetails) {
         RefreshToken refreshToken = new RefreshToken(UUID.randomUUID().toString(), userDetails.getMember().getMid());
 
-        return refreshTokenRepository.save(refreshToken);
+        RefreshTokenRepository refreshTokenRepository = new RefreshTokenRepository(new RedisTemplate<>());
+//        refreshTokenRepository.save(refreshToken);
+
+        return refreshToken.getRefreshToken();
     }
 
 }

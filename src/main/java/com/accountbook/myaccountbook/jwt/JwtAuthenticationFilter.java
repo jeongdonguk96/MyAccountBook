@@ -61,8 +61,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // 액세스/리프레시 토큰을 생성한다.
         CustomUserDetails userDetails = (CustomUserDetails) authResult.getPrincipal();
-        String accessToken = JwtProcess.createAccessToken(userDetails);
-//        String refreshToken = JwtProcess.createRefreshToken(userDetails);
+        String accessToken = JwtProcess.generateAccessToken(userDetails);
+        String refreshToken = JwtProcess.generateRefreshToken(userDetails);
 
         // 생성한 액세스/리프레시 토큰을 브라우저 쿠키에 저장한다.
         Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
@@ -72,12 +72,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         accessTokenCookie.setMaxAge(JwtVo.ACCESS_TOKEN_EXPIRATION_TIME);
         response.addCookie(accessTokenCookie);
 
-//        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-//        refreshTokenCookie.setPath("/");
-//        refreshTokenCookie.setSecure(true);
-//        refreshTokenCookie.setHttpOnly(true);
-//        refreshTokenCookie.setMaxAge(JwtVo.REFRESH_TOKEN_EXPIRATION_TIME);
-//        response.addCookie(refreshTokenCookie);
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setMaxAge(JwtVo.REFRESH_TOKEN_EXPIRATION_TIME);
+        response.addCookie(refreshTokenCookie);
 
 
         // 프론트에 응답한다.

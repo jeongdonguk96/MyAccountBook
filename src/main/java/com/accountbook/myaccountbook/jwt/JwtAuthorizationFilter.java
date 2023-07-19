@@ -13,6 +13,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
@@ -21,21 +22,28 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
 
-    // 헤더의 Authorization으로 토큰을 검증하고
-    // 권한 확인을 위해 Authentication 객체를 시큐리티 컨텍스트에 저장
+    // 권한 확인을 위해 Authentication 객체를 시큐리티 컨텍스트에 저장한다.
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain chain) throws IOException, ServletException {
 
-        if (isTokenIncluded(request)) {
-            // 토큰으로 사용자를 검증
-            // 토큰 만료 시 토큰 삭제
-            // CustomUserDetails를 반환
+        String[] whiteList = {
+                "/", "/join", "/login",
+                "/api/join", "/api/checkId", "/error"
+        };
+
+        // 화이트리스트를 확인한다.
+        boolean whiteListUri = checkUri(request, whiteList);
+
+        // 화이트리스트가 아니고 액세스 토큰이 있을 때만 동작한다.
+        if (!whiteListUri && isTokenIncluded(request)) {
+            // 쿠키에서 토큰을 꺼내 파싱한다.
             String replacedAccessToken = getAccessToken(request);
-//            JwtProcess.checkTokenExpirationAndDelete(response, replacedAccessToken);
+
+            // 토큰을 검증하고 CustomUserDetails를 반환한다.
             CustomUserDetails userDetails = JwtProcess.verifyAccessToken(replacedAccessToken);
 
-            // 토큰에서 반환한 CustomUserDetails로 Authentication 객체를 생성하고 시큐리티 컨텍스트에 저장
+            // 토큰에서 반환한 CustomUserDetails로 Authentication 객체를 생성하고 시큐리티 컨텍스트에 저장한다.
             Authentication authentication =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -45,7 +53,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
 
-    // 토큰 존재 여부 확인
+    // 토큰 존재 여부를 확인한다.
     private boolean isTokenIncluded(HttpServletRequest request) {
         String accessToken = null;
         Cookie[] header = request.getCookies();
@@ -61,7 +69,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
 
-    // 토큰 파싱 (쿠키에서 꺼내기)
+    // 쿠키에서 토큰을 꺼내 파싱한다.
     private String getAccessToken(HttpServletRequest request) {
         String accessToken = "";
         Cookie[] header = request.getCookies();
@@ -74,5 +82,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         return accessToken.replace(JwtVo.TOKEN_PREFIX, "");
+    }
+
+
+    // 요청 Uri가 화이트리스트인지 확인한다.
+    private static boolean checkUri(HttpServletRequest request, String[] whiteList) {
+        return Arrays.stream(whiteList)
+                .anyMatch(uri -> request.getRequestURI().equals(uri));
     }
 }

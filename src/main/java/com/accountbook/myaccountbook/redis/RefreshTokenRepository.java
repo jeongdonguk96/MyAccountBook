@@ -14,12 +14,14 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class RefreshTokenRepository {
 
-    private final RedisTemplate<String, Integer> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
 
     // 레디스에 리프레시 토큰을 TTL과 함께 저장한다.
     public String save(RefreshToken refreshToken) {
-        ValueOperations<String, Integer> valueOperations = redisTemplate.opsForValue();
+        System.out.println("refreshToken getRefreshToken() = " + refreshToken.getRefreshToken());
+        System.out.println("refreshToken getMid() = " + refreshToken.getMid());
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(refreshToken.getRefreshToken(), refreshToken.getMid());
         redisTemplate.expire(refreshToken.getRefreshToken(), 60L, TimeUnit.SECONDS);
 
@@ -29,8 +31,8 @@ public class RefreshTokenRepository {
 
     // 레디스에서 리프레시 토큰을 찾는다.
     public Optional<RefreshToken> findById(String refreshToken) {
-        ValueOperations<String, Integer> valueOperations = redisTemplate.opsForValue();
-        Integer mid = valueOperations.get(refreshToken);
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        Integer mid = (Integer) valueOperations.get(refreshToken);
 
         if (Objects.isNull(mid)) {
             return Optional.empty();
