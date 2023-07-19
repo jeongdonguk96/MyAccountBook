@@ -19,9 +19,17 @@ public class Member {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int mid;
+
+    @Column(unique = true)
     private String username;
+
+    @Column(nullable = false)
     private String pwd;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private int age;
 
     @Embedded

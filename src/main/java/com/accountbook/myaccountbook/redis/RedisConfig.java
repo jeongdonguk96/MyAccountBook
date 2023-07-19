@@ -6,30 +6,27 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@EnableRedisRepositories
 public class RedisConfig {
 
-    @Value("${spring.redis.host}")
-    private String host;
+    private final String redisHost;
+    private final int redisPort;
 
-    @Value("${spring.redis.port}")
-    private int port;
-
-    @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(host, port);
+    public RedisConfig(@Value("${spring.redis.host}") final String redisHost,
+                       @Value("${spring.redis.port}") final int redisPort) {
+        this.redisHost = redisHost;
+        this.redisPort = redisPort;
     }
 
     @Bean
-    public RedisTemplate<String, String> redisTemplate() {
-        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+    public RedisConnectionFactory redisConnectionFactory() {
+        return new LettuceConnectionFactory(redisHost, redisPort);
+    }
 
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new StringRedisSerializer());
+    @Bean
+    public RedisTemplate<?, ?> redisTemplate() {
+        RedisTemplate<String, Integer> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
 
         return redisTemplate;

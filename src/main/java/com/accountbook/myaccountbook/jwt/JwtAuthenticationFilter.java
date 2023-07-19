@@ -30,7 +30,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
 
-    // 로그인
+    // 로그인 시 동작된다.
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
@@ -38,15 +38,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
-            // 로그인 요청 시 들어온 데이터를 Dto로 변환
+            // 로그인 요청 시 들어온 데이터를 Dto로 변환한다.
             RequestLoginDto loginDto = objectMapper.readValue(request.getInputStream(), RequestLoginDto.class);
 
-            // 강제 로그인
-            // UsernamePasswordAuthenticationToken는 Authentication 객체를 상속한 객체
+            // 강제 로그인을 시킨다.
+            // UsernamePasswordAuthenticationToken는 Authentication 객체를 상속한 객체다.
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     loginDto.getUsername(), loginDto.getPwd());
 
-            // 시큐리티 내부 로직으로 authenticate()는 UserDetailsService의 loadUserByUsername()을 호출함
+            // 시큐리티 내부 로직으로 authenticate()는 UserDetailsService의 loadUserByUsername()을 호출한다.
             return authenticationManager.authenticate(authenticationToken);
         } catch (IOException e) {
             throw new InternalAuthenticationServiceException(e.getMessage());
@@ -54,7 +54,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
 
-    // 위 attemptAuthentication()가 성공해서 Authentication 객체를 반환하면 호출됨
+    // 위 attemptAuthentication()가 성공해서 Authentication 객체를 반환하면 호출된다.
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain chain, Authentication authResult) throws IOException, ServletException {
@@ -62,17 +62,22 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // 액세스/리프레시 토큰을 생성한다.
         CustomUserDetails userDetails = (CustomUserDetails) authResult.getPrincipal();
         String accessToken = JwtProcess.createAccessToken(userDetails);
-        String refreshToken = JwtProcess.createRefreshToken(userDetails);
+//        String refreshToken = JwtProcess.createRefreshToken(userDetails);
 
-        // 생성한 액세스 토큰을 쿠키에 저장한다.
-        Cookie cookie = new Cookie("accessToken", accessToken);
-        cookie.setPath("/");
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(JwtVo.ACCESS_TOKEN_EXPIRATION_TIME);
-        response.addCookie(cookie);
+        // 생성한 액세스/리프레시 토큰을 브라우저 쿠키에 저장한다.
+        Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setSecure(true);
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setMaxAge(JwtVo.ACCESS_TOKEN_EXPIRATION_TIME);
+        response.addCookie(accessTokenCookie);
 
-        // 레디스에 리프레시 토큰을 저장한다.
+//        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+//        refreshTokenCookie.setPath("/");
+//        refreshTokenCookie.setSecure(true);
+//        refreshTokenCookie.setHttpOnly(true);
+//        refreshTokenCookie.setMaxAge(JwtVo.REFRESH_TOKEN_EXPIRATION_TIME);
+//        response.addCookie(refreshTokenCookie);
 
 
         // 프론트에 응답한다.

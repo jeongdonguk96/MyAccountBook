@@ -14,7 +14,7 @@ public class CustomResponseUtil {
     public static void success(HttpServletResponse response, Object object, String message) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            ResponseDto<?> responseDto = new ResponseDto<>(1, object, message);
+            ResponseDto<?> responseDto = new ResponseDto<>(200, object, message);
             String responseBody = objectMapper.writeValueAsString(responseDto);
 
             response.setContentType("application/json; charset=utf-8");
@@ -30,7 +30,7 @@ public class CustomResponseUtil {
     public static void fail(HttpServletResponse response, HttpStatus httpStatus, String message) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            ResponseDto<?> responseDto = new ResponseDto<>(1, httpStatus, message);
+            ResponseDto<?> responseDto = new ResponseDto<>(httpStatus.value(), httpStatus, message);
             String responseBody = objectMapper.writeValueAsString(responseDto);
 
             response.setContentType("application/json; charset=utf-8");

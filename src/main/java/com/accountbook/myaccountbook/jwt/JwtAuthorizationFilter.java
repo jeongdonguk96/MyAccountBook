@@ -32,7 +32,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             // 토큰 만료 시 토큰 삭제
             // CustomUserDetails를 반환
             String replacedAccessToken = getAccessToken(request);
-            JwtProcess.checkTokenExpirationAndDelete(response, replacedAccessToken);
+//            JwtProcess.checkTokenExpirationAndDelete(response, replacedAccessToken);
             CustomUserDetails userDetails = JwtProcess.verifyAccessToken(replacedAccessToken);
 
             // 토큰에서 반환한 CustomUserDetails로 Authentication 객체를 생성하고 시큐리티 컨텍스트에 저장

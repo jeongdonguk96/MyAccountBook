@@ -2,34 +2,42 @@ package com.accountbook.myaccountbook.jwt;
 
 import com.accountbook.myaccountbook.persistence.Member;
 import com.accountbook.myaccountbook.persistence.RoleEnum;
+import com.accountbook.myaccountbook.redis.RefreshTokenRepository;
 import com.accountbook.myaccountbook.userdetails.CustomUserDetails;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import lombok.RequiredArgsConstructor;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.UUID;
 
+@RequiredArgsConstructor
 public class JwtProcess {
 
+    private static RefreshTokenRepository refreshTokenRepository;
 
 
-    // 액세스 토큰 생성
+    // 액세스 토큰을 생성한다.
     public static String createAccessToken(CustomUserDetails userDetails) {
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + JwtVo.ACCESS_TOKEN_EXPIRATION_TIME);
+
         String accessToken = JWT.create()
                 .withSubject("accountBook")
-                .withExpiresAt(new Date(System.currentTimeMillis() + JwtVo.ACCESS_TOKEN_EXPIRATION_TIME))
+                .withIssuedAt(now)
                 .withClaim("mid", userDetails.getMember().getMid())
                 .withClaim("role", userDetails.getMember().getRole().toString())
-                .withClaim("expiration", new Date(System.currentTimeMillis() + JwtVo.ACCESS_TOKEN_EXPIRATION_TIME))
+                .withExpiresAt(expiration)
                 .sign(Algorithm.HMAC256(JwtVo.SECRET));
 
         return JwtVo.TOKEN_PREFIX + accessToken;
     }
 
 
-    // 액세스 토큰 검증
+    // 액세스 토큰을 검증한다.
     public static CustomUserDetails verifyAccessToken(String token) {
         DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(JwtVo.SECRET)).build().verify(token);
         Integer mid = decodedJWT.getClaim("mid").asInt();
@@ -40,11 +48,9 @@ public class JwtProcess {
     }
 
 
-    // 토큰 만료 시 토큰 삭제
-    public static void checkTokenExpirationAndDelete(HttpServletResponse response, String replacedToken) {
+    // 토큰 만료 시 토큰을 삭제한다.
+    public static void checkTokenExpiration(HttpServletResponse response, String replacedToken) {
         DecodedJWT decodedJWT = JWT.decode(replacedToken);
-        System.out.println(new Date());
-        System.out.println(decodedJWT.getExpiresAt());
         if (decodedJWT.getExpiresAt().before(new Date())) {
             Cookie cookie = new Cookie("accessToken", null);
             cookie.setPath("/");
@@ -55,14 +61,11 @@ public class JwtProcess {
     }
 
 
-    // 리프레시 토큰 생성
+    // 레디스에 리프레시 토큰을 저장하고 생성한다.
     public static String createRefreshToken(CustomUserDetails userDetails) {
-        return JWT.create()
-                .withSubject("accountBook")
-                .withExpiresAt(new Date(System.currentTimeMillis() + JwtVo.REFRESH_TOKEN_EXPIRATION_TIME))
-                .withClaim("mid", userDetails.getMember().getMid())
-                .withClaim("expiration", new Date(System.currentTimeMillis() + JwtVo.REFRESH_TOKEN_EXPIRATION_TIME))
-                .sign(Algorithm.HMAC256(JwtVo.SECRET));
+        RefreshToken refreshToken = new RefreshToken(UUID.randomUUID().toString(), userDetails.getMember().getMid());
+
+        return refreshTokenRepository.save(refreshToken);
     }
 
 }
