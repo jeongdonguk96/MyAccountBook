@@ -28,8 +28,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                                     FilterChain chain) throws IOException, ServletException {
 
         String[] whiteList = {
-                "/", "/join", "/login",
-                "/api/join", "/api/checkId", "/error"
+                "/", "/join", "/login", "/error",
+                "/api/join", "/api/checkId", "api/refreshToken"
         };
 
         // 화이트리스트를 확인한다.

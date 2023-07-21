@@ -1,6 +1,6 @@
 package com.accountbook.myaccountbook.jwt;
 
-import com.accountbook.myaccountbook.exception.CustomApiException;
+import com.accountbook.myaccountbook.exception.CustomTokenExpiredException;
 import com.accountbook.myaccountbook.persistence.Member;
 import com.accountbook.myaccountbook.persistence.RoleEnum;
 import com.accountbook.myaccountbook.redis.RefreshTokenRepository;
@@ -10,6 +10,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,9 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class JwtProcess {
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     // 액세스 토큰을 생성한다.
     public static String generateAccessToken(CustomUserDetails userDetails) {
@@ -50,7 +54,7 @@ public class JwtProcess {
 
             return new CustomUserDetails(member);
         } catch (TokenExpiredException e) {
-
+            throw new CustomTokenExpiredException("TokenExpiredException");
         }
     }
 
@@ -70,10 +74,12 @@ public class JwtProcess {
 
     // 레디스에 리프레시 토큰을 저장하고 생성한다.
     public static String generateRefreshToken(CustomUserDetails userDetails) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        RefreshTokenRepository refreshTokenRepository = new RefreshTokenRepository(redisTemplate);
+
         RefreshToken refreshToken = new RefreshToken(UUID.randomUUID().toString(), userDetails.getMember().getMid());
 
-        RefreshTokenRepository refreshTokenRepository = new RefreshTokenRepository(new RedisTemplate<>());
-//        refreshTokenRepository.save(refreshToken);
+        refreshTokenRepository.save(refreshToken);
 
         return refreshToken.getRefreshToken();
     }

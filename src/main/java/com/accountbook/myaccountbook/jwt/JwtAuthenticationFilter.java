@@ -79,7 +79,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         refreshTokenCookie.setMaxAge(JwtVo.REFRESH_TOKEN_EXPIRATION_TIME);
         response.addCookie(refreshTokenCookie);
 
-
         // 프론트에 응답한다.
         CustomResponseUtil.success(response, accessToken, "로그인 성공");
     }

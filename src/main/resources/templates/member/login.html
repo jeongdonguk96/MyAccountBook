@@ -45,7 +45,15 @@ $("#login").click(function () {
             data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8"
         }).done(function (response) {
-                location.href = "/";
+            if (response.message === "TokenExpiredException") {
+                $.ajax({
+                    type: "post",
+                    url: "/api/refreshToken",
+                    contentType: "application/json; charset=utf-8"
+                })
+            }
+
+            location.href = "/";
         }).fail(function (error) {
             console.log("error = ", JSON.stringify(error));
             alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');

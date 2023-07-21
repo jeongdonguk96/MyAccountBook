@@ -33,7 +33,7 @@ public class SecurityConfig {
 //                .loginPage("/member/login.html");
         http
                 .authorizeHttpRequests()
-                .antMatchers("/", "/join", "/login", "/logout", "/api/join", "/api/login", "/api/checkId", "/error")
+                .antMatchers("/", "/join", "/login", "/logout", "/api/join", "/api/login", "/api/checkId", "api/refreshToken", "/error")
                 .permitAll()
                 .anyRequest()
                 .authenticated();
