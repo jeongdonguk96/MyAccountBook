@@ -1,8 +1,8 @@
 package com.accountbook.myaccountbook.dto.accountbook;
 
-import com.accountbook.myaccountbook.persistence.ExpenseCategory;
+import com.accountbook.myaccountbook.enums.ExpenseCategoryEnum;
 
 public interface ExpenseCategoryDto {
-    ExpenseCategory getExpenseCategory();
+    ExpenseCategoryEnum getExpenseCategory();
     int getExpenseMoney();
 }

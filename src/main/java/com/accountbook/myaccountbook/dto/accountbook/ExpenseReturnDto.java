@@ -1,7 +1,7 @@
 package com.accountbook.myaccountbook.dto.accountbook;
 
 import com.accountbook.myaccountbook.persistence.Expense;
-import com.accountbook.myaccountbook.persistence.ExpenseCategory;
+import com.accountbook.myaccountbook.enums.ExpenseCategoryEnum;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -20,7 +20,7 @@ public class ExpenseReturnDto {
     private String expenseReason;
 
     @NotBlank
-    private ExpenseCategory expenseCategory;
+    private ExpenseCategoryEnum expenseCategory;
 
     @NotBlank
     private String date;

@@ -20,6 +20,7 @@ public class CustomExceptionHandler {
     @ExceptionHandler(CustomTokenExpiredException.class)
     public ResponseEntity<?> apiException(CustomTokenExpiredException e) {
 
+        System.out.println("하ㅏ하하ㅏ하하ㅏ하하ㅏ하하하ㅏ하");
         return new ResponseEntity<>(new ResponseDto<>(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED, e.getMessage()).getData());
     }
 }

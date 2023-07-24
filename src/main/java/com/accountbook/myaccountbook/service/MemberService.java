@@ -1,9 +1,9 @@
 package com.accountbook.myaccountbook.service;
 
+import com.accountbook.myaccountbook.dto.member.RequestJoinDto;
+import com.accountbook.myaccountbook.enums.RoleEnum;
 import com.accountbook.myaccountbook.persistence.Job;
 import com.accountbook.myaccountbook.persistence.Member;
-import com.accountbook.myaccountbook.persistence.RoleEnum;
-import com.accountbook.myaccountbook.dto.member.RequestJoinDto;
 import com.accountbook.myaccountbook.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +64,7 @@ public class MemberService {
      * @param money 수입/지출 기입시 금액
      */
     @Transactional
-    public void setRest(Member findMember, int money) {
+    public void calculateRest(Member findMember, int money) {
         findMember.setRest(findMember.getRest()+money);
     }
 

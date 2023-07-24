@@ -1,5 +1,6 @@
 package com.accountbook.myaccountbook.persistence;
 
+import com.accountbook.myaccountbook.enums.RoleEnum;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -47,4 +48,5 @@ public class Member {
 
     @Enumerated(EnumType.STRING)
     private RoleEnum role;
+
 }

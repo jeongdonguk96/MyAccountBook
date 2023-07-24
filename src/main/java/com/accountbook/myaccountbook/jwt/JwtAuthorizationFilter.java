@@ -1,6 +1,7 @@
 package com.accountbook.myaccountbook.jwt;
 
 import com.accountbook.myaccountbook.userdetails.CustomUserDetails;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,8 +18,11 @@ import java.util.Arrays;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
+    private final JwtProcess jwtProcess;
+
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtProcess jwtProcess) {
         super(authenticationManager);
+        this.jwtProcess = jwtProcess;
     }
 
 
@@ -41,7 +45,14 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             String replacedAccessToken = getAccessToken(request);
 
             // 토큰을 검증하고 CustomUserDetails를 반환한다.
-            CustomUserDetails userDetails = JwtProcess.verifyAccessToken(replacedAccessToken);
+            CustomUserDetails userDetails = null;
+            try {
+                userDetails = jwtProcess.verifyAccessToken(replacedAccessToken);
+            } catch (TokenExpiredException e) {
+                String refreshToken = getRefreshToken(request);
+                System.out.println("refreshToken = " + refreshToken);
+                userDetails = jwtProcess.checkRefreshToken(response, refreshToken);
+            }
 
             // 토큰에서 반환한 CustomUserDetails로 Authentication 객체를 생성하고 시큐리티 컨텍스트에 저장한다.
             Authentication authentication =
@@ -69,7 +80,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
 
-    // 쿠키에서 토큰을 꺼내 파싱한다.
+    // 쿠키에서 액세스 토큰을 꺼내 파싱한다.
     private String getAccessToken(HttpServletRequest request) {
         String accessToken = "";
         Cookie[] header = request.getCookies();
@@ -84,6 +95,21 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         return accessToken.replace(JwtVo.TOKEN_PREFIX, "");
     }
 
+
+    // 쿠키에서 리프레시 토큰을 꺼내 파싱한다.
+    private String getRefreshToken(HttpServletRequest request) {
+        String refreshToken = "";
+        Cookie[] header = request.getCookies();
+
+        for (Cookie cookie : header) {
+            if ("refreshToken".equals(cookie.getName())) {
+                refreshToken = cookie.getValue();
+                break;
+            }
+        }
+
+        return refreshToken;
+    }
 
     // 요청 Uri가 화이트리스트인지 확인한다.
     private static boolean checkUri(HttpServletRequest request, String[] whiteList) {

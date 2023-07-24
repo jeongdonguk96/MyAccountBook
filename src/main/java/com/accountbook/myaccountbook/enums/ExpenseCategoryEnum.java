@@ -1,6 +1,6 @@
-package com.accountbook.myaccountbook.persistence;
+package com.accountbook.myaccountbook.enums;
 
-public enum ExpenseCategory {
+public enum ExpenseCategoryEnum {
     GROCERY,
     EAT_OUT,
     DELIVERY,

@@ -1,6 +1,5 @@
 package com.accountbook.myaccountbook.controller;
 
-import com.accountbook.myaccountbook.service.AccountBookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -15,29 +14,27 @@ import javax.servlet.http.HttpSession;
 @RequiredArgsConstructor
 public class HomeController {
 
-    private final AccountBookService accountBookService;
-
-    // 초기 화면
+    // 인덱스 화면을 보여준다.
     @GetMapping("/")
     public String firstView() {
         return "index";
     }
 
 
-    // 회원가입 화면
+    // 회원가입 화면을 보여준다.
     @GetMapping("/join")
     public String getJoinView() {
         return "member/join";
     }
 
 
-    // 로그인 화면
+    // 로그인 화면을 보여준다.
     @GetMapping("/login")
     public String getLoginView() {
         return "member/login";
     }
 
-    // 로그아웃
+    // 로그아웃 처리한다.
     @GetMapping("/logout")
     public String logout(Model model, SessionStatus sessionStatus, HttpSession session) {
         model.addAttribute("user", null);

@@ -1,4 +1,4 @@
-package com.accountbook.myaccountbook.util;
+package com.accountbook.myaccountbook.utils;
 
 import com.accountbook.myaccountbook.dto.ResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;

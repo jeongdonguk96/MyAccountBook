@@ -1,8 +1,10 @@
 package com.accountbook.myaccountbook.jwt;
 
 import com.accountbook.myaccountbook.dto.member.RequestLoginDto;
+import com.accountbook.myaccountbook.persistence.Member;
 import com.accountbook.myaccountbook.userdetails.CustomUserDetails;
-import com.accountbook.myaccountbook.util.CustomResponseUtil;
+import com.accountbook.myaccountbook.utils.CookieUtil;
+import com.accountbook.myaccountbook.utils.CustomResponseUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,19 +16,21 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+    private final JwtProcess jwtProcess;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtProcess jwtProcess) {
         super(authenticationManager);
         setFilterProcessesUrl("/api/login");
         this.authenticationManager = authenticationManager;
+        this.jwtProcess = jwtProcess;
     }
 
 
@@ -61,23 +65,26 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // 액세스/리프레시 토큰을 생성한다.
         CustomUserDetails userDetails = (CustomUserDetails) authResult.getPrincipal();
-        String accessToken = JwtProcess.generateAccessToken(userDetails);
-        String refreshToken = JwtProcess.generateRefreshToken(userDetails);
+        Optional<Member> member = Optional.ofNullable(userDetails.getMember());
+        String accessToken = jwtProcess.generateAccessToken(member);
+        String refreshToken = jwtProcess.generateRefreshToken(member);
 
         // 생성한 액세스/리프레시 토큰을 브라우저 쿠키에 저장한다.
-        Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
-        accessTokenCookie.setPath("/");
-        accessTokenCookie.setSecure(true);
-        accessTokenCookie.setHttpOnly(true);
-        accessTokenCookie.setMaxAge(JwtVo.ACCESS_TOKEN_EXPIRATION_TIME);
-        response.addCookie(accessTokenCookie);
+//        Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
+//        accessTokenCookie.setPath("/");
+//        accessTokenCookie.setSecure(true);
+//        accessTokenCookie.setHttpOnly(true);
+//        accessTokenCookie.setMaxAge(JwtVo.ACCESS_TOKEN_EXPIRATION_TIME);
+//        response.addCookie(accessTokenCookie);
+        CookieUtil.addCookie(response, "accessToken", accessToken, JwtVo.ACCESS_TOKEN_EXPIRATION_TIME, true, true);
 
-        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setSecure(true);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setMaxAge(JwtVo.REFRESH_TOKEN_EXPIRATION_TIME);
-        response.addCookie(refreshTokenCookie);
+//        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+//        refreshTokenCookie.setPath("/");
+//        refreshTokenCookie.setSecure(true);
+//        refreshTokenCookie.setHttpOnly(true);
+//        refreshTokenCookie.setMaxAge(JwtVo.REFRESH_TOKEN_EXPIRATION_TIME);
+//        response.addCookie(refreshTokenCookie);
+        CookieUtil.addCookie(response, "refreshToken", refreshToken, JwtVo.REFRESH_TOKEN_EXPIRATION_TIME, true, true);
 
         // 프론트에 응답한다.
         CustomResponseUtil.success(response, accessToken, "로그인 성공");

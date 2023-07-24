@@ -44,13 +44,12 @@ public class AccountHistoryScheduler {
         log.info("========== {}년 {}월 1일 0시 0분 0초 진입 ==========", year, month);
         log.info("========== AccountHistoryScheduler 동작 START ==========");
         LocalDateTime startTime = LocalDateTime.now();
-        log.info("========== AccountHistoryScheduler Start Time = {} ==========", startTime);
 
         // 빈 AccountHistory List 객체 생성
         List<AccountHistory> accountHistories = new ArrayList<>();
 
         // 현재 전체 사용자의 mid값을 리스트로 받음
-        List<Integer> mids = memberRepository.findAllMemberMid();
+        List<Integer> mids = memberRepository.findAllMid();
         log.info("조회된 사용자 수 = {}", mids.size());
 
         // 조회된 사용자 수가 0명이면 아래 로직 동작 X
@@ -97,7 +96,6 @@ public class AccountHistoryScheduler {
         }
 
         LocalDateTime endTime = LocalDateTime.now();
-        log.info("========== AccountHistoryScheduler End Time = {} ==========", endTime);
         log.info("========== AccountHistoryScheduler 동작 END ==========");
 
         Duration timeDiff = Duration.between(startTime, endTime);

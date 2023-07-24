@@ -11,7 +11,7 @@ import com.accountbook.myaccountbook.dto.accountbook.IncomeReturnDto;
 import com.accountbook.myaccountbook.dto.accounthistory.AccountHistoryDto;
 import com.accountbook.myaccountbook.service.AccountBookService;
 import com.accountbook.myaccountbook.service.AccountHistoryService;
-import com.accountbook.myaccountbook.util.AccountBookUtil;
+import com.accountbook.myaccountbook.utils.AccountBookUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -41,7 +41,7 @@ public class AccountBookController {
     }
 
 
-    // 가계부 조회
+    // 가계부 화면을 조회한다.
     @GetMapping("")
     public String getAccountBook(Model model) {
         Member findMember = (Member) model.getAttribute("user"); // 세션
@@ -54,23 +54,24 @@ public class AccountBookController {
         int expenseSum = 0; // 총 지출
         int restSum = 0; // 총 합계
 
-        // 1. Income 엔티티 조회
-        // 2. Income 엔티티를 Dto로 변환
-        // 3. 총 수입 계산
+        // 1. Income 엔티티를 조회한다.
+        // 2. Income 엔티티를 Dto로 변환한다.
+        // 3. 총 수입을 계산한다.
         List<Income> incomes = accountBookService.findAllMonthIncome(fullMonth, findMember.getMid());
         List<IncomeReturnDto> incomeReturnDtos = accountBookService.imcomesToDto(incomes);
         incomeSum = accountBookService.totalizeIncome(incomes, incomeSum);
 
-        // 1. Expense 엔티티 조회
-        // 2. Expense 엔티티를 Dto로 변환
-        // 3. 총 지출 계산
+        // 1. Expense 엔티티 조회한다.
+        // 2. Expense 엔티티를 Dto로 변환한다.
+        // 3. 총 지출을 계산한다.
         List<Expense> expenses = accountBookService.findAllMonthExpense(fullMonth, findMember.getMid());
         List<ExpenseReturnDto> expenseReturnDtos = accountBookService.expensesToDto(expenses);
         expenseSum = accountBookService.totalizeExpense(expenses, expenseSum);
 
-        // 총 합계 계산
+        // 총 합계를 계산한다.
         restSum = incomeSum - expenseSum;
 
+        // 모델에 값을 담아준다.
         Map<String, Object> attribute = new HashMap<>();
         attribute.put("year", findYear);
         attribute.put("month", findMonth);
@@ -90,7 +91,7 @@ public class AccountBookController {
     }
 
 
-    // 카테고리별 지출 파이차트 모달 조회
+    // 카테고리별 지출 파이차트 모달을 조회한다.
     @ResponseBody
     @PostMapping("/expenseCategory/{mid}")
     public List<Map<String, Object>> getPiechart(@PathVariable int mid) {
@@ -98,26 +99,26 @@ public class AccountBookController {
         String findMonth = accountBookUtil.getMonth(); // MM
         String month = findYear+findMonth; // yyyyMM
 
-        // Expense 엔티티를 조회하지만, Dto로 필요한 컬럼만 가져옴
+        // Expense 엔티티를 조회하지만, Dto로 필요한 컬럼만 가져온다.
         List<ExpenseCategoryDto> expenses = accountBookService.findAllExpenseCategoryByMonthAndMemberMid(month, mid);
 
-        // 카테고리별 지출 정리
+        // 카테고리별 지출을 정리한다.
         Map<String, Integer> expenseMap = accountBookService.categorize(expenses);
 
-        // 위에서 정리한 지출 Map을 List에 담음
+        // 위에서 정리한 지출 Map을 List에 담는다.
         return accountBookService.expenseMapToMapList(expenseMap);
     }
 
 
-    // 월별 지출 내역 모달 조회
+    // 월별 지출 내역 모달을 조회한다.
     @ResponseBody
     @PostMapping("/expensesByMonth/{mid}")
     public ResponseDto<List<AccountHistoryDto>> getExpenseCategoryByMonth(@PathVariable int mid) {
 
-        // DB에서 엔티티 조회
+        // DB에서 엔티티를 조회한다.
         List<AccountHistory> accountHistories = accountHistoryService.findAllAccountHistory(mid);
 
-        // 엔티티를 Dto로 변환
+        // 엔티티를 Dto로 변환한다.
         List<AccountHistoryDto> accountHistoryDtos = accountHistories.stream()
                 .map(AccountHistoryDto::accountHistoryToDto)
                 .toList();

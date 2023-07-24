@@ -1,5 +1,6 @@
 package com.accountbook.myaccountbook.persistence;
 
+import com.accountbook.myaccountbook.enums.ExpenseCategoryEnum;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,7 +20,7 @@ public class Expense {
     private String expenseReason;
     
     @Enumerated(EnumType.STRING)
-    private ExpenseCategory expenseCategory;
+    private ExpenseCategoryEnum expenseCategory;
     private String year;
     private String month;
     private String date;

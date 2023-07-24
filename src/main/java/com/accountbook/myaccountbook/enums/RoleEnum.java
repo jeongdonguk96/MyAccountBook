@@ -1,4 +1,4 @@
-package com.accountbook.myaccountbook.persistence;
+package com.accountbook.myaccountbook.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

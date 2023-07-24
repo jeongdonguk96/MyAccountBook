@@ -2,6 +2,9 @@ package com.accountbook.myaccountbook.config;
 
 import com.accountbook.myaccountbook.jwt.JwtAuthenticationFilter;
 import com.accountbook.myaccountbook.jwt.JwtAuthorizationFilter;
+import com.accountbook.myaccountbook.jwt.JwtProcess;
+import com.accountbook.myaccountbook.redis.RefreshTokenRepository;
+import com.accountbook.myaccountbook.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +20,10 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final MemberRepository memberRepository;
+//    private final JwtProcess jwtProcess;
 
     // 로그인 시큐리티 설정
     @Bean
@@ -43,14 +50,14 @@ public class SecurityConfig {
 
 
     // JWT 필터 등록
-    public static class CustomSecurityFilterManager
+    public class CustomSecurityFilterManager
             extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
 
         @Override
         public void configure(HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
-            builder.addFilter(new JwtAuthenticationFilter(authenticationManager));
-            builder.addFilter(new JwtAuthorizationFilter(authenticationManager));
+            builder.addFilter(new JwtAuthenticationFilter(authenticationManager, new JwtProcess(refreshTokenRepository, memberRepository)));
+            builder.addFilter(new JwtAuthorizationFilter(authenticationManager, new JwtProcess(refreshTokenRepository, memberRepository)));
             super.configure(builder);
         }
     }
