@@ -31,20 +31,19 @@ public class JwtProcess {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + JwtVo.ACCESS_TOKEN_EXPIRATION_TIME);
 
-        String accessToken = JWT.create()
+        return JWT.create()
                 .withSubject("accountBook")
                 .withIssuedAt(now)
                 .withClaim("mid", userDetails.get().getMid())
                 .withClaim("role", userDetails.get().getRole().toString())
                 .withExpiresAt(expiration)
                 .sign(Algorithm.HMAC256(JwtVo.SECRET));
-
-        return JwtVo.TOKEN_PREFIX + accessToken;
     }
 
 
     // 리프레시 토큰을 생성하고 Redis에 저장한다.
     public String generateRefreshToken(Optional<Member> userDetails) {
+        System.out.println("리프레시 토큰 발급됨");
         RefreshToken refreshToken = new RefreshToken(UUID.randomUUID().toString(), userDetails.get().getMid());
         refreshTokenRepository.save(refreshToken);
 
@@ -80,7 +79,7 @@ public class JwtProcess {
     // 쿠키의 리프레시 토큰과 Redis의 리프레시 토큰을 비교 후 재발급한다.
     public CustomUserDetails checkRefreshToken(HttpServletResponse response, String refreshToken) throws IOException {
         // Redis에서 리프레시 토큰을 조회한다.
-        Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findById(refreshToken);
+        Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findRefreshTokenById(refreshToken);
 
         // 리프레시 토큰이 있을 시
         if (findRefreshToken.isPresent()) {
@@ -98,6 +97,9 @@ public class JwtProcess {
             String newRefreshToken = generateRefreshToken(findMember);
 
             // 토큰들을 쿠키에 넣어준다.
+//            CookieUtil.addCookie(response, "accessToken", newAccessToken, JwtVo.ACCESS_TOKEN_EXPIRATION_TIME, true, true);
+//            CookieUtil.addCookie(response, "refreshToken", newRefreshToken, JwtVo.REFRESH_TOKEN_EXPIRATION_TIME, true, true);
+
             CookieUtil.addCookie(response, "accessToken", newAccessToken, JwtVo.ACCESS_TOKEN_EXPIRATION_TIME, true, true);
             CookieUtil.addCookie(response, "refreshToken", newRefreshToken, JwtVo.REFRESH_TOKEN_EXPIRATION_TIME, true, true);
 
@@ -107,6 +109,23 @@ public class JwtProcess {
             response.sendRedirect("/login");
             return null;
         }
+    }
+
+
+    // Redis에서 accessToken이 블랙리스트인지 확인한다.
+    // 블랙리스트면 true, 아니면 false를 리턴한다.
+    public boolean checkAccessToken(String accessToken) {
+        Integer number = refreshTokenRepository.findAccessTokenById(accessToken);
+        boolean result = false;
+
+        if (number != null) {
+            if (number == 0) {
+                System.out.println("this guy is on blacklist");
+                result = true;
+            }
+        }
+
+        return result;
     }
 
 }

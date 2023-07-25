@@ -4,12 +4,15 @@ import com.accountbook.myaccountbook.dto.member.RequestJoinDto;
 import com.accountbook.myaccountbook.enums.RoleEnum;
 import com.accountbook.myaccountbook.persistence.Job;
 import com.accountbook.myaccountbook.persistence.Member;
+import com.accountbook.myaccountbook.redis.RefreshTokenRepository;
 import com.accountbook.myaccountbook.repository.MemberRepository;
+import com.accountbook.myaccountbook.utils.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
@@ -19,6 +22,7 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
     /**
@@ -56,6 +60,21 @@ public class MemberService {
                             .build();
 
         memberRepository.save(member);
+    }
+
+
+    /**
+     * 로그아웃
+     * @param response 응답
+     * @param accessToken 유효한 액세스 토큰
+     * @param refreshToken 유효한 리프레시 토큰
+     * @return
+     */
+    @Transactional
+    public void logout(HttpServletResponse response, String accessToken, String refreshToken) {
+        refreshTokenRepository.deleteById(refreshToken);
+        CookieUtil.removeCookie(response, "accessToken", accessToken);
+        CookieUtil.removeCookie(response, "refreshToken", refreshToken);
     }
 
 

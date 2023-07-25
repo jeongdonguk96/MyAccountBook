@@ -68,7 +68,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
 
-    // 토큰 존재 여부를 확인한다.
+    // 액세스 토큰 존재 여부를 확인한다.
     private boolean isTokenIncluded(HttpServletRequest request) {
         String accessToken = null;
         Cookie[] header = request.getCookies();
@@ -82,7 +82,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             }
         }
 
-        return accessToken != null && accessToken.startsWith(JwtVo.TOKEN_PREFIX);
+        return accessToken != null;
     }
 
 
@@ -98,7 +98,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             }
         }
 
-        return accessToken.replace(JwtVo.TOKEN_PREFIX, "");
+        return accessToken;
     }
 
 
@@ -115,6 +115,23 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         return refreshToken;
+    }
+
+
+    // 액세스 토큰이 블랙리스트가 아닌지 판별한다.
+    // 블랙리스트면 true, 아니면 false를 리턴한다.
+    private boolean isBlacklistToken(HttpServletRequest request) {
+        String accessToken = "";
+        Cookie[] header = request.getCookies();
+
+        for (Cookie cookie : header) {
+            if ("accessToken".equals(cookie.getName())) {
+                accessToken = cookie.getValue();
+                break;
+            }
+        }
+
+        return jwtProcess.checkAccessToken(accessToken);
     }
 
     // 요청 Uri가 화이트리스트인지 확인한다.
