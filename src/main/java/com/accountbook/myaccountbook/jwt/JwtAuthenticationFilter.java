@@ -65,8 +65,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // 액세스/리프레시 토큰을 생성한다.
         CustomUserDetails userDetails = (CustomUserDetails) authResult.getPrincipal();
-        System.out.println("userDetails = " + userDetails);
-        System.out.println("userDetails.getMember = " + userDetails.getMember());
         Optional<Member> member = Optional.ofNullable(userDetails.getMember());
         String accessToken = jwtProcess.generateAccessToken(member);
         String refreshToken = jwtProcess.generateRefreshToken(member);

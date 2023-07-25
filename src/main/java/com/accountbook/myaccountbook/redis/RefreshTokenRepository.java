@@ -19,8 +19,6 @@ public class RefreshTokenRepository {
 
     // 레디스에 리프레시 토큰을 TTL과 함께 저장한다.
     public String save(RefreshToken refreshToken) {
-        System.out.println("refreshToken getRefreshToken() = " + refreshToken.getRefreshToken());
-        System.out.println("refreshToken getMid() = " + refreshToken.getMid());
         ValueOperations<String, Integer> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(refreshToken.getRefreshToken(), refreshToken.getMid());
         redisTemplate.expire(refreshToken.getRefreshToken(), 60L, TimeUnit.SECONDS);

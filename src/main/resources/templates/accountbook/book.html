@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:replace="~{ /fragment/header :: header }"></div>
 <!-- header replace -->
 
@@ -10,13 +10,14 @@
 
 
     <!-- 상단 텍스트 시작 -->
-    <input type="hidden" th:object="${user}" th:field="*{mid}">
+    <input type="text" th:value="${ #authentication.getName() }">
+    <input type="text" id="mid" th:value="${ #authentication.principal.member.mid }">
+
     <div class="welcome-message">
-        <br><br><h4><span th:text="|${ user.getName() }님 환영합니다|"/></h4><br><br>
+        <br><br><h4><span th:text="|${#authentication.principal.member.name }님 환영합니다|"/></h4><br><br>
         <h3><span th:text="${ message }"/></h3><br>
     </div>
     <h2><span th:text="${ month }" />월</h2> <br>
-<!--    <p>총 수입: +<span th:text="|${ #numbers.formatInteger(incomeSum, 3, 'COMMA') }|" />원</p>-->
     <p>총 수입: +<span th:text="${ incomeSum } != 0 ? ${ #numbers.formatInteger(incomeSum, 3, 'COMMA') } : 0" />원</p>
     <p>총 지출: -<span th:text="|${ #numbers.formatInteger(expenseSum, 3, 'COMMA') }|" />원</p>
     <p>총 합계: <span th:text="${ restSum >= 0 ? '+ ' + #numbers.formatInteger(restSum, 3, 'COMMA') : #numbers.formatInteger(restSum, 3, 'COMMA') }" />원</p>

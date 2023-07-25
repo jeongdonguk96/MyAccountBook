@@ -31,16 +31,20 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain chain) throws IOException, ServletException {
 
-        String[] whiteList = {
-                "/", "/join", "/login", "/error",
-                "/api/join", "/api/checkId", "api/refreshToken"
-        };
-
-        // 화이트리스트를 확인한다.
-        boolean whiteListUri = checkUri(request, whiteList);
+//        String[] whiteList = {
+//                "/", "/join", "/login", "/error",
+//                "/api/join", "/api/checkId", "api/refreshToken"
+//        };
+//
+//        // 화이트리스트를 확인한다.
+//        boolean whiteListUri = checkUri(request, whiteList);
 
         // 화이트리스트가 아니고 액세스 토큰이 있을 때만 동작한다.
-        if (!whiteListUri && isTokenIncluded(request)) {
+//        if (!whiteListUri && isTokenIncluded(request)) {
+
+        // 액세스 토큰이 있을 때만 동작한다.
+        if (isTokenIncluded(request)) {
+
             // 쿠키에서 토큰을 꺼내 파싱한다.
             String replacedAccessToken = getAccessToken(request);
 

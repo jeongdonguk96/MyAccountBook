@@ -16,7 +16,9 @@ import com.accountbook.myaccountbook.utils.AccountBookUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +43,9 @@ public class AccountBookController {
     public String getAccountBook(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
         Member member = userDetails.getMember();
         System.out.println("AccountBook Member = " + member);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("AccountBook authentication = " + authentication.getPrincipal());
+
         String findYear = accountBookUtil.getYear(); // 현재 연도 yyyy
         String findMonth = accountBookUtil.getMonth(); // 현재 달 MM
         String lengthOfMonth = accountBookUtil.getDays(); // 현재 달의 일수
