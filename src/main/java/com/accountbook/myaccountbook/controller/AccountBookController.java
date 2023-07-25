@@ -11,10 +11,12 @@ import com.accountbook.myaccountbook.dto.accountbook.IncomeReturnDto;
 import com.accountbook.myaccountbook.dto.accounthistory.AccountHistoryDto;
 import com.accountbook.myaccountbook.service.AccountBookService;
 import com.accountbook.myaccountbook.service.AccountHistoryService;
+import com.accountbook.myaccountbook.userdetails.CustomUserDetails;
 import com.accountbook.myaccountbook.utils.AccountBookUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +28,6 @@ import java.util.Map;
 @Slf4j
 @Controller
 @RequestMapping("/book")
-@SessionAttributes("user")
 @RequiredArgsConstructor
 public class AccountBookController {
 
@@ -35,16 +36,11 @@ public class AccountBookController {
     private final AccountBookUtil accountBookUtil;
 
 
-    @ModelAttribute("user")
-    public Member setMember(@ModelAttribute Member member) {
-        return member;
-    }
-
-
     // 가계부 화면을 조회한다.
     @GetMapping("")
-    public String getAccountBook(Model model) {
-        Member findMember = (Member) model.getAttribute("user"); // 세션
+    public String getAccountBook(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Member member = userDetails.getMember();
+        System.out.println("AccountBook Member = " + member);
         String findYear = accountBookUtil.getYear(); // 현재 연도 yyyy
         String findMonth = accountBookUtil.getMonth(); // 현재 달 MM
         String lengthOfMonth = accountBookUtil.getDays(); // 현재 달의 일수
@@ -57,14 +53,14 @@ public class AccountBookController {
         // 1. Income 엔티티를 조회한다.
         // 2. Income 엔티티를 Dto로 변환한다.
         // 3. 총 수입을 계산한다.
-        List<Income> incomes = accountBookService.findAllMonthIncome(fullMonth, findMember.getMid());
+        List<Income> incomes = accountBookService.findAllMonthIncome(fullMonth, member.getMid());
         List<IncomeReturnDto> incomeReturnDtos = accountBookService.imcomesToDto(incomes);
         incomeSum = accountBookService.totalizeIncome(incomes, incomeSum);
 
         // 1. Expense 엔티티 조회한다.
         // 2. Expense 엔티티를 Dto로 변환한다.
         // 3. 총 지출을 계산한다.
-        List<Expense> expenses = accountBookService.findAllMonthExpense(fullMonth, findMember.getMid());
+        List<Expense> expenses = accountBookService.findAllMonthExpense(fullMonth, member.getMid());
         List<ExpenseReturnDto> expenseReturnDtos = accountBookService.expensesToDto(expenses);
         expenseSum = accountBookService.totalizeExpense(expenses, expenseSum);
 
@@ -73,6 +69,7 @@ public class AccountBookController {
 
         // 모델에 값을 담아준다.
         Map<String, Object> attribute = new HashMap<>();
+        attribute.put("user", member);
         attribute.put("year", findYear);
         attribute.put("month", findMonth);
         attribute.put("days", lengthOfMonth);

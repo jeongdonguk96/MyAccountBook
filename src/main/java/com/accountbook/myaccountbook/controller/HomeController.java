@@ -43,4 +43,17 @@ public class HomeController {
 
         return "index";
     }
+
+
+    // 권한 예외를 처리한다.
+    @GetMapping("/noAuthorization")
+    public String noAuthorization() {
+        return "error/denied";
+    }
+
+    // 권한 테스트용
+    @GetMapping("/book2")
+    public String book2() {
+        return "accountbook/book2";
+    }
 }

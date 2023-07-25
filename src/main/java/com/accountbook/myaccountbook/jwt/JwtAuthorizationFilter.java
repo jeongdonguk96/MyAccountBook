@@ -44,13 +44,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             // 쿠키에서 토큰을 꺼내 파싱한다.
             String replacedAccessToken = getAccessToken(request);
 
-            // 토큰을 검증하고 CustomUserDetails를 반환한다.
+            // 액세스 토큰을 검증하고 CustomUserDetails를 반환한다.
+            // 액세스 토큰이 만료되면 리프레시 토큰으로 재발급한다.
             CustomUserDetails userDetails = null;
             try {
                 userDetails = jwtProcess.verifyAccessToken(replacedAccessToken);
             } catch (TokenExpiredException e) {
                 String refreshToken = getRefreshToken(request);
-                System.out.println("refreshToken = " + refreshToken);
                 userDetails = jwtProcess.checkRefreshToken(response, refreshToken);
             }
 
@@ -69,10 +69,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String accessToken = null;
         Cookie[] header = request.getCookies();
 
-        for (Cookie cookie : header) {
-            if ("accessToken".equals(cookie.getName())) {
-                accessToken = cookie.getValue();
-                break;
+        if (header != null) {
+            for (Cookie cookie : header) {
+                if ("accessToken".equals(cookie.getName())) {
+                    accessToken = cookie.getValue();
+                    break;
+                }
             }
         }
 

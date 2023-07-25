@@ -65,25 +65,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // 액세스/리프레시 토큰을 생성한다.
         CustomUserDetails userDetails = (CustomUserDetails) authResult.getPrincipal();
+        System.out.println("userDetails = " + userDetails);
+        System.out.println("userDetails.getMember = " + userDetails.getMember());
         Optional<Member> member = Optional.ofNullable(userDetails.getMember());
         String accessToken = jwtProcess.generateAccessToken(member);
         String refreshToken = jwtProcess.generateRefreshToken(member);
 
         // 생성한 액세스/리프레시 토큰을 브라우저 쿠키에 저장한다.
-//        Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
-//        accessTokenCookie.setPath("/");
-//        accessTokenCookie.setSecure(true);
-//        accessTokenCookie.setHttpOnly(true);
-//        accessTokenCookie.setMaxAge(JwtVo.ACCESS_TOKEN_EXPIRATION_TIME);
-//        response.addCookie(accessTokenCookie);
         CookieUtil.addCookie(response, "accessToken", accessToken, JwtVo.ACCESS_TOKEN_EXPIRATION_TIME, true, true);
-
-//        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-//        refreshTokenCookie.setPath("/");
-//        refreshTokenCookie.setSecure(true);
-//        refreshTokenCookie.setHttpOnly(true);
-//        refreshTokenCookie.setMaxAge(JwtVo.REFRESH_TOKEN_EXPIRATION_TIME);
-//        response.addCookie(refreshTokenCookie);
         CookieUtil.addCookie(response, "refreshToken", refreshToken, JwtVo.REFRESH_TOKEN_EXPIRATION_TIME, true, true);
 
         // 프론트에 응답한다.
@@ -91,7 +80,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
 
-    // attemptAuthentication에서 try-catch에 걸려서 예외를 던질 때 호출됨 (로그인 실패 시)
+    // attemptAuthentication에서 try-catch에 걸려서 예외를 던질 때 호출된다. (로그인 실패 시)
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         CustomResponseUtil.fail(response, HttpStatus.UNAUTHORIZED, "로그인 실패");

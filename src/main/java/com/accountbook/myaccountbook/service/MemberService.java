@@ -49,6 +49,7 @@ public class MemberService {
         Member member = Member.builder()
                             .username(joinDto.getUsername())
                             .pwd(passwordEncoder.encode(joinDto.getPwd()))
+                            .name(joinDto.getName())
                             .age(joinDto.getAge())
                             .job(job)
                             .role(RoleEnum.CUSTOMER)

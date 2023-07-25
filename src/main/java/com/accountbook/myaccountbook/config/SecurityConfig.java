@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 @Configuration
 @RequiredArgsConstructor
@@ -23,7 +24,7 @@ public class SecurityConfig {
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberRepository memberRepository;
-//    private final JwtProcess jwtProcess;
+    private final AccessDeniedHandler customAccessDeniedHandler;
 
     // 로그인 시큐리티 설정
     @Bean
@@ -35,15 +36,20 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http
                 .httpBasic();
-//        http
-//                .formLogin()
-//                .loginPage("/member/login.html");
+        http
+                .formLogin()
+                .loginPage("/login");
         http
                 .authorizeHttpRequests()
                 .antMatchers("/", "/join", "/login", "/logout", "/api/join", "/api/login", "/api/checkId", "api/refreshToken", "/error")
                 .permitAll()
+                .antMatchers("/book2")
+                .hasRole("ADMIN")
                 .anyRequest()
                 .authenticated();
+        http
+                .exceptionHandling()
+                .accessDeniedHandler(customAccessDeniedHandler);
 
         return http.build();
     }
