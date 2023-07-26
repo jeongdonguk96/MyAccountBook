@@ -70,8 +70,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String refreshToken = jwtProcess.generateRefreshToken(member);
 
         // 생성한 액세스/리프레시 토큰을 브라우저 쿠키에 저장한다.
-        CookieUtil.addCookie(response, "accessToken", accessToken, JwtVo.ACCESS_TOKEN_EXPIRATION_TIME, true, true);
-        CookieUtil.addCookie(response, "refreshToken", refreshToken, JwtVo.REFRESH_TOKEN_EXPIRATION_TIME, true, true);
+        CookieUtil.addCookie(response, "accessToken", accessToken, JwtVo.ACCESS_TOKEN_MAX_AGE, true, true);
+        CookieUtil.addCookie(response, "refreshToken", refreshToken, JwtVo.REFRESH_TOKEN_MAX_AGE, true, true);
 
         // 프론트에 응답한다.
         CustomResponseUtil.success(response, accessToken, "로그인 성공");

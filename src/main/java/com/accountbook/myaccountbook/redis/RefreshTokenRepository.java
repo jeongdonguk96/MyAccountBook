@@ -41,24 +41,8 @@ public class RefreshTokenRepository {
     }
 
 
-    // 레디스에서 액세스 토큰을 찾는다.
-    public Integer findAccessTokenById(String accessToken) {
-        ValueOperations<String, Integer> valueOperations = redisTemplate.opsForValue();
-
-        return valueOperations.get(accessToken);
-    }
-
-
     // 레디스에서 리프레시 토큰을 지운다.
     public void deleteById(String refreshToken) {
         redisTemplate.delete(refreshToken);
-    }
-
-
-    // 로그아웃 시 레디스에 액세스 토큰을 블랙리스트로 저장한다.
-    public void insertAccessTokenBlacklist(String accessToken) {
-        ValueOperations<String, Integer> valueOperations = redisTemplate.opsForValue();
-        valueOperations.set(accessToken, 0);
-        redisTemplate.expire(accessToken, JwtVo.ACCESS_TOKEN_EXPIRATION_TIME, TimeUnit.SECONDS);
     }
 }

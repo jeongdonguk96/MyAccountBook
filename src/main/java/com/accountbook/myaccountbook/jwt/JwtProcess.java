@@ -12,7 +12,6 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
@@ -62,70 +61,34 @@ public class JwtProcess {
     }
 
 
-    // 토큰 만료 시 토큰을 삭제한다.
-    public void checkTokenExpiration(HttpServletResponse response, String replacedToken) {
-        DecodedJWT decodedJWT = JWT.decode(replacedToken);
-
-        if (decodedJWT.getExpiresAt().before(new Date())) {
-            Cookie cookie = new Cookie("accessToken", null);
-            cookie.setPath("/");
-            cookie.setMaxAge(0);
-
-            response.addCookie(cookie);
-        }
-    }
-
-
     // 쿠키의 리프레시 토큰과 Redis의 리프레시 토큰을 비교 후 재발급한다.
-    public CustomUserDetails checkRefreshToken(HttpServletResponse response, String refreshToken) throws IOException {
+    public CustomUserDetails verifyRefreshToken(HttpServletResponse response, String refreshToken) throws IOException {
         // Redis에서 리프레시 토큰을 조회한다.
         Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findRefreshTokenById(refreshToken);
+        System.out.println("레디스에서 조회한 리프레시 토큰 = " + findRefreshToken);
 
         // 리프레시 토큰이 있을 시
         if (findRefreshToken.isPresent()) {
             // value인 mid로 Member 객체를 생성한다.
             RefreshToken unWrapedRefreshToken = findRefreshToken.get();
             Object mid = unWrapedRefreshToken.getMid();
-            int realMid = (int) mid;
-            Optional<Member> findMember = memberRepository.findById((realMid));
+            Optional<Member> findMember = memberRepository.findById(((int) mid));
 
-            // 기존 리프레시를 삭제한다.
+            // 기존 리프레시 토큰을 삭제한다.
             refreshTokenRepository.deleteById(refreshToken);
 
-            // 새로운 토큰들을 발급한다.
+            // 액세스 토큰와 리프레시 토큰을 재발급한다.
             String newAccessToken = generateAccessToken(findMember);
             String newRefreshToken = generateRefreshToken(findMember);
 
             // 토큰들을 쿠키에 넣어준다.
-//            CookieUtil.addCookie(response, "accessToken", newAccessToken, JwtVo.ACCESS_TOKEN_EXPIRATION_TIME, true, true);
-//            CookieUtil.addCookie(response, "refreshToken", newRefreshToken, JwtVo.REFRESH_TOKEN_EXPIRATION_TIME, true, true);
-
-            CookieUtil.addCookie(response, "accessToken", newAccessToken, JwtVo.ACCESS_TOKEN_EXPIRATION_TIME, true, true);
-            CookieUtil.addCookie(response, "refreshToken", newRefreshToken, JwtVo.REFRESH_TOKEN_EXPIRATION_TIME, true, true);
+            CookieUtil.addCookie(response, "accessToken", newAccessToken, JwtVo.ACCESS_TOKEN_MAX_AGE, true, true);
+            CookieUtil.addCookie(response, "refreshToken", newRefreshToken, JwtVo.REFRESH_TOKEN_MAX_AGE, true, true);
 
             return new CustomUserDetails(findMember.get());
         }
         else {
-            response.sendRedirect("/login");
             return null;
         }
     }
-
-
-    // Redis에서 accessToken이 블랙리스트인지 확인한다.
-    // 블랙리스트면 true, 아니면 false를 리턴한다.
-    public boolean checkAccessToken(String accessToken) {
-        Integer number = refreshTokenRepository.findAccessTokenById(accessToken);
-        boolean result = false;
-
-        if (number != null) {
-            if (number == 0) {
-                System.out.println("this guy is on blacklist");
-                result = true;
-            }
-        }
-
-        return result;
-    }
-
 }
