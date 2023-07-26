@@ -25,7 +25,6 @@ public class HomeController {
     @GetMapping("/")
     public String firstView() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("authentication = " + authentication.getPrincipal());
         return "index";
     }
 

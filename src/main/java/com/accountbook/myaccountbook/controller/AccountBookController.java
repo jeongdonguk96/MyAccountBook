@@ -35,22 +35,19 @@ public class AccountBookController {
 
     private final AccountBookService accountBookService;
     private final AccountHistoryService accountHistoryService;
-    private final AccountBookUtil accountBookUtil;
 
 
     // 가계부 화면을 조회한다.
     @GetMapping("")
     public String getAccountBook(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
         Member member = userDetails.getMember();
-        System.out.println("AccountBook Member = " + member);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("AccountBook authentication = " + authentication.getPrincipal());
 
-        String findYear = accountBookUtil.getYear(); // 현재 연도 yyyy
-        String findMonth = accountBookUtil.getMonth(); // 현재 달 MM
-        String lengthOfMonth = accountBookUtil.getDays(); // 현재 달의 일수
+        String findYear = AccountBookUtil.getYear(); // 현재 연도 yyyy
+        String findMonth = AccountBookUtil.getMonth(); // 현재 달 MM
+        String lengthOfMonth = AccountBookUtil.getDays(); // 현재 달의 일수
         String fullMonth = findYear + findMonth; // 연월 yyyyMM
-        String message = accountBookUtil.getRandomMessage(); // 메시지 문구
+        String message = AccountBookUtil.getRandomMessage(); // 메시지 문구
         int incomeSum = 0; // 총 수입
         int expenseSum = 0; // 총 지출
         int restSum = 0; // 총 합계
@@ -97,8 +94,8 @@ public class AccountBookController {
     @ResponseBody
     @PostMapping("/expenseCategory/{mid}")
     public List<Map<String, Object>> getPiechart(@PathVariable int mid) {
-        String findYear = accountBookUtil.getYear(); // yyyy
-        String findMonth = accountBookUtil.getMonth(); // MM
+        String findYear = AccountBookUtil.getYear(); // yyyy
+        String findMonth = AccountBookUtil.getMonth(); // MM
         String month = findYear+findMonth; // yyyyMM
 
         // Expense 엔티티를 조회하지만, Dto로 필요한 컬럼만 가져온다.

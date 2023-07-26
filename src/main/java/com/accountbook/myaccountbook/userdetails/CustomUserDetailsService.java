@@ -1,9 +1,9 @@
 package com.accountbook.myaccountbook.userdetails;
 
-import com.accountbook.myaccountbook.exception.CustomLoginException;
 import com.accountbook.myaccountbook.persistence.Member;
 import com.accountbook.myaccountbook.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,8 +18,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member findMember = memberRepository.findByUsername(username).orElseThrow(
-//                () -> new InternalAuthenticationServiceException("인증 실패")
-                () -> new CustomLoginException("인증 실패")
+                () -> new InternalAuthenticationServiceException("인증 실패")
         );
 
         return new CustomUserDetails(findMember);

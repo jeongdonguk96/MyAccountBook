@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -49,4 +50,15 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private RoleEnum role;
 
+    public Member(Optional<Member> findMember) {
+        this.mid = findMember.get().getMid();
+        this.username = findMember.get().getUsername();
+        this.pwd = findMember.get().getPwd();
+        this.name = findMember.get().getName();
+        this.age = findMember.get().getAge();
+        this.job = findMember.get().getJob();
+        this.rest = findMember.get().getRest();
+        this.regDate = findMember.get().getRegDate();
+        this.role = findMember.get().getRole();
+    }
 }

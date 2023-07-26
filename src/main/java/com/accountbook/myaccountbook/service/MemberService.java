@@ -73,8 +73,8 @@ public class MemberService {
     @Transactional
     public void logout(HttpServletResponse response, String accessToken, String refreshToken) {
         refreshTokenRepository.deleteById(refreshToken);
-        CookieUtil.removeCookie(response, "accessToken", accessToken);
-        CookieUtil.removeCookie(response, "refreshToken", refreshToken);
+        CookieUtil.expireCookie(response, "accessToken", accessToken);
+        CookieUtil.expireCookie(response, "refreshToken", refreshToken);
     }
 
 

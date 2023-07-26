@@ -19,8 +19,8 @@ public class CookieUtil {
     }
 
 
-    // 사용자의 브라우저에서 쿠키를 제거한다.
-    public static void removeCookie(HttpServletResponse response, String name, String value) {
+    // 사용자의 브라우저에서 쿠키를 만료시킨다.
+    public static void expireCookie(HttpServletResponse response, String name, String value) {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
         cookie.setMaxAge(0);

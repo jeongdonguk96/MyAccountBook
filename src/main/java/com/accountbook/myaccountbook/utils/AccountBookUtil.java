@@ -12,15 +12,25 @@ import java.util.Random;
 public class AccountBookUtil {
 
     // 현재 연도 계산
-    public String getYear() {
+    public static String getYear() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy");
 
         return formatter.format(new Date());
     }
 
 
+    // 지난 연도 계산
+    public static String getLastYear() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy");
+        String date = formatter.format(new Date());
+        int intDate = Integer.parseInt(date);
+
+        return String.valueOf(intDate - 1);
+    }
+
+
     // 현재 달 계산
-    public String getMonth() {
+    public static String getMonth() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMM");
         String date = formatter.format(new Date());
 
@@ -28,8 +38,19 @@ public class AccountBookUtil {
     }
 
 
+    // 지난 달 계산
+    public static String getLastMonth() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMM");
+        String date = formatter.format(new Date());
+        int intDate = Integer.parseInt(date);
+        String stringDate = String.valueOf(intDate - 1);
+
+        return stringDate.substring(4, 6);
+    }
+
+
     // 현재 달의 일수 계산
-    public String getDays() {
+    public static String getDays() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMM");
         String date = formatter.format(new Date());
         int year = Integer.parseInt(date.substring(0, 4));
@@ -42,7 +63,7 @@ public class AccountBookUtil {
 
 
     // 랜덤 문구 추첨
-    public String getRandomMessage() {
+    public static String getRandomMessage() {
         int index = new Random().nextInt(MessageConstants.MESSAGE.length);
 
         return MessageConstants.MESSAGE[index];

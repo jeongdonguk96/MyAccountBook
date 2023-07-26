@@ -5,12 +5,12 @@ import com.accountbook.myaccountbook.repository.AccountHistoryRepository;
 import com.accountbook.myaccountbook.repository.ExpenseRepository;
 import com.accountbook.myaccountbook.repository.IncomeRepository;
 import com.accountbook.myaccountbook.repository.MemberRepository;
+import com.accountbook.myaccountbook.utils.AccountBookUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,10 +35,10 @@ public class AccountHistoryScheduler {
      */
     @Scheduled(cron = "0 0 0 1 * *")
     public void insertAccountHistory() {
-        String year = getYear(); // 현재 연도
-        String lastYear = getLastYear(); // 지난 연도
-        String month = getMonth(); // 현재 달
-        String lastMonth = month.equals("1") ? "12": getLastMonth(); // 지난 달
+        String year = AccountBookUtil.getYear(); // 현재 연도
+        String lastYear = AccountBookUtil.getLastYear(); // 지난 연도
+        String month = AccountBookUtil.getMonth(); // 현재 달
+        String lastMonth = month.equals("1") ? "12": AccountBookUtil.getLastMonth(); // 지난 달
         String fullMonth = (month.equals("1") ? lastYear : year) + lastMonth; // 지난 달 yyyyMM
 
         log.info("========== {}년 {}월 1일 0시 0분 0초 진입 ==========", year, month);
@@ -100,43 +100,5 @@ public class AccountHistoryScheduler {
 
         Duration timeDiff = Duration.between(startTime, endTime);
         log.info("========== AccountHistoryScheduler 소요 시간 = {} ==========", timeDiff);
-    }
-
-
-    // 현재 연도 계산
-    private static String getYear() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy");
-
-        return formatter.format(new Date());
-    }
-
-
-    // 지난 연도 계산
-    private static String getLastYear() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy");
-        String date = formatter.format(new Date());
-        int intDate = Integer.parseInt(date);
-
-        return String.valueOf(intDate - 1);
-    }
-
-
-    // 현재 달 계산
-    private static String getMonth() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMM");
-        String date = formatter.format(new Date());
-
-        return date.substring(4, 6);
-    }
-
-
-    // 지난 달 계산
-    private static String getLastMonth() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMM");
-        String date = formatter.format(new Date());
-        int intDate = Integer.parseInt(date);
-        String stringDate = String.valueOf(intDate - 1);
-
-        return stringDate.substring(4, 6);
     }
 }

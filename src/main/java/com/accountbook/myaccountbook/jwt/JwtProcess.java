@@ -1,6 +1,5 @@
 package com.accountbook.myaccountbook.jwt;
 
-import com.accountbook.myaccountbook.enums.RoleEnum;
 import com.accountbook.myaccountbook.persistence.Member;
 import com.accountbook.myaccountbook.redis.RefreshTokenRepository;
 import com.accountbook.myaccountbook.repository.MemberRepository;
@@ -42,7 +41,6 @@ public class JwtProcess {
 
     // 리프레시 토큰을 생성하고 Redis에 저장한다.
     public String generateRefreshToken(Optional<Member> userDetails) {
-        System.out.println("리프레시 토큰 발급됨");
         RefreshToken refreshToken = new RefreshToken(UUID.randomUUID().toString(), userDetails.get().getMid());
         refreshTokenRepository.save(refreshToken);
 
@@ -52,11 +50,15 @@ public class JwtProcess {
 
     // 액세스 토큰을 검증해 CustomUserDetails 객체를 반환한다.
     public CustomUserDetails verifyAccessToken(String token) {
+        // 액세스 토큰에서 mid를 꺼낸다.
         DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(JwtVo.SECRET)).build().verify(token);
         Integer mid = decodedJWT.getClaim("mid").asInt();
-        String role = decodedJWT.getClaim("role").asString();
-        Member member = Member.builder().mid(mid).role(RoleEnum.valueOf(role)).build();
 
+        // 꺼낸 mid로 DB를 조회해 Member 객체를 생성한다.
+        Optional<Member> findMember = memberRepository.findById(mid);
+        Member member = new Member(findMember);
+
+        // DB에서 찾은 멤버 객체를 시큐리티 컨텍스트에 넣는다.
         return new CustomUserDetails(member);
     }
 
@@ -65,7 +67,6 @@ public class JwtProcess {
     public CustomUserDetails verifyRefreshToken(HttpServletResponse response, String refreshToken) throws IOException {
         // Redis에서 리프레시 토큰을 조회한다.
         Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findRefreshTokenById(refreshToken);
-        System.out.println("레디스에서 조회한 리프레시 토큰 = " + findRefreshToken);
 
         // 리프레시 토큰이 있을 시
         if (findRefreshToken.isPresent()) {
