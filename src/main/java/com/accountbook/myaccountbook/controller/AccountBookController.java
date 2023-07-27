@@ -1,14 +1,14 @@
 package com.accountbook.myaccountbook.controller;
 
-import com.accountbook.myaccountbook.persistence.AccountHistory;
-import com.accountbook.myaccountbook.persistence.Expense;
-import com.accountbook.myaccountbook.persistence.Income;
-import com.accountbook.myaccountbook.persistence.Member;
 import com.accountbook.myaccountbook.dto.ResponseDto;
 import com.accountbook.myaccountbook.dto.accountbook.ExpenseCategoryDto;
 import com.accountbook.myaccountbook.dto.accountbook.ExpenseReturnDto;
 import com.accountbook.myaccountbook.dto.accountbook.IncomeReturnDto;
 import com.accountbook.myaccountbook.dto.accounthistory.AccountHistoryDto;
+import com.accountbook.myaccountbook.persistence.AccountHistory;
+import com.accountbook.myaccountbook.persistence.Expense;
+import com.accountbook.myaccountbook.persistence.Income;
+import com.accountbook.myaccountbook.persistence.Member;
 import com.accountbook.myaccountbook.service.AccountBookService;
 import com.accountbook.myaccountbook.service.AccountHistoryService;
 import com.accountbook.myaccountbook.userdetails.CustomUserDetails;
@@ -16,9 +16,7 @@ import com.accountbook.myaccountbook.utils.AccountBookUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -41,8 +39,6 @@ public class AccountBookController {
     @GetMapping("")
     public String getAccountBook(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
         Member member = userDetails.getMember();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         String findYear = AccountBookUtil.getYear(); // 현재 연도 yyyy
         String findMonth = AccountBookUtil.getMonth(); // 현재 달 MM
         String lengthOfMonth = AccountBookUtil.getDays(); // 현재 달의 일수
@@ -52,19 +48,15 @@ public class AccountBookController {
         int expenseSum = 0; // 총 지출
         int restSum = 0; // 총 합계
 
-        // 1. Income 엔티티를 조회한다.
-        // 2. Income 엔티티를 Dto로 변환한다.
-        // 3. 총 수입을 계산한다.
-        List<Income> incomes = accountBookService.findAllMonthIncome(fullMonth, member.getMid());
-        List<IncomeReturnDto> incomeReturnDtos = accountBookService.imcomesToDto(incomes);
-        incomeSum = accountBookService.totalizeIncome(incomes, incomeSum);
+        // 1. Income 엔티티를 Dto로 조회한다.
+        // 2. 총 수입을 계산한다.
+        List<IncomeReturnDto> incomeReturnDtos = accountBookService.findAllMonthIncomeToDto(fullMonth, member.getMid());
+        incomeSum = accountBookService.totalizeIncome(incomeReturnDtos, incomeSum);
 
-        // 1. Expense 엔티티 조회한다.
-        // 2. Expense 엔티티를 Dto로 변환한다.
-        // 3. 총 지출을 계산한다.
-        List<Expense> expenses = accountBookService.findAllMonthExpense(fullMonth, member.getMid());
-        List<ExpenseReturnDto> expenseReturnDtos = accountBookService.expensesToDto(expenses);
-        expenseSum = accountBookService.totalizeExpense(expenses, expenseSum);
+        // 1. Expense 엔티티를 Dto로 조회한다.
+        // 2. 총 지출을 계산한다.
+        List<ExpenseReturnDto> expenseReturnDtos = accountBookService.findAllMonthExpenseToDto(fullMonth, member.getMid());
+        expenseSum = accountBookService.totalizeExpense(expenseReturnDtos, expenseSum);
 
         // 총 합계를 계산한다.
         restSum = incomeSum - expenseSum;

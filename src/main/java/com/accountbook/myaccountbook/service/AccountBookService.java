@@ -3,11 +3,11 @@ package com.accountbook.myaccountbook.service;
 import com.accountbook.myaccountbook.domain.ExpenseDomain;
 import com.accountbook.myaccountbook.domain.IncomeDomain;
 import com.accountbook.myaccountbook.domain.MemberDomain;
+import com.accountbook.myaccountbook.dto.accountbook.*;
 import com.accountbook.myaccountbook.exception.CustomApiException;
 import com.accountbook.myaccountbook.persistence.Expense;
 import com.accountbook.myaccountbook.persistence.Income;
 import com.accountbook.myaccountbook.persistence.Member;
-import com.accountbook.myaccountbook.dto.accountbook.*;
 import com.accountbook.myaccountbook.repository.ExpenseRepository;
 import com.accountbook.myaccountbook.repository.IncomeRepository;
 import com.accountbook.myaccountbook.repository.MemberRepository;
@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -213,14 +214,22 @@ public class AccountBookService {
 
 
     /**
-     * 이 달의 수입 전체 조회
+     * 이 달의 수입 전체 조회 후 Dto로 변환
      * @param mid 사용자 id
      * @return 사용자별 수입 전체 List
      */
     @Transactional
-    public List<Income> findAllMonthIncome(String month, int mid) {
-        return incomeRepository.findAllByMonthAndMemberMid(month, mid);
+    public List<IncomeReturnDto> findAllMonthIncomeToDto(String month, int mid) {
+        List<Income> findIncomes = incomeRepository.findAllByMonthAndMemberMid(month, mid);
+
+        return findIncomes.stream()
+                .map(IncomeReturnDto::convertToDto)
+                .collect(Collectors.toList());
     }
+//    @Transactional
+//    public List<Income> findAllMonthIncome(String month, int mid) {
+//        return incomeRepository.findAllByMonthAndMemberMid(month, mid);
+//    }
 
 
     /**
@@ -229,8 +238,12 @@ public class AccountBookService {
      * @return 사용자별 지출 전체 List
      */
     @Transactional
-    public List<Expense> findAllMonthExpense(String month, int mid) {
-        return expenseRepository.findAllByMonthAndMemberMid(month, mid);
+    public List<ExpenseReturnDto> findAllMonthExpenseToDto(String month, int mid) {
+        List<Expense> findExpense = expenseRepository.findAllByMonthAndMemberMid(month, mid);
+
+        return findExpense.stream()
+                .map(ExpenseReturnDto::convertToDto)
+                .collect(Collectors.toList());
     }
 
 
@@ -284,50 +297,13 @@ public class AccountBookService {
 
 
     /**
-     * Income 엔티티를 Dto로 변환
-     * @param incomes Income 엔티티
-     * @return 변환한 Income Dto
-     */
-    public List<IncomeReturnDto> imcomesToDto(List<Income> incomes) {
-        List<IncomeReturnDto> incomeReturnDtos = new ArrayList<>();
-
-
-        for (Income income : incomes) {
-            IncomeReturnDto incomeReturnDto = new IncomeReturnDto();
-            incomeReturnDto.convetToDto(income);
-            incomeReturnDtos.add(incomeReturnDto);
-        }
-
-        return incomeReturnDtos;
-    }
-
-    
-    /**
-     * Expense 엔티티를 Dto로 변환
-     * @param expenses Expense 엔티티
-     * @return 변환한 Expense Dto
-     */
-    public List<ExpenseReturnDto> expensesToDto(List<Expense> expenses) {
-        List<ExpenseReturnDto> expenseReturnDtos = new ArrayList<>();
-        
-        for (Expense expense : expenses) {
-            ExpenseReturnDto expenseReturnDto = new ExpenseReturnDto();
-            expenseReturnDto.convetToDto(expense);
-            expenseReturnDtos.add(expenseReturnDto);
-        }
-
-        return expenseReturnDtos;
-    }
-
-
-    /**
      * 수입 총액 계산
-     * @param incomes Expense 엔티티
+     * @param incomeReturnDtos Expense Dto
      * @param incomeSum 빈 수입 총액 변수
      * @return 수입 총액
      */
-    public int totalizeIncome(List<Income> incomes, int incomeSum) {
-        for (Income income : incomes) {
+    public int totalizeIncome(List<IncomeReturnDto> incomeReturnDtos, int incomeSum) {
+        for (IncomeReturnDto income : incomeReturnDtos) {
             incomeSum += income.getIncomeMoney();
         }
 
@@ -337,12 +313,12 @@ public class AccountBookService {
 
     /**
      * 지출 총액 계산
-     * @param expenses Expense 엔티티
+     * @param expenseReturnDtos Expense Dto
      * @param expenseSum 빈 지출 총액 변수
      * @return 지출 총액
      */
-    public int totalizeExpense(List<Expense> expenses, int expenseSum) {
-        for (Expense expense : expenses) {
+    public int totalizeExpense(List<ExpenseReturnDto> expenseReturnDtos, int expenseSum) {
+        for (ExpenseReturnDto expense : expenseReturnDtos) {
             expenseSum += expense.getExpenseMoney();
         }
 

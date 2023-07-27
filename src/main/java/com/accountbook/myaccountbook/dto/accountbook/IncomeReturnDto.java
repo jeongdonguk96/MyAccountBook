@@ -21,10 +21,14 @@ public class IncomeReturnDto {
     @NotBlank
     private String month;
 
-    public void convetToDto(Income income) {
-        this.inid = income.getInid();
-        this.incomeMoney = income.getIncomeMoney();
-        this.incomeReason = income.getIncomeReason();
-        this.month = income.getMonth();
+    // DB에서 조회한 엔티티를 Dto로 변환한다.
+    public static IncomeReturnDto convertToDto(Income income) {
+        IncomeReturnDto incomeReturnDto = new IncomeReturnDto();
+        incomeReturnDto.setInid(incomeReturnDto.getInid());
+        incomeReturnDto.setIncomeMoney(incomeReturnDto.getIncomeMoney());
+        incomeReturnDto.setIncomeReason(incomeReturnDto.getIncomeReason());
+        incomeReturnDto.setMonth(incomeReturnDto.getMonth());
+
+        return incomeReturnDto;
     }
 }
