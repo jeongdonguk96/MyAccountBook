@@ -27,4 +27,10 @@ public class Expense {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
+
+    public void modifyReasonAndMoneyAndCategory(String incomeReason, int incomeMoney, ExpenseCategoryEnum expenseCategory) {
+        this.expenseReason = incomeReason;
+        this.expenseMoney = incomeMoney;
+        this.expenseCategory = expenseCategory;
+    }
 }

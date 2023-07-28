@@ -1,8 +1,5 @@
 package com.accountbook.myaccountbook.service;
 
-import com.accountbook.myaccountbook.domain.ExpenseDomain;
-import com.accountbook.myaccountbook.domain.IncomeDomain;
-import com.accountbook.myaccountbook.domain.MemberDomain;
 import com.accountbook.myaccountbook.dto.accountbook.*;
 import com.accountbook.myaccountbook.exception.CustomApiException;
 import com.accountbook.myaccountbook.persistence.Expense;
@@ -40,16 +37,12 @@ public class AccountBookService {
      */
     @Transactional
     public void writeIncome(IncomeWriteDto incomeWriteDto) {
-        // Repository에서 Entity를 찾고, Domain으로 변환한다.
         Member findMember = memberRepository.findById(incomeWriteDto.getMid()).orElseThrow(
                 () -> new CustomApiException("사용자가 없습니다.")
         );
-        MemberDomain memberDomain = new MemberDomain(findMember);
 
-        // 잔여금을 계산한다.
-//        memberService.calculateRest(findMember, incomeWriteDto.getIncomeMoney());
-        memberDomain.calculateRest(memberDomain.getRest() + incomeWriteDto.getIncomeMoney());
-        findMember.setRest(memberDomain.getRest());
+        // 잔여금을 계산해 수정한다.
+        findMember.increaseRest(incomeWriteDto.getIncomeMoney());
 
         // 년, 월을 계산한다.
         String month = incomeWriteDto.getMonth();
@@ -73,16 +66,12 @@ public class AccountBookService {
      */
     @Transactional
     public void writeExpense(ExpenseWriteDto expenseWriteDto) {
-        // Repository에서 Entity를 찾고, Domain으로 변환한다
         Member findMember = memberRepository.findById(expenseWriteDto.getMid()).orElseThrow(
                 () -> new CustomApiException("사용자가 없습니다.")
         );
-        MemberDomain memberDomain = new MemberDomain(findMember);
 
-        // 잔여금을 계산한다.
-//        memberService.calculateRest(findMember, -expenseWriteDto.getExpenseMoney());
-        memberDomain.calculateRest(memberDomain.getRest() + expenseWriteDto.getExpenseMoney());
-        findMember.setRest(memberDomain.getRest());
+        // 잔여금을 계산해 수정한다.
+        findMember.decreaseRest(expenseWriteDto.getExpenseMoney());
 
         // 년, 월, 일을 계산한다.
         String date = expenseWriteDto.getDate();
@@ -109,28 +98,21 @@ public class AccountBookService {
      */
     @Transactional
     public void modifyIncome(IncomeModifyDto incomeModifyDto) {
-        // Repository에서 Entity를 찾고, Domain으로 변환한다
         Member findMember = memberRepository.findById(incomeModifyDto.getMid()).orElseThrow(
                 () -> new CustomApiException("사용자가 없습니다.")
         );
         Income findIncome = incomeRepository.findById(incomeModifyDto.getInid()).orElseThrow(
                 () -> new CustomApiException("수입 내역이 없습니다.")
         );
-        MemberDomain memberDomain = new MemberDomain(findMember);
-        IncomeDomain incomeDomain = new IncomeDomain(findIncome);
 
         // 해당 수입을 기존 잔여금에서 롤백한다.
-        memberDomain.calculateRest(memberDomain.getRest() - incomeDomain.getIncomeMoney());
-        findMember.setRest(memberDomain.getRest());
+        findMember.decreaseRest(findIncome.getIncomeMoney());
 
         // 입력받은 데이터로 수입 내용을 수정한다.
-        incomeDomain.modifyReasonAndMoney(incomeModifyDto.getIncomeReason(), incomeModifyDto.getIncomeMoney());
-        findIncome.setIncomeReason(incomeModifyDto.getIncomeReason());
-        findIncome.setIncomeMoney(incomeModifyDto.getIncomeMoney());
+        findIncome.modifyReasonAndMoney(incomeModifyDto.getIncomeReason(), incomeModifyDto.getIncomeMoney());
 
         // 최종 잔여금을 계산한다.
-        memberDomain.calculateRest(findMember.getRest() + incomeDomain.getIncomeMoney());
-        findMember.setRest(memberDomain.getRest());
+        findMember.increaseRest(incomeModifyDto.getIncomeMoney());
     }
 
 
@@ -140,24 +122,21 @@ public class AccountBookService {
      */
     @Transactional
     public void modifyExpense(ExpenseModifyDto expenseModifyDto) {
-        // Repository에서 Entity를 찾고, Domain으로 변환한다
         Member findMember = memberRepository.findById(expenseModifyDto.getMid()).orElseThrow(
                 () -> new CustomApiException("사용자가 없습니다.")
         );
         Expense findExpense = expenseRepository.findById(expenseModifyDto.getExid()).orElseThrow(
                 () -> new CustomApiException("지출 내역이 없습니다.")
         );
-        MemberDomain memberDomain = new MemberDomain(findMember);
-        ExpenseDomain expenseDomain = new ExpenseDomain(findExpense);
 
-        // 기존 expenseMoney를 롤백한다.
-        memberService.rollbackRest(findMember, findExpense.getExpenseMoney());
+        // 해당 지출을 기존 잔여금에서 롤백한다.
+        findMember.increaseRest(findExpense.getExpenseMoney());
 
-        findExpense.setExpenseMoney(expenseModifyDto.getExpenseMoney());
-        findExpense.setExpenseReason(expenseModifyDto.getExpenseReason());
-        findExpense.setExpenseCategory(expenseModifyDto.getExpenseCategory());
+        // 입력받은 데이터로 지출 내용을 수정한다.
+        findExpense.modifyReasonAndMoneyAndCategory(expenseModifyDto.getExpenseReason(), expenseModifyDto.getExpenseMoney(), expenseModifyDto.getExpenseCategory());
 
-        memberService.calculateRest(findMember, -findExpense.getExpenseMoney());
+        // 최종 잔여금을 계산한다.
+        findMember.decreaseRest(expenseModifyDto.getExpenseMoney());
     }
 
 
@@ -175,8 +154,9 @@ public class AccountBookService {
         );
 
         // 삭제하는 수입금만큼 member의 rest를 차감한다.
-        memberService.calculateRest(findMember, -findIncome.getIncomeMoney());
+        findMember.decreaseRest(findIncome.getIncomeMoney());
 
+        // 수입을 삭제한다.
         incomeRepository.deleteById(incomeDeleteDto.getInid());
     }
 
@@ -195,8 +175,9 @@ public class AccountBookService {
         );
 
         // 삭제하는 지출금만큼 member의 rest를 증가한다.
-        memberService.calculateRest(findMember, findExpense.getExpenseMoney());
+        findMember.increaseRest(findExpense.getExpenseMoney());
 
+        // 지출을 삭제한다.
         expenseRepository.deleteById(expenseDeleteDto.getExid());
     }
 
@@ -226,14 +207,10 @@ public class AccountBookService {
                 .map(IncomeReturnDto::convertToDto)
                 .collect(Collectors.toList());
     }
-//    @Transactional
-//    public List<Income> findAllMonthIncome(String month, int mid) {
-//        return incomeRepository.findAllByMonthAndMemberMid(month, mid);
-//    }
 
 
     /**
-     * 이 달의 지출 전체 조회
+     * 이 달의 지출 전체 조회 후 Dto로 변환
      * @param mid 사용자 id
      * @return 사용자별 지출 전체 List
      */

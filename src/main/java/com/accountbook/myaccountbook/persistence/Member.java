@@ -61,4 +61,12 @@ public class Member {
         this.regDate = findMember.get().getRegDate();
         this.role = findMember.get().getRole();
     }
+
+    public void increaseRest(int money) {
+        this.rest += money;
+    }
+
+    public void decreaseRest(int money) {
+        this.rest -= money;
+    }
 }

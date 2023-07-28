@@ -5,7 +5,6 @@ import com.accountbook.myaccountbook.dto.accountbook.ExpenseCategoryDto;
 import com.accountbook.myaccountbook.dto.accountbook.ExpenseReturnDto;
 import com.accountbook.myaccountbook.dto.accountbook.IncomeReturnDto;
 import com.accountbook.myaccountbook.dto.accounthistory.AccountHistoryDto;
-import com.accountbook.myaccountbook.persistence.AccountHistory;
 import com.accountbook.myaccountbook.persistence.Expense;
 import com.accountbook.myaccountbook.persistence.Income;
 import com.accountbook.myaccountbook.persistence.Member;
@@ -105,14 +104,8 @@ public class AccountBookController {
     @ResponseBody
     @PostMapping("/expensesByMonth/{mid}")
     public ResponseDto<List<AccountHistoryDto>> getExpenseCategoryByMonth(@PathVariable int mid) {
-
-        // DB에서 엔티티를 조회한다.
-        List<AccountHistory> accountHistories = accountHistoryService.findAllAccountHistory(mid);
-
-        // 엔티티를 Dto로 변환한다.
-        List<AccountHistoryDto> accountHistoryDtos = accountHistories.stream()
-                .map(AccountHistoryDto::accountHistoryToDto)
-                .toList();
+        // AccountHistory 엔티티를 Dto로 조회한다.
+        List<AccountHistoryDto> accountHistoryDtos = accountHistoryService.findAllAccountHistoryToDto(mid);
 
         return new ResponseDto<>(HttpStatus.OK.value(), accountHistoryDtos, "success");
     }

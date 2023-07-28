@@ -27,7 +27,7 @@ public class AccountHistoryDto {
 //        this.regDate = accountHistory.getRegDate();
 //    }
 
-    public static AccountHistoryDto accountHistoryToDto(AccountHistory accountHistory) {
+    public static AccountHistoryDto convertToDto(AccountHistory accountHistory) {
         AccountHistoryDto accountHistoryDto = new AccountHistoryDto();
         accountHistoryDto.setAhid(accountHistory.getAhid());
         accountHistoryDto.setMid(accountHistory.getMid());

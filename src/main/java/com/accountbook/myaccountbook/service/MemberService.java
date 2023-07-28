@@ -76,26 +76,4 @@ public class MemberService {
         CookieUtil.expireCookie(response, "accessToken", accessToken);
         CookieUtil.expireCookie(response, "refreshToken", refreshToken);
     }
-
-
-    /**
-     * 가계부 작성/수정 시 사용자 잔여금 계산
-     * @param findMember 사용자
-     * @param money 수입/지출 기입시 금액
-     */
-    @Transactional
-    public void calculateRest(Member findMember, int money) {
-        findMember.setRest(findMember.getRest()+money);
-    }
-
-
-    /**
-     * 가계부 지출 수정 시 기존 지출금액 되돌리기
-     * @param findMember 사용자
-     * @param money 수정 전 기존 기입 금액
-     */
-    @Transactional
-    public void rollbackRest(Member findMember, int money) {
-        findMember.setRest(findMember.getRest()+money);
-    }
 }
