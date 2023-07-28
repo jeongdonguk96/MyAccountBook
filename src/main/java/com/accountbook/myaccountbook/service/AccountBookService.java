@@ -8,14 +8,13 @@ import com.accountbook.myaccountbook.persistence.Member;
 import com.accountbook.myaccountbook.repository.ExpenseRepository;
 import com.accountbook.myaccountbook.repository.IncomeRepository;
 import com.accountbook.myaccountbook.repository.MemberRepository;
+import com.accountbook.myaccountbook.utils.ExpenseUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -230,23 +229,7 @@ public class AccountBookService {
      * @return 카테고리별 지출 Map
      */
     public Map<String, Integer> categorize(List<ExpenseCategoryDto> expenses) {
-        Map<String, Integer> expenseMap = new HashMap<>();
-
-        for (ExpenseCategoryDto expense : expenses) {
-            String category = expense.getExpenseCategory().toString();
-            int money = expense.getExpenseMoney();
-
-            // Map에서 같은 key를 가진 value들은 합산해서 적용한다.
-            if (expenseMap.containsKey(category)) {
-                int totalMoney = expenseMap.get(category);
-                totalMoney += money;
-                expenseMap.put(category, totalMoney);
-            } else {
-                expenseMap.put(category, money);
-            }
-        }
-
-        return expenseMap;
+        return ExpenseUtil.expensesToMap(expenses);
     }
 
 
@@ -256,20 +239,7 @@ public class AccountBookService {
      * @return 카테고리별 지출 MapList
      */
     public List<Map<String, Object>> expenseMapToMapList(Map<String, Integer> expenseMap) {
-        List<Map<String, Object>> mapList = new ArrayList<>();
-
-        for (Map.Entry<String, Integer> expense : expenseMap.entrySet()) {
-            String category = expense.getKey();
-            int money = expense.getValue();
-
-            Map<String, Object> map = new HashMap<>();
-            map.put("category", category);
-            map.put("money", money);
-
-            mapList.add(map);
-        }
-
-        return mapList;
+        return ExpenseUtil.mapToList(expenseMap);
     }
 
 
