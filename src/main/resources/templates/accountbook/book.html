@@ -10,8 +10,7 @@
 
 
     <!-- 상단 텍스트 시작 -->
-    <input type="text" th:value="${ #authentication.getName() }">
-    <input type="text" id="mid" th:value="${ #authentication.principal.member.mid }">
+    <input type="hidden" id="mid" th:value="${ #authentication.principal.member.mid }">
 
     <div class="welcome-message">
         <br><br><h4><span th:text="|${#authentication.principal.member.name }님 환영합니다|"/></h4><br><br>

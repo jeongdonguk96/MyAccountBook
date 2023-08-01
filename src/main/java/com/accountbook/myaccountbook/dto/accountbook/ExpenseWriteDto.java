@@ -1,6 +1,5 @@
 package com.accountbook.myaccountbook.dto.accountbook;
 
-import com.accountbook.myaccountbook.enums.ExpenseCategoryEnum;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -19,7 +18,7 @@ public class ExpenseWriteDto {
     private String expenseReason;
 
     @NotBlank
-    private ExpenseCategoryEnum expenseCategory;
+    private String expenseCategory;
 
     @NotBlank
     private String date;

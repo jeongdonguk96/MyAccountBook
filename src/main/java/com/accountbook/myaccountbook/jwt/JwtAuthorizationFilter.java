@@ -1,6 +1,7 @@
 package com.accountbook.myaccountbook.jwt;
 
 import com.accountbook.myaccountbook.userdetails.CustomUserDetails;
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,9 +18,9 @@ import java.io.IOException;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
-    private final JwtProcess jwtProcess;
+    private final JwtService jwtProcess;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtProcess jwtProcess) {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtService jwtProcess) {
         super(authenticationManager);
         this.jwtProcess = jwtProcess;
     }
@@ -41,7 +42,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             CustomUserDetails userDetails = null;
             try {
                 userDetails = jwtProcess.verifyAccessToken(replacedAccessToken);
-            } catch (TokenExpiredException e) {
+            } catch (TokenExpiredException | JWTDecodeException e) {
                 e.printStackTrace();
                 String refreshToken = getRefreshToken(request);
                 userDetails = jwtProcess.verifyRefreshToken(response, refreshToken);

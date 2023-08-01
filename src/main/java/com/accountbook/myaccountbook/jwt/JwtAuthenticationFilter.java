@@ -24,9 +24,9 @@ import java.util.Optional;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtProcess jwtProcess;
+    private final JwtService jwtProcess;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtProcess jwtProcess) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtService jwtProcess) {
         super(authenticationManager);
         setFilterProcessesUrl("/api/login");
         this.authenticationManager = authenticationManager;

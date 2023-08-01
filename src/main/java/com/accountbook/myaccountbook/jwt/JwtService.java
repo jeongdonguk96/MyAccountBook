@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class JwtProcess {
+public class JwtService {
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberRepository memberRepository;

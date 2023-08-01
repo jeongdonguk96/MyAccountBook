@@ -1,6 +1,7 @@
 package com.accountbook.myaccountbook.service;
 
 import com.accountbook.myaccountbook.dto.accountbook.*;
+import com.accountbook.myaccountbook.enums.ExpenseCategoryEnum;
 import com.accountbook.myaccountbook.exception.CustomApiException;
 import com.accountbook.myaccountbook.persistence.Expense;
 import com.accountbook.myaccountbook.persistence.Income;
@@ -40,6 +41,8 @@ public class AccountBookService {
                 () -> new CustomApiException("사용자가 없습니다.")
         );
 
+        System.out.println("incomeWriteDto = " + incomeWriteDto);
+
         // 잔여금을 계산해 수정한다.
         findMember.increaseRest(incomeWriteDto.getIncomeMoney());
 
@@ -68,6 +71,7 @@ public class AccountBookService {
         Member findMember = memberRepository.findById(expenseWriteDto.getMid()).orElseThrow(
                 () -> new CustomApiException("사용자가 없습니다.")
         );
+        System.out.println("expenseWriteDto = " + expenseWriteDto);
 
         // 잔여금을 계산해 수정한다.
         findMember.decreaseRest(expenseWriteDto.getExpenseMoney());
@@ -80,7 +84,7 @@ public class AccountBookService {
         Expense expense = Expense.builder()
                             .expenseMoney(expenseWriteDto.getExpenseMoney())
                             .expenseReason(expenseWriteDto.getExpenseReason())
-                            .expenseCategory(expenseWriteDto.getExpenseCategory())
+                            .expenseCategory(ExpenseCategoryEnum.valueOf(expenseWriteDto.getExpenseCategory()))
                             .year(year)
                             .month(month)
                             .date(date)
@@ -132,7 +136,7 @@ public class AccountBookService {
         findMember.increaseRest(findExpense.getExpenseMoney());
 
         // 입력받은 데이터로 지출 내용을 수정한다.
-        findExpense.modifyReasonAndMoneyAndCategory(expenseModifyDto.getExpenseReason(), expenseModifyDto.getExpenseMoney(), expenseModifyDto.getExpenseCategory());
+        findExpense.modifyReasonAndMoneyAndCategory(expenseModifyDto.getExpenseReason(), expenseModifyDto.getExpenseMoney(), ExpenseCategoryEnum.valueOf(expenseModifyDto.getExpenseCategory()));
 
         // 최종 잔여금을 계산한다.
         findMember.decreaseRest(expenseModifyDto.getExpenseMoney());
@@ -201,6 +205,7 @@ public class AccountBookService {
     @Transactional
     public List<IncomeReturnDto> findAllMonthIncomeToDto(String month, int mid) {
         List<Income> findIncomes = incomeRepository.findAllByMonthAndMemberMid(month, mid);
+        System.out.println("findIncomes = " + findIncomes);
 
         return findIncomes.stream()
                 .map(IncomeReturnDto::convertToDto)
@@ -216,6 +221,7 @@ public class AccountBookService {
     @Transactional
     public List<ExpenseReturnDto> findAllMonthExpenseToDto(String month, int mid) {
         List<Expense> findExpense = expenseRepository.findAllByMonthAndMemberMid(month, mid);
+        System.out.println("findExpense = " + findExpense);
 
         return findExpense.stream()
                 .map(ExpenseReturnDto::convertToDto)

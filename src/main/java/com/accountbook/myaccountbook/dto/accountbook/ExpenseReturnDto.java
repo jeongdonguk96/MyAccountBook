@@ -1,6 +1,5 @@
 package com.accountbook.myaccountbook.dto.accountbook;
 
-import com.accountbook.myaccountbook.enums.ExpenseCategoryEnum;
 import com.accountbook.myaccountbook.persistence.Expense;
 import lombok.Data;
 
@@ -20,7 +19,7 @@ public class ExpenseReturnDto {
     private String expenseReason;
 
     @NotBlank
-    private ExpenseCategoryEnum expenseCategory;
+    private String expenseCategory;
 
     @NotBlank
     private String date;
@@ -31,7 +30,7 @@ public class ExpenseReturnDto {
         expenseReturnDto.setExid(expense.getExid());
         expenseReturnDto.setExpenseMoney(expense.getExpenseMoney());
         expenseReturnDto.setExpenseReason(expense.getExpenseReason());
-        expenseReturnDto.setExpenseCategory(expense.getExpenseCategory());
+        expenseReturnDto.setExpenseCategory(String.valueOf(expense.getExpenseCategory()));
         expenseReturnDto.setDate(expense.getDate());
 
         return expenseReturnDto;

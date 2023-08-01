@@ -24,10 +24,10 @@ public class IncomeReturnDto {
     // DB에서 조회한 엔티티를 Dto로 변환한다.
     public static IncomeReturnDto convertToDto(Income income) {
         IncomeReturnDto incomeReturnDto = new IncomeReturnDto();
-        incomeReturnDto.setInid(incomeReturnDto.getInid());
-        incomeReturnDto.setIncomeMoney(incomeReturnDto.getIncomeMoney());
-        incomeReturnDto.setIncomeReason(incomeReturnDto.getIncomeReason());
-        incomeReturnDto.setMonth(incomeReturnDto.getMonth());
+        incomeReturnDto.setInid(income.getInid());
+        incomeReturnDto.setIncomeMoney(income.getIncomeMoney());
+        incomeReturnDto.setIncomeReason(income.getIncomeReason());
+        incomeReturnDto.setMonth(income.getMonth());
 
         return incomeReturnDto;
     }

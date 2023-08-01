@@ -2,7 +2,7 @@ package com.accountbook.myaccountbook.config;
 
 import com.accountbook.myaccountbook.jwt.JwtAuthenticationFilter;
 import com.accountbook.myaccountbook.jwt.JwtAuthorizationFilter;
-import com.accountbook.myaccountbook.jwt.JwtProcess;
+import com.accountbook.myaccountbook.jwt.JwtService;
 import com.accountbook.myaccountbook.redis.RefreshTokenRepository;
 import com.accountbook.myaccountbook.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -64,8 +64,8 @@ public class SecurityConfig {
         @Override
         public void configure(HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
-            builder.addFilter(new JwtAuthenticationFilter(authenticationManager, new JwtProcess(refreshTokenRepository, memberRepository)));
-            builder.addFilter(new JwtAuthorizationFilter(authenticationManager, new JwtProcess(refreshTokenRepository, memberRepository)));
+            builder.addFilter(new JwtAuthenticationFilter(authenticationManager, new JwtService(refreshTokenRepository, memberRepository)));
+            builder.addFilter(new JwtAuthorizationFilter(authenticationManager, new JwtService(refreshTokenRepository, memberRepository)));
             super.configure(builder);
         }
     }
