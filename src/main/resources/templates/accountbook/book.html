@@ -335,7 +335,8 @@
 
                 $.each(histories, function (index, history) {
                     // 월 파싱
-                    let month = history.month.substring(4);
+                    console.log('history = ', history);
+                    let month = history.month;
                     let parsedMonth = month.substring(0, 1) === '0' ? month.substring(1) : month;
 
                     // 수입금 파싱

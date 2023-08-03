@@ -105,7 +105,9 @@ public class AccountBookController {
     @PostMapping("/expensesByMonth/{mid}")
     public ResponseDto<List<AccountHistoryDto>> getExpenseCategoryByMonth(@PathVariable int mid) {
         // AccountHistory 엔티티를 Dto로 조회한다.
+        System.out.println("mid = " + mid);
         List<AccountHistoryDto> accountHistoryDtos = accountHistoryService.findAllAccountHistoryToDto(mid);
+        System.out.println("accountHistoryDtos = " + accountHistoryDtos);
 
         return new ResponseDto<>(HttpStatus.OK.value(), accountHistoryDtos, "success");
     }

@@ -16,17 +16,6 @@ public class AccountHistoryDto {
     private String month;
     private Date regDate;
 
-//    public void accountHistoryToDto(AccountHistory accountHistory) {
-//        this.ahid = accountHistory.getAhid();
-//        this.mid = accountHistory.getMid();
-//        this.monthIncome = accountHistory.getMonthIncome();
-//        this.monthExpense = accountHistory.getMonthExpense();
-//        this.monthSum = accountHistory.getMonthSum();
-//        this.year = accountHistory.getYear();
-//        this.month = accountHistory.getMonth();
-//        this.regDate = accountHistory.getRegDate();
-//    }
-
     public static AccountHistoryDto convertToDto(AccountHistory accountHistory) {
         AccountHistoryDto accountHistoryDto = new AccountHistoryDto();
         accountHistoryDto.setAhid(accountHistory.getAhid());

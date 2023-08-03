@@ -205,7 +205,6 @@ public class AccountBookService {
     @Transactional
     public List<IncomeReturnDto> findAllMonthIncomeToDto(String month, int mid) {
         List<Income> findIncomes = incomeRepository.findAllByMonthAndMemberMid(month, mid);
-        System.out.println("findIncomes = " + findIncomes);
 
         return findIncomes.stream()
                 .map(IncomeReturnDto::convertToDto)
@@ -221,7 +220,6 @@ public class AccountBookService {
     @Transactional
     public List<ExpenseReturnDto> findAllMonthExpenseToDto(String month, int mid) {
         List<Expense> findExpense = expenseRepository.findAllByMonthAndMemberMid(month, mid);
-        System.out.println("findExpense = " + findExpense);
 
         return findExpense.stream()
                 .map(ExpenseReturnDto::convertToDto)
