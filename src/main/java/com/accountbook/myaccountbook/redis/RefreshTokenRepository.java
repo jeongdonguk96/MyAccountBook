@@ -1,6 +1,6 @@
 package com.accountbook.myaccountbook.redis;
 
-import com.accountbook.myaccountbook.jwt.JwtVo;
+import com.accountbook.myaccountbook.jwt.JwtConstant;
 import com.accountbook.myaccountbook.jwt.RefreshToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -22,7 +22,7 @@ public class RefreshTokenRepository {
     public String save(RefreshToken refreshToken) {
         ValueOperations<String, Integer> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(refreshToken.getRefreshToken(), refreshToken.getMid());
-        redisTemplate.expire(refreshToken.getRefreshToken(), JwtVo.REFRESH_TOKEN_EXPIRATION_TIME, TimeUnit.SECONDS);
+        redisTemplate.expire(refreshToken.getRefreshToken(), JwtConstant.REFRESH_TOKEN_EXPIRATION_TIME, TimeUnit.SECONDS);
 
         return refreshToken.getRefreshToken();
     }

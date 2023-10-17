@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
-public class RequestJoinDto {
+public class JoinRequestDto {
 
     @NotBlank
     @Size(max = 15)

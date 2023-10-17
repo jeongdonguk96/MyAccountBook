@@ -6,11 +6,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ResponseLoginDto {
+public class LoginResponseDto {
     private String username;
     private String pwd;
 
-    public ResponseLoginDto(CustomUserDetails userDetails) {
+    public LoginResponseDto(CustomUserDetails userDetails) {
         this.username = userDetails.getMember().getUsername();
         this.pwd = userDetails.getMember().getPwd();
     }

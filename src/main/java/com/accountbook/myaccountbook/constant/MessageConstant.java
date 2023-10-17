@@ -1,6 +1,6 @@
 package com.accountbook.myaccountbook.constant;
 
-public final class MessageConstants {
+public final class MessageConstant {
     public static final String[] MESSAGE = {"오늘의 소비는 합리적이었나요?" , "꼭 했어야만 하는 지출이었나요?",
                                             "돈모으는 재미를 아셨군요!", "오늘도 불필요한 소비를 하지 않았군요!",
                                             "오늘은 얼마를 사용하셨나요?", "통장이 말라가는 게 보이지 않나요?",

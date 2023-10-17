@@ -27,7 +27,7 @@ public class JwtService {
     // 액세스 토큰을 생성한다.
     public String generateAccessToken(Optional<Member> userDetails) {
         Date now = new Date();
-        Date expiration = new Date(now.getTime() + JwtVo.ACCESS_TOKEN_EXPIRATION_TIME);
+        Date expiration = new Date(now.getTime() + JwtConstant.ACCESS_TOKEN_EXPIRATION_TIME);
 
         return JWT.create()
                 .withSubject("accountBook")
@@ -35,7 +35,7 @@ public class JwtService {
                 .withClaim("mid", userDetails.get().getMid())
                 .withClaim("role", userDetails.get().getRole().toString())
                 .withExpiresAt(expiration)
-                .sign(Algorithm.HMAC256(JwtVo.SECRET));
+                .sign(Algorithm.HMAC256(JwtConstant.SECRET));
     }
 
 
@@ -51,7 +51,7 @@ public class JwtService {
     // 액세스 토큰을 검증해 CustomUserDetails 객체를 반환한다.
     public CustomUserDetails verifyAccessToken(String token) {
         // 액세스 토큰에서 mid를 꺼낸다.
-        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(JwtVo.SECRET)).build().verify(token);
+        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(JwtConstant.SECRET)).build().verify(token);
         Integer mid = decodedJWT.getClaim("mid").asInt();
 
         // 꺼낸 mid로 DB를 조회해 Member 객체를 생성한다.
@@ -83,8 +83,8 @@ public class JwtService {
             String newRefreshToken = generateRefreshToken(findMember);
 
             // 토큰들을 쿠키에 넣어준다.
-            CookieUtil.addCookie(response, "accessToken", newAccessToken, JwtVo.ACCESS_TOKEN_MAX_AGE, true, true);
-            CookieUtil.addCookie(response, "refreshToken", newRefreshToken, JwtVo.REFRESH_TOKEN_MAX_AGE, true, true);
+            CookieUtil.addCookie(response, "accessToken", newAccessToken, JwtConstant.ACCESS_TOKEN_MAX_AGE, true, true);
+            CookieUtil.addCookie(response, "refreshToken", newRefreshToken, JwtConstant.REFRESH_TOKEN_MAX_AGE, true, true);
 
             return new CustomUserDetails(findMember.get());
         }

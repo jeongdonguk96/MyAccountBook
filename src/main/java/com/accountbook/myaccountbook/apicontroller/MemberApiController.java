@@ -1,7 +1,7 @@
 package com.accountbook.myaccountbook.apicontroller;
 
 import com.accountbook.myaccountbook.dto.ResponseDto;
-import com.accountbook.myaccountbook.dto.member.RequestJoinDto;
+import com.accountbook.myaccountbook.dto.member.JoinRequestDto;
 import com.accountbook.myaccountbook.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public class MemberApiController {
 
     // 회원가입을 한다.
     @PostMapping("/join")
-    public ResponseDto<Integer> join(@RequestBody @Validated RequestJoinDto joinDto) {
+    public ResponseDto<Integer> join(@RequestBody @Validated JoinRequestDto joinDto) {
         memberService.join(joinDto);
 
         return new ResponseDto<>(HttpStatus.CREATED.value(), null, "success");

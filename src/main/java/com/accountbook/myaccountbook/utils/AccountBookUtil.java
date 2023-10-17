@@ -1,6 +1,6 @@
 package com.accountbook.myaccountbook.utils;
 
-import com.accountbook.myaccountbook.constant.MessageConstants;
+import com.accountbook.myaccountbook.constant.MessageConstant;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -64,8 +64,8 @@ public class AccountBookUtil {
 
     // 랜덤 문구 추첨
     public static String getRandomMessage() {
-        int index = new Random().nextInt(MessageConstants.MESSAGE.length);
+        int index = new Random().nextInt(MessageConstant.MESSAGE.length);
 
-        return MessageConstants.MESSAGE[index];
+        return MessageConstant.MESSAGE[index];
     }
 }

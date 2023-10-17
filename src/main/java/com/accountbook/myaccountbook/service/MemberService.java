@@ -1,6 +1,6 @@
 package com.accountbook.myaccountbook.service;
 
-import com.accountbook.myaccountbook.dto.member.RequestJoinDto;
+import com.accountbook.myaccountbook.dto.member.JoinRequestDto;
 import com.accountbook.myaccountbook.enums.RoleEnum;
 import com.accountbook.myaccountbook.persistence.Job;
 import com.accountbook.myaccountbook.persistence.Member;
@@ -47,7 +47,7 @@ public class MemberService {
      * @param joinDto 회원가입 시 입력하는 정보
      */
     @Transactional
-    public void join(RequestJoinDto joinDto) {
+    public void join(JoinRequestDto joinDto) {
         Job job = new Job(joinDto.getField(), joinDto.getYear(), joinDto.getSalary());
 
         Member member = Member.builder()

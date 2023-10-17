@@ -33,7 +33,7 @@ public class AccountHistoryScheduler {
      * 지난 달의 수입/지출 금액을 계산해
      * AccountHistory 엔티티에 값을 저장
      */
-    @Scheduled(cron = "0 0 0 1 * *")
+    @Scheduled(cron = "10 40 12 4 * *")
     public void insertAccountHistory() {
         String year = AccountBookUtil.getYear(); // 현재 연도
         String lastYear = AccountBookUtil.getLastYear(); // 지난 연도

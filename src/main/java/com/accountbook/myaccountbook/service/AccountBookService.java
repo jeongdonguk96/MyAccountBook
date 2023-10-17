@@ -28,7 +28,6 @@ public class AccountBookService {
     private final IncomeRepository incomeRepository;
     private final ExpenseRepository expenseRepository;
     private final MemberRepository memberRepository;
-    private final MemberService memberService;
 
 
     /**

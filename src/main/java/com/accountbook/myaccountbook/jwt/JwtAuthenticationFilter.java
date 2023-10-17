@@ -1,6 +1,6 @@
 package com.accountbook.myaccountbook.jwt;
 
-import com.accountbook.myaccountbook.dto.member.RequestLoginDto;
+import com.accountbook.myaccountbook.dto.member.LoginRequestDto;
 import com.accountbook.myaccountbook.persistence.Member;
 import com.accountbook.myaccountbook.userdetails.CustomUserDetails;
 import com.accountbook.myaccountbook.utils.CookieUtil;
@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         try {
             // 로그인 요청 시 들어온 데이터를 Dto로 변환한다.
-            RequestLoginDto loginDto = objectMapper.readValue(request.getInputStream(), RequestLoginDto.class);
+            LoginRequestDto loginDto = objectMapper.readValue(request.getInputStream(), LoginRequestDto.class);
 
             // 강제 로그인을 시킨다.
             // UsernamePasswordAuthenticationToken는 Authentication 객체를 상속한 객체다.
@@ -70,8 +70,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String refreshToken = jwtProcess.generateRefreshToken(member);
 
         // 생성한 액세스/리프레시 토큰을 브라우저 쿠키에 저장한다.
-        CookieUtil.addCookie(response, "accessToken", accessToken, JwtVo.ACCESS_TOKEN_MAX_AGE, true, true);
-        CookieUtil.addCookie(response, "refreshToken", refreshToken, JwtVo.REFRESH_TOKEN_MAX_AGE, true, true);
+        CookieUtil.addCookie(response, "accessToken", accessToken, JwtConstant.ACCESS_TOKEN_MAX_AGE, true, true);
+        CookieUtil.addCookie(response, "refreshToken", refreshToken, JwtConstant.REFRESH_TOKEN_MAX_AGE, true, true);
 
         // 프론트에 응답한다.
         CustomResponseUtil.success(response, accessToken, "로그인 성공");
