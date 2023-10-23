@@ -26,7 +26,7 @@ public class SecurityConfig {
     private final MemberRepository memberRepository;
     private final AccessDeniedHandler customAccessDeniedHandler;
 
-    // 로그인 시큐리티 설정
+    // 시큐리티를 설정한다.
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -57,7 +57,7 @@ public class SecurityConfig {
     }
 
 
-    // JWT 필터 등록
+    // 커스텀해 구현한 JWT 인증/인가 필터를 등록한다.
     public class CustomSecurityFilterManager
             extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
 
@@ -71,7 +71,7 @@ public class SecurityConfig {
     }
 
 
-    // 정적 리소스 시큐리티에서 제외
+    // 정적 리소스를 시큐리티에서 제외한다.
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> {
@@ -80,7 +80,7 @@ public class SecurityConfig {
     }
 
 
-    // 패스워드 암호화
+    // 패스워드를 암호화한다.
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();

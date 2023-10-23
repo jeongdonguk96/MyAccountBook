@@ -58,7 +58,7 @@ public class JwtService {
         Optional<Member> findMember = memberRepository.findById(mid);
         Member member = new Member(findMember);
 
-        // DB에서 찾은 멤버 객체를 시큐리티 컨텍스트에 넣는다.
+        // DB에서 찾은 멤버 객체를 반환한다.
         return new CustomUserDetails(member);
     }
 

@@ -18,11 +18,11 @@ import java.io.IOException;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
-    private final JwtService jwtProcess;
+    private final JwtService jwtService;
 
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtService jwtProcess) {
         super(authenticationManager);
-        this.jwtProcess = jwtProcess;
+        this.jwtService = jwtProcess;
     }
 
 
@@ -41,11 +41,11 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             // 액세스 토큰이 만료되면 리프레시 토큰으로 재발급한다.
             CustomUserDetails userDetails = null;
             try {
-                userDetails = jwtProcess.verifyAccessToken(replacedAccessToken);
+                userDetails = jwtService.verifyAccessToken(replacedAccessToken);
             } catch (TokenExpiredException | JWTDecodeException e) {
                 e.printStackTrace();
                 String refreshToken = getRefreshToken(request);
-                userDetails = jwtProcess.verifyRefreshToken(response, refreshToken);
+                userDetails = jwtService.verifyRefreshToken(response, refreshToken);
             }
 
             // 토큰에서 반환한 CustomUserDetails로 Authentication 객체를 생성하고 시큐리티 컨텍스트에 저장한다.

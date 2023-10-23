@@ -24,13 +24,13 @@ import java.util.Optional;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtService jwtProcess;
+    private final JwtService jwtService;
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtService jwtProcess) {
         super(authenticationManager);
         setFilterProcessesUrl("/api/login");
         this.authenticationManager = authenticationManager;
-        this.jwtProcess = jwtProcess;
+        this.jwtService = jwtProcess;
     }
 
 
@@ -66,8 +66,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // 액세스/리프레시 토큰을 생성한다.
         CustomUserDetails userDetails = (CustomUserDetails) authResult.getPrincipal();
         Optional<Member> member = Optional.ofNullable(userDetails.getMember());
-        String accessToken = jwtProcess.generateAccessToken(member);
-        String refreshToken = jwtProcess.generateRefreshToken(member);
+        String accessToken = jwtService.generateAccessToken(member);
+        String refreshToken = jwtService.generateRefreshToken(member);
 
         // 생성한 액세스/리프레시 토큰을 브라우저 쿠키에 저장한다.
         CookieUtil.addCookie(response, "accessToken", accessToken, JwtConstant.ACCESS_TOKEN_MAX_AGE, true, true);
