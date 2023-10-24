@@ -1,6 +1,6 @@
 package com.accountbook.myaccountbook.dto.accountbook;
 
-import com.accountbook.myaccountbook.domain.Expense;
+import com.accountbook.myaccountbook.persistence.Expense;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -24,11 +24,15 @@ public class ExpenseReturnDto {
     @NotBlank
     private String date;
 
-    public void convetToDto(Expense expense) {
-        this.exid = expense.getExid();
-        this.expenseMoney = expense.getExpenseMoney();
-        this.expenseReason = expense.getExpenseReason();
-        this.expenseCategory = expense.getExpenseCategory();
-        this.date = expense.getDate();
+    // DB에서 조회한 엔티티를 Dto로 변환한다.
+    public static ExpenseReturnDto convertToDto(Expense expense) {
+        ExpenseReturnDto expenseReturnDto = new ExpenseReturnDto();
+        expenseReturnDto.setExid(expense.getExid());
+        expenseReturnDto.setExpenseMoney(expense.getExpenseMoney());
+        expenseReturnDto.setExpenseReason(expense.getExpenseReason());
+        expenseReturnDto.setExpenseCategory(String.valueOf(expense.getExpenseCategory()));
+        expenseReturnDto.setDate(expense.getDate());
+
+        return expenseReturnDto;
     }
 }

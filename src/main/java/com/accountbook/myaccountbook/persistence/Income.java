@@ -1,4 +1,4 @@
-package com.accountbook.myaccountbook.domain;
+package com.accountbook.myaccountbook.persistence;
 
 import lombok.*;
 
@@ -22,4 +22,9 @@ public class Income {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
+
+    public void modifyReasonAndMoney(String incomeReason, int incomeMoney) {
+        this.incomeReason = incomeReason;
+        this.incomeMoney = incomeMoney;
+    }
 }

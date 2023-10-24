@@ -1,12 +1,9 @@
-package com.accountbook.myaccountbook.domain;
+package com.accountbook.myaccountbook.persistence;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Getter
@@ -20,6 +17,8 @@ public class AccountHistory {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ahid;
+
+    @Column(nullable = false)
     private int mid;
     private int monthIncome;
     private int monthExpense;

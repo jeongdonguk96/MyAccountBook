@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:replace="~{ /fragment/header :: header }"></div>
 <!-- header replace -->
 
@@ -9,8 +10,8 @@
     <h2>로그인</h2>
     <form>
         <div class="form-group">
-            <label for="loginId">loginId:</label>
-            <input type="text" class="form-control" id="loginId" name="loginId" placeholder="아이디를 입력해주세요">
+            <label for="username">username:</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="아이디를 입력해주세요">
         </div>
         <div class="form-group">
             <label for="pwd">Password:</label>
@@ -25,38 +26,39 @@
 <!-- 자바스크립트 시작 -->
 <script type="text/javascript">
 
-    // 로그인
-    $("#login").click(function () {
-        let data = {
-            loginId: $("#loginId").val(),
-            pwd: $("#pwd").val()
-        }
+// 로그인
+$("#login").click(function () {
+    let data = {
+        username: $("#username").val(),
+        pwd: $("#pwd").val()
+    }
 
-        if (data.loginId.trim() === "") {
-            alert('아이디를 입력해주세요');
-            return false;
-        } else if (data.pwd.trim() === "") {
-            alert('패스워드를 입력해주세요');
-            return false;
-        } else {
-            $.ajax({
-                type: "post",
-                url: "/api/member/login",
-                data: JSON.stringify(data),
-                contentType: "application/json; charset=utf-8"
-            }).done(function (response) {
-                if (response.data === 1) {
-                    location.href = "/";
-                } else {
-                    alert('로그인에 실패했습니다');
-                    location.reload();
-                }
-            }).fail(function (error) {
-                console.log("error = ", JSON.stringify(error));
+    if (data.username.trim() === "") {
+        alert('아이디를 입력해주세요');
+        return false;
+    } else if (data.pwd.trim() === "") {
+        alert('패스워드를 입력해주세요');
+        return false;
+    } else {
+        $.ajax({
+            type: "post",
+            url: "/api/login",
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8"
+        }).done(function (response) {
+            location.href = "/";
+        }).fail(function (error) {
+            console.log("error = ", JSON.stringify(error));
+            if (error.responseJSON.code === 401) {
+                alert("로그인에 실패했습니다");
+            }
+            else {
                 alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
-            });
-        }
-    });
+            }
+        });
+    }
+});
+
 </script>
 <!-- 자바스크립트 끝 -->
 

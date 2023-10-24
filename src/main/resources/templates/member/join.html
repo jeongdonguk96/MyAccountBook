@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:replace="~{ /fragment/header :: header }"></div>
 <!-- header replace -->
 
@@ -9,8 +10,8 @@
         <h2>회원가입</h2>
         <form>
             <div class="form-group">
-                <label for="loginId">loginId:</label>
-                <input type="text" class="form-control" id="loginId" name="loginId" placeholder="아이디를 입력해주세요">
+                <label for="username">username:</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="아이디를 입력해주세요">
                 <span>아이디 최대 15글자</span><br>
                 <input type="hidden" id="checked_id">
                 <input type="button" id="id_check" value="중복확인" class="btn btn-light">
@@ -51,28 +52,28 @@
     // 아이디 중복확인
     $("#id_check").click(function() {
         $("#checked_id").val('');
-        let loginId = $("#loginId").val();
+        let username = $("#username").val();
 
-        if (loginId.trim() === "") {
+        if (username.trim() === "") {
             alert('아이디를 입력해주세요');
             return false;
         } else {
             $.ajax({
                 type: "post",
-                url: "/api/member/checkId",
-                data: {loginId: loginId},
+                url: "/api/checkId",
+                data: {username: username},
                 dataType : 'json',
             }).done(function (response) {
-                if (response.data == 1) {
+                if (response.code === 200) {
                     alert('사용 가능한 아이디입니다.')
-                    $("#checked_id").val(loginId);
+                    $("#checked_id").val(username);
                 } else {
                     alert('사용할 수 없는 아이디입니다.');
-                    $("#loginId").val('');
+                    $("#username").val('');
                 }
             }).fail(function (error) {
                 console.log("error = ", JSON.stringify(error));
-                alert(JSON.stringify(error));
+                alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
             });
         }
     });
@@ -80,7 +81,7 @@
     // 회원가입
     $("#join").click(function () {
         let data = {
-            loginId: $("#checked_id").val(),
+            username: $("#checked_id").val(),
             pwd: $("#pwd").val(),
             name: $("#name").val(),
             age: $("#age").val(),
@@ -89,7 +90,7 @@
             salary: $("#salary").val()
         }
 
-        if (data.loginId.trim() === "") {
+        if (data.username.trim() === "") {
             alert('아이디를 입력해주세요');
             return false;
         } else if (data.pwd.trim() === "") {
@@ -113,7 +114,7 @@
         } else {
             $.ajax({
                 type: "post",
-                url: "api/member/join",
+                url: "api/join",
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8"
             }).done(function (response){

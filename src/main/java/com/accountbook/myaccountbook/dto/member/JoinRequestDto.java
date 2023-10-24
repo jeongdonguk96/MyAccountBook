@@ -8,11 +8,11 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
-public class JoinDto {
+public class JoinRequestDto {
 
     @NotBlank
     @Size(max = 15)
-    private String loginId;
+    private String username;
 
     @NotBlank
     @Size(max = 12)

@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:replace="~{ /fragment/header :: header }"></div>
 <!-- header replace -->
 
 <body>
     <ul>
-        <li th:if="${ session.user } == null"><a th:href="@{ /login }">로그인</a></li>
-        <li th:if="${ session.user } == null"><a th:href="@{ /join }">회원가입</a></li>
-        <li th:if="${ session.user } != null"><a th:href="@{ /logout }">로그아웃</a></li>
+        <li sec:authorize="isAnonymous()"><a th:href="@{ /login }">로그인</a></li>
+        <li sec:authorize="isAnonymous()"><a th:href="@{ /join }">회원가입</a></li>
+        <li sec:authorize="isAuthenticated()"><a th:href="@{ /api/logout }">로그아웃</a></li>
         <li><a th:href="@{ /book }">가계부</a></li>
+        <li><a th:href="@{ /book2 }">가계부2</a></li>
     </ul>
 </body>
 </html>

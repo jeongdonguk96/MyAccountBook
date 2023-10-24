@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:replace="~{ /fragment/header :: header }"></div>
 <!-- header replace -->
 
@@ -9,13 +10,13 @@
 
 
     <!-- 상단 텍스트 시작 -->
-    <input type="hidden" th:object="${user}" th:field="*{mid}">
+    <input type="hidden" id="mid" th:value="${ #authentication.principal.member.mid }">
+
     <div class="welcome-message">
-        <br><br><h4><span th:text="|${ user.getName() }님 환영합니다|"/></h4><br><br>
+        <br><br><h4><span th:text="|${#authentication.principal.member.name }님 환영합니다|"/></h4><br><br>
         <h3><span th:text="${ message }"/></h3><br>
     </div>
     <h2><span th:text="${ month }" />월</h2> <br>
-<!--    <p>총 수입: +<span th:text="|${ #numbers.formatInteger(incomeSum, 3, 'COMMA') }|" />원</p>-->
     <p>총 수입: +<span th:text="${ incomeSum } != 0 ? ${ #numbers.formatInteger(incomeSum, 3, 'COMMA') } : 0" />원</p>
     <p>총 지출: -<span th:text="|${ #numbers.formatInteger(expenseSum, 3, 'COMMA') }|" />원</p>
     <p>총 합계: <span th:text="${ restSum >= 0 ? '+ ' + #numbers.formatInteger(restSum, 3, 'COMMA') : #numbers.formatInteger(restSum, 3, 'COMMA') }" />원</p>
@@ -144,25 +145,25 @@
                 <label>분류</label> <br>
                 <select th:field="*{expenseCategory}" class="selectpicker">
                     <option th:value="0">==카테고리==</option>
-                    <option th:value="식료품">식료품</option>
-                    <option th:value="외식비">외식비</option>
-                    <option th:value="배달비">배달비</option>
-                    <option th:value="생필품">생필품</option>
-                    <option th:value="가전제품">가전제품</option>
-                    <option th:value="전자제품">전자제품</option>
-                    <option th:value="의류">의류</option>
-                    <option th:value="의료비">의료비</option>
-                    <option th:value="통신비">통신비</option>
-                    <option th:value="교통비">교통비</option>
-                    <option th:value="여가활동">여가활동</option>
-                    <option th:value="반려동물">반려동물</option>
-                    <option th:value="예적금">예/적금</option>
-                    <option th:value="보험료">보험료</option>
-                    <option th:value="집세">집세</option>
-                    <option th:value="공과금">공과금</option>
-                    <option th:value="대출상환금">대출상환금</option>
-                    <option th:value="경조사비">경조사비</option>
-                    <option th:value="기타">기타</option>
+                    <option th:value="GROCERY">식료품</option>
+                    <option th:value="EAT_OUT">외식비</option>
+                    <option th:value="DELIVERY">배달비</option>
+                    <option th:value="DAILY_NECESSITY">생필품</option>
+                    <option th:value="HOME_APPLIANCES">가전제품</option>
+                    <option th:value="ELECTRONIC_PRODUCTS">전자제품</option>
+                    <option th:value="CLOTHES">의류</option>
+                    <option th:value="MEDICAL">의료비</option>
+                    <option th:value="PHONE">통신비</option>
+                    <option th:value="TRANSPORTATION">교통비</option>
+                    <option th:value="ENTERTAINMENT">여가활동</option>
+                    <option th:value="PET">반려동물</option>
+                    <option th:value="DEPOSIT">예/적금</option>
+                    <option th:value="INSURANCE">보험료</option>
+                    <option th:value="RENT">집세</option>
+                    <option th:value="UTILITIES">공과금</option>
+                    <option th:value="REPAYMENT">대출상환금</option>
+                    <option th:value="TRIBUTE">경조사비</option>
+                    <option th:value="ETC">기타</option>
                 </select>
             </div>
             <div class="modal-footer">
@@ -190,25 +191,25 @@
                 <label>분류</label> <br>
                 <select name="modifying-expense-category" id="modifying-expense-category" class="selectpicker">
                     <option th:value="0">==카테고리==</option>
-                    <option th:value="식료품">식료품</option>
-                    <option th:value="외식비">외식비</option>
-                    <option th:value="배달비">배달비</option>
-                    <option th:value="생필품">생필품</option>
-                    <option th:value="가전제품">가전제품</option>
-                    <option th:value="전자제품">전자제품</option>
-                    <option th:value="의류">의류</option>
-                    <option th:value="의료비">의료비</option>
-                    <option th:value="통신비">통신비</option>
-                    <option th:value="교통비">교통비</option>
-                    <option th:value="여가활동">여가활동</option>
-                    <option th:value="반려동물">반려동물</option>
-                    <option th:value="예적금">예/적금</option>
-                    <option th:value="보험료">보험료</option>
-                    <option th:value="집세">집세</option>
-                    <option th:value="공과금">공과금</option>
-                    <option th:value="대출상환금">대출상환금</option>
-                    <option th:value="경조사비">경조사비</option>
-                    <option th:value="기타">기타</option>
+                    <option th:value="GROCERY">식료품</option>
+                    <option th:value="EAT_OUT">외식비</option>
+                    <option th:value="DELIVERY">배달비</option>
+                    <option th:value="DAILY_NECESSITY">생필품</option>
+                    <option th:value="HOME_APPLIANCES">가전제품</option>
+                    <option th:value="ELECTRONIC_PRODUCTS">전자제품</option>
+                    <option th:value="CLOTHES">의류</option>
+                    <option th:value="MEDICAL">의료비</option>
+                    <option th:value="PHONE">통신비</option>
+                    <option th:value="TRANSPORTATION">교통비</option>
+                    <option th:value="ENTERTAINMENT">여가활동</option>
+                    <option th:value="PET">반려동물</option>
+                    <option th:value="DEPOSIT">예/적금</option>
+                    <option th:value="INSURANCE">보험료</option>
+                    <option th:value="RENT">집세</option>
+                    <option th:value="UTILITIES">공과금</option>
+                    <option th:value="REPAYMENT">대출상환금</option>
+                    <option th:value="TRIBUTE">경조사비</option>
+                    <option th:value="ETC">기타</option>
                 </select>
             </div>
             <div class="modal-footer">
@@ -334,7 +335,8 @@
 
                 $.each(histories, function (index, history) {
                     // 월 파싱
-                    let month = history.month.substring(4);
+                    console.log('history = ', history);
+                    let month = history.month;
                     let parsedMonth = month.substring(0, 1) === '0' ? month.substring(1) : month;
 
                     // 수입금 파싱
