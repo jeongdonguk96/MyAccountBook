@@ -25,3 +25,9 @@ spring:
     remote:
       restart:
         enabled: true
+
+accountHistory:
+  scheduler:
+    cron: "0 0 0 * * *"
+
+

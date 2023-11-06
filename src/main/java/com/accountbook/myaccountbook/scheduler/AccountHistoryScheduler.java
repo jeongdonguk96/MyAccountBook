@@ -12,8 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,17 +31,17 @@ public class AccountHistoryScheduler {
      * 지난 달의 수입/지출 금액을 계산해
      * AccountHistory 엔티티에 값을 저장
      */
-    @Scheduled(cron = "10 40 12 4 * *")
+    @Scheduled(cron="${accountHistory.scheduler.cron}")
     public void insertAccountHistory() {
-        String year = AccountBookUtil.getYear(); // 현재 연도
-        String lastYear = AccountBookUtil.getLastYear(); // 지난 연도
-        String month = AccountBookUtil.getMonth(); // 현재 달
-        String lastMonth = month.equals("1") ? "12": AccountBookUtil.getLastMonth(); // 지난 달
-        String fullMonth = (month.equals("1") ? lastYear : year) + lastMonth; // 지난 달 yyyyMM
+        String year = AccountBookUtil.getYear(); // 현재 연도 (yyyy)
+        String lastYear = AccountBookUtil.getLastYear(); // 지난 연도 (yyyy)
+        String month = AccountBookUtil.getMonth(); // 현재 달 (MM)
+        String lastMonth = month.equals("1") ? "12": AccountBookUtil.getLastMonth(); // 지난 달 (MM)
+        String fullMonth = (month.equals("1") ? lastYear : year) + lastMonth; // 지난 달 (yyyyMM)
 
         log.info("========== {}년 {}월 1일 0시 0분 0초 진입 ==========", year, month);
         log.info("========== AccountHistoryScheduler 동작 START ==========");
-        LocalDateTime startTime = LocalDateTime.now();
+        long startTime = System.currentTimeMillis();
 
         // 빈 AccountHistory List 객체 생성
         List<AccountHistory> accountHistories = new ArrayList<>();
@@ -57,10 +55,10 @@ public class AccountHistoryScheduler {
                             accountHistoryRepository, accountHistories, year, lastMonth, fullMonth);
 
 
-        LocalDateTime endTime = LocalDateTime.now();
+        long endTime = System.currentTimeMillis();
         log.info("========== AccountHistoryScheduler 동작 END ==========");
 
-        Duration timeDiff = Duration.between(startTime, endTime);
-        log.info("========== AccountHistoryScheduler 소요 시간 = {} ==========", timeDiff);
+        long timeDiff = (endTime - startTime);
+        log.info("========== AccountHistoryScheduler 소요 시간 = {}ms ==========", timeDiff);
     }
 }
