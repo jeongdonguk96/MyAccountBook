@@ -15,7 +15,7 @@ import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
-public class AccountHistorySchedulerJob extends QuartzJobBean {
+public class AccountHistoryJobLauncher extends QuartzJobBean {
 
     private final Job accountHistoryJob;
     private final JobLauncher jobLauncher;

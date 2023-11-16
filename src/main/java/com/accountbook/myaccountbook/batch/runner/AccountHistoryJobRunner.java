@@ -25,7 +25,7 @@ public class AccountHistoryJobRunner implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
 
 
-        JobDetail jobDetail = buildJobDetail(AccountHistorySchedulerJob.class, "accountHistoryJob", "batch", new HashMap<>());
+        JobDetail jobDetail = buildJobDetail(AccountHistoryJobLauncher.class, "accountHistoryJob", "batch", new HashMap<>());
         Trigger trigger = buildJobTrigger(schedulerCron);
 
         try {
