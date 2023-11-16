@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/finance2_schema?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/finance_schema?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
     password: wjdehddnr1@
     
@@ -19,6 +19,12 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.MySQL8Dialect
 
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false
+
   devtools:
     livereload:
       enabled: true
@@ -28,6 +34,6 @@ spring:
 
 accountHistory:
   scheduler:
-    cron: "0 0 0 * * *"
+    cron: "10 23 15 15 * *"
 
 

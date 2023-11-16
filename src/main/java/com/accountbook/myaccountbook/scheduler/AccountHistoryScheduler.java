@@ -5,11 +5,10 @@ import com.accountbook.myaccountbook.repository.AccountHistoryRepository;
 import com.accountbook.myaccountbook.repository.ExpenseRepository;
 import com.accountbook.myaccountbook.repository.IncomeRepository;
 import com.accountbook.myaccountbook.repository.MemberRepository;
-import com.accountbook.myaccountbook.utils.AccountBookUtil;
+import com.accountbook.myaccountbook.utils.DateUtil;
 import com.accountbook.myaccountbook.utils.SchedulerUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,12 +30,12 @@ public class AccountHistoryScheduler {
      * 지난 달의 수입/지출 금액을 계산해
      * AccountHistory 엔티티에 값을 저장
      */
-    @Scheduled(cron="${accountHistory.scheduler.cron}")
+//    @Scheduled(cron="${accountHistory.scheduler.cron}")
     public void insertAccountHistory() {
-        String year = AccountBookUtil.getYear(); // 현재 연도 (yyyy)
-        String lastYear = AccountBookUtil.getLastYear(); // 지난 연도 (yyyy)
-        String month = AccountBookUtil.getMonth(); // 현재 달 (MM)
-        String lastMonth = month.equals("1") ? "12": AccountBookUtil.getLastMonth(); // 지난 달 (MM)
+        String year = DateUtil.getYear(); // 현재 연도 (yyyy)
+        String lastYear = DateUtil.getLastYear(); // 지난 연도 (yyyy)
+        String month = DateUtil.getMonth(); // 현재 달 (MM)
+        String lastMonth = month.equals("1") ? "12": DateUtil.getLastMonth(); // 지난 달 (MM)
         String fullMonth = (month.equals("1") ? lastYear : year) + lastMonth; // 지난 달 (yyyyMM)
 
         log.info("========== {}년 {}월 1일 0시 0분 0초 진입 ==========", year, month);

@@ -12,6 +12,7 @@ import com.accountbook.myaccountbook.service.AccountBookService;
 import com.accountbook.myaccountbook.service.AccountHistoryService;
 import com.accountbook.myaccountbook.userdetails.CustomUserDetails;
 import com.accountbook.myaccountbook.utils.AccountBookUtil;
+import com.accountbook.myaccountbook.utils.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -38,9 +39,9 @@ public class AccountBookController {
     @GetMapping("")
     public String getAccountBook(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
         Member member = userDetails.getMember();
-        String findYear = AccountBookUtil.getYear(); // 현재 연도 yyyy
-        String findMonth = AccountBookUtil.getMonth(); // 현재 달 MM
-        String lengthOfMonth = AccountBookUtil.getDays(); // 현재 달의 일수
+        String findYear = DateUtil.getYear(); // 현재 연도 yyyy
+        String findMonth = DateUtil.getMonth(); // 현재 달 MM
+        String lengthOfMonth = DateUtil.getDays(); // 현재 달의 일수
         String fullMonth = findYear + findMonth; // 연월 yyyyMM
         String message = AccountBookUtil.getRandomMessage(); // 메시지 문구
         int incomeSum = 0; // 총 수입
@@ -85,8 +86,8 @@ public class AccountBookController {
     @ResponseBody
     @PostMapping("/expenseCategory/{mid}")
     public List<Map<String, Object>> getPiechart(@PathVariable int mid) {
-        String findYear = AccountBookUtil.getYear(); // yyyy
-        String findMonth = AccountBookUtil.getMonth(); // MM
+        String findYear = DateUtil.getYear(); // yyyy
+        String findMonth = DateUtil.getMonth(); // MM
         String month = findYear+findMonth; // yyyyMM
 
         // Expense 엔티티를 조회하지만, Dto로 필요한 컬럼만 가져온다.
