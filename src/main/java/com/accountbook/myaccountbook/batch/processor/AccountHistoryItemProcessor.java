@@ -20,8 +20,8 @@ public class AccountHistoryItemProcessor implements ItemProcessor<Member, Accoun
     String year = DateUtil.getYear(); // 현재 연도 (yyyy)
     String lastYear = DateUtil.getLastYear(); // 지난 연도 (yyyy)
     String month = DateUtil.getMonth(); // 현재 달 (MM)
-    String lastMonth = month.equals("1") ? "12": DateUtil.getLastMonth(); // 지난 달 (MM)
-    String fullMonth = (month.equals("1") ? lastYear : year) + lastMonth; // 지난 달 (yyyyMM)
+    String lastMonth = DateUtil.getLastMonth(); // 지난 달 (MM)
+    String fullMonth = (month.equals("01") ? lastYear : year) + lastMonth; // 지난 달 (yyyyMM)
 
     @Override
     public AccountHistory process(Member item) {

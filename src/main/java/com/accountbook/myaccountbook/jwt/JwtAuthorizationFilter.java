@@ -31,7 +31,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain chain) throws IOException, ServletException {
 
-        // 쿠키에 무언가 있을 때만 동작한다.
+        // 쿠키에 토큰이 있을 때만 동작한다.
         if (isCookieIncluded(request)) {
 
             // 쿠키에서 토큰을 꺼내 파싱한다.
@@ -58,9 +58,16 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
 
-    // 쿠키 존재 여부를 확인한다.
+    // 쿠키에 토큰 존재 여부를 확인한다.
     private boolean isCookieIncluded(HttpServletRequest request) {
-        return request.getCookies() != null;
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            if ("accessToken".equals(cookie.getName()) || "refreshToken".equals(cookie.getName())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
