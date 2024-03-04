@@ -1,14 +1,6 @@
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/finance_schema?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: root
-    password: wjdehddnr1@
-    
-  redis:
-    host: localhost
-    port: 6379
-    password:
+  profiles:
+    active: local
 
   jpa:
     show-sql: true
@@ -25,6 +17,23 @@ spring:
     job:
       enabled: false
 
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/finance_schema?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: wjdehddnr1@
+    
+  redis:
+    host: localhost
+    port: 6379
+    password:
+
   devtools:
     livereload:
       enabled: true
@@ -34,4 +43,25 @@ spring:
 
 accountHistory:
   scheduler:
-    cron: "0 32 16 5 * ?"
+    cron: "0 16 17 4 * ?"
+
+---
+spring:
+  config:
+    activate:
+      on-profile: aws
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/finance_schema?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: wjdehddnr1@
+
+  redis:
+    host: localhost
+    port: 6379
+    password:
+
+accountHistory:
+  scheduler:
+    cron: "10 0 0 1 * ?"
