@@ -61,9 +61,11 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     // 쿠키에 토큰 존재 여부를 확인한다.
     private boolean isCookieIncluded(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if ("accessToken".equals(cookie.getName()) || "refreshToken".equals(cookie.getName())) {
-                return true;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("accessToken".equals(cookie.getName()) || "refreshToken".equals(cookie.getName())) {
+                    return true;
+                }
             }
         }
 
