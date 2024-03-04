@@ -1,6 +1,6 @@
 package com.accountbook.myaccountbook.dto.accountbook;
 
-import com.accountbook.myaccountbook.persistence.Income;
+import com.accountbook.myaccountbook.entity.Income;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;

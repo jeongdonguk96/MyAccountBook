@@ -1,7 +1,7 @@
 package com.accountbook.myaccountbook.service;
 
 import com.accountbook.myaccountbook.dto.accounthistory.AccountHistoryDto;
-import com.accountbook.myaccountbook.persistence.AccountHistory;
+import com.accountbook.myaccountbook.entity.AccountHistory;
 import com.accountbook.myaccountbook.repository.AccountHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

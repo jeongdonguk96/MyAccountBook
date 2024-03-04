@@ -5,7 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static com.accountbook.myaccountbook.persistence.QExpense.expense;
+import static com.accountbook.myaccountbook.entity.QExpense.expense;
 
 public class ExpenseRepositoryImpl implements ExpenseRepositoryCustom {
 

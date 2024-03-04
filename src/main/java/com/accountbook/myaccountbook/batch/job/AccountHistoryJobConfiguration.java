@@ -2,8 +2,8 @@ package com.accountbook.myaccountbook.batch.job;
 
 import com.accountbook.myaccountbook.batch.listener.AccountHistoryJobListener;
 import com.accountbook.myaccountbook.batch.processor.AccountHistoryItemProcessor;
-import com.accountbook.myaccountbook.persistence.AccountHistory;
-import com.accountbook.myaccountbook.persistence.Member;
+import com.accountbook.myaccountbook.entity.AccountHistory;
+import com.accountbook.myaccountbook.entity.Member;
 import com.accountbook.myaccountbook.repository.ExpenseRepository;
 import com.accountbook.myaccountbook.repository.IncomeRepository;
 import lombok.RequiredArgsConstructor;

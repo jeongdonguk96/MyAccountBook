@@ -1,4 +1,4 @@
-package com.accountbook.myaccountbook.persistence;
+package com.accountbook.myaccountbook.entity;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

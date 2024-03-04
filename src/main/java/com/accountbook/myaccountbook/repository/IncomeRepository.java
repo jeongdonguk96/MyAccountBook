@@ -1,6 +1,6 @@
 package com.accountbook.myaccountbook.repository;
 
-import com.accountbook.myaccountbook.persistence.Income;
+import com.accountbook.myaccountbook.entity.Income;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

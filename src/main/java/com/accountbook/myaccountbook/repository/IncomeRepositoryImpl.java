@@ -5,7 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static com.accountbook.myaccountbook.persistence.QIncome.income;
+import static com.accountbook.myaccountbook.entity.QIncome.income;
 
 public class IncomeRepositoryImpl implements IncomeRepositoryCustom {
 

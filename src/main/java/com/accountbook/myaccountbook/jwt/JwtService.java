@@ -1,6 +1,6 @@
 package com.accountbook.myaccountbook.jwt;
 
-import com.accountbook.myaccountbook.persistence.Member;
+import com.accountbook.myaccountbook.entity.Member;
 import com.accountbook.myaccountbook.redis.RefreshTokenRepository;
 import com.accountbook.myaccountbook.repository.MemberRepository;
 import com.accountbook.myaccountbook.userdetails.CustomUserDetails;

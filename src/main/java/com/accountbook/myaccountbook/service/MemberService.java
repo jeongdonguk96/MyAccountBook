@@ -2,8 +2,8 @@ package com.accountbook.myaccountbook.service;
 
 import com.accountbook.myaccountbook.dto.member.JoinRequestDto;
 import com.accountbook.myaccountbook.enums.RoleEnum;
-import com.accountbook.myaccountbook.persistence.Job;
-import com.accountbook.myaccountbook.persistence.Member;
+import com.accountbook.myaccountbook.entity.Job;
+import com.accountbook.myaccountbook.entity.Member;
 import com.accountbook.myaccountbook.redis.RefreshTokenRepository;
 import com.accountbook.myaccountbook.repository.MemberRepository;
 import com.accountbook.myaccountbook.utils.CookieUtil;

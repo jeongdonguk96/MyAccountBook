@@ -5,7 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static com.accountbook.myaccountbook.persistence.QMember.member;
+import static com.accountbook.myaccountbook.entity.QMember.member;
 
 public class MemberRepositoryImpl implements MemberRepositoryCustom {
 

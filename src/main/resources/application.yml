@@ -34,4 +34,4 @@ spring:
 
 accountHistory:
   scheduler:
-    cron: "10 23 15 15 * ?"
+    cron: "0 32 16 5 * ?"

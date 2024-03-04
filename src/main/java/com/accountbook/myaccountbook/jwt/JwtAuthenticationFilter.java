@@ -1,7 +1,7 @@
 package com.accountbook.myaccountbook.jwt;
 
 import com.accountbook.myaccountbook.dto.member.LoginRequestDto;
-import com.accountbook.myaccountbook.persistence.Member;
+import com.accountbook.myaccountbook.entity.Member;
 import com.accountbook.myaccountbook.userdetails.CustomUserDetails;
 import com.accountbook.myaccountbook.utils.CookieUtil;
 import com.accountbook.myaccountbook.utils.CustomResponseUtil;

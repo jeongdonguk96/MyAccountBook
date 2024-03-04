@@ -1,7 +1,7 @@
 package com.accountbook.myaccountbook.batch.processor;
 
-import com.accountbook.myaccountbook.persistence.AccountHistory;
-import com.accountbook.myaccountbook.persistence.Member;
+import com.accountbook.myaccountbook.entity.AccountHistory;
+import com.accountbook.myaccountbook.entity.Member;
 import com.accountbook.myaccountbook.repository.ExpenseRepository;
 import com.accountbook.myaccountbook.repository.IncomeRepository;
 import com.accountbook.myaccountbook.utils.AccountBookUtil;

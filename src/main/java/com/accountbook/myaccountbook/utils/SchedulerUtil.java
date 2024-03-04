@@ -1,6 +1,6 @@
 package com.accountbook.myaccountbook.utils;
 
-import com.accountbook.myaccountbook.persistence.AccountHistory;
+import com.accountbook.myaccountbook.entity.AccountHistory;
 import com.accountbook.myaccountbook.repository.AccountHistoryRepository;
 import com.accountbook.myaccountbook.repository.ExpenseRepository;
 import com.accountbook.myaccountbook.repository.IncomeRepository;

@@ -1,4 +1,4 @@
-package com.accountbook.myaccountbook.persistence;
+package com.accountbook.myaccountbook.entity;
 
 import com.accountbook.myaccountbook.enums.ExpenseCategoryEnum;
 import lombok.*;
