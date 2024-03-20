@@ -46,7 +46,6 @@ public class AccountBookController {
         String message = AccountBookUtil.getRandomMessage(); // 메시지 문구
         int incomeSum = 0; // 총 수입
         int expenseSum = 0; // 총 지출
-        int restSum = 0; // 총 합계
 
         // 1. Income 엔티티를 Dto로 조회한다.
         // 2. 총 수입을 계산한다.
@@ -59,7 +58,7 @@ public class AccountBookController {
         expenseSum = accountBookService.totalizeExpense(expenseReturnDtos, expenseSum);
 
         // 총 합계를 계산한다.
-        restSum = incomeSum - expenseSum;
+        int restSum = incomeSum - expenseSum;
 
         // 모델에 값을 담아준다.
         Map<String, Object> attribute = new HashMap<>();

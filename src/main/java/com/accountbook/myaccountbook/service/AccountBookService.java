@@ -40,8 +40,6 @@ public class AccountBookService {
                 () -> new CustomApiException("사용자가 없습니다.")
         );
 
-        System.out.println("incomeWriteDto = " + incomeWriteDto);
-
         // 잔여금을 계산해 수정한다.
         findMember.increaseRest(incomeWriteDto.getIncomeMoney());
 
@@ -70,7 +68,6 @@ public class AccountBookService {
         Member findMember = memberRepository.findById(expenseWriteDto.getMid()).orElseThrow(
                 () -> new CustomApiException("사용자가 없습니다.")
         );
-        System.out.println("expenseWriteDto = " + expenseWriteDto);
 
         // 잔여금을 계산해 수정한다.
         findMember.decreaseRest(expenseWriteDto.getExpenseMoney());
