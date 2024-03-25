@@ -6,6 +6,12 @@
 <br>
 <br>
 
+- Spring Security와 Redis를 이용해 JWT 인증 방식을 구현하였습니다.
+- Spring Batch를 이용해 월 통계 스케줄러를 구현하였습니다.
+
+<br>
+<br>
+
 # 개발 환경
 Jdk                : 17 <br>
 Springboot         : 2.7.10 <br>
