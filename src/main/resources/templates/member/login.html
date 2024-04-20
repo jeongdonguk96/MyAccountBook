@@ -46,7 +46,7 @@ $("#login").click(function () {
             data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8"
         }).done(function (response) {
-            location.href = "/";
+            location.href = "/book";
         }).fail(function (error) {
             console.log("error = ", JSON.stringify(error));
             if (error.responseJSON.code === 401) {
