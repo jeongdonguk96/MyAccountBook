@@ -5,6 +5,7 @@ import com.accountbook.myaccountbook.entity.AccountHistory;
 import com.accountbook.myaccountbook.repository.AccountHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +22,7 @@ public class AccountHistoryService {
      * @param mid 사용자의 id
      * @return accountHistory List
      */
+    @Transactional(readOnly = true)
     public List<AccountHistoryDto> findAllAccountHistoryToDto(int mid) {
         List<AccountHistory> findAccountHistory = accountHistoryRepository.findAllByMid(mid);
 

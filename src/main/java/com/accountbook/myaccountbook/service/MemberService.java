@@ -11,9 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Slf4j
@@ -30,7 +30,7 @@ public class MemberService {
      * @param username 회원가입 시 작성한 아이디
      * @return
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public int checkId(String username) {
         int result = 0;
         Optional<Member> findMember = memberRepository.findByUsername(username);

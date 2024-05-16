@@ -13,9 +13,9 @@ import com.accountbook.myaccountbook.utils.ExpenseUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -187,7 +187,7 @@ public class AccountBookService {
      * @param mid 사용자 id
      * @return 사용자별 지출 목록 List
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ExpenseCategoryDto> findAllExpenseCategoryByMonthAndMemberMid(String month, int mid) {
         return expenseRepository.findAllExpenseCategoryByMonthAndMemberMid(month, mid);
     }
@@ -198,7 +198,7 @@ public class AccountBookService {
      * @param mid 사용자 id
      * @return 사용자별 수입 전체 List
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public List<IncomeReturnDto> findAllMonthIncomeToDto(String month, int mid) {
         List<Income> findIncomes = incomeRepository.findAllByMonthAndMemberMid(month, mid);
 
@@ -213,7 +213,7 @@ public class AccountBookService {
      * @param mid 사용자 id
      * @return 사용자별 지출 전체 List
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ExpenseReturnDto> findAllMonthExpenseToDto(String month, int mid) {
         List<Expense> findExpense = expenseRepository.findAllByMonthAndMemberMid(month, mid);
 
