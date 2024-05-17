@@ -48,7 +48,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             // 강제 로그인을 시킨다.
             // UsernamePasswordAuthenticationToken는 Authentication 객체를 상속한 객체다.
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    loginDto.getUsername(), loginDto.getPwd());
+                    loginDto.username(), loginDto.pwd());
 
             // 시큐리티 내부 로직으로 authenticate()는 UserDetailsService의 loadUserByUsername()을 호출한다.
             return authenticationManager.authenticate(authenticationToken);

@@ -1,22 +1,19 @@
 package com.accountbook.myaccountbook.dto.accountbook;
 
-import lombok.Data;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Data
-public class IncomeWriteDto {
+public record IncomeWriteDto(
+    @NotNull
+    int mid,
 
     @NotNull
-    private int mid;
-
-    @NotNull
-    private int incomeMoney;
+    int incomeMoney,
 
     @NotBlank
-    private String incomeReason;
+    String incomeReason,
 
     @NotBlank
-    private String month;
+    String month
+) {
 }

@@ -1,25 +1,22 @@
 package com.accountbook.myaccountbook.dto.accountbook;
 
-import lombok.Data;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Data
-public class ExpenseWriteDto {
+public record ExpenseWriteDto(
+    @NotNull
+    int mid,
 
     @NotNull
-    private int mid;
-
-    @NotNull
-    private int expenseMoney;
+    int expenseMoney,
 
     @NotBlank
-    private String expenseReason;
+    String expenseReason,
 
     @NotBlank
-    private String expenseCategory;
+    String expenseCategory,
 
     @NotBlank
-    private String date;
+    String date
+) {
 }

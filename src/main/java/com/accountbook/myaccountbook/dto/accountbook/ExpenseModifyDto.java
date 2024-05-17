@@ -1,25 +1,22 @@
 package com.accountbook.myaccountbook.dto.accountbook;
 
-import lombok.Data;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Data
-public class ExpenseModifyDto {
+public record ExpenseModifyDto(
+    @NotNull
+    int mid,
 
     @NotNull
-    private int mid;
+    int exid,
 
     @NotNull
-    private int exid;
-
-    @NotNull
-    private int expenseMoney;
+    int expenseMoney,
 
     @NotBlank
-    private String expenseReason;
+    String expenseReason,
 
     @NotBlank
-    private String expenseCategory;
+    String expenseCategory
+) {
 }

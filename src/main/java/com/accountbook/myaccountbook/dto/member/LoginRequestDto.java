@@ -1,19 +1,15 @@
 package com.accountbook.myaccountbook.dto.member;
 
-import lombok.Data;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-@Data
-public class LoginRequestDto {
+public record LoginRequestDto(
+        @NotBlank
+        @Size(max = 20)
+        String username,
 
-    @NotBlank
-    @Size(max = 20)
-    private String username;
-
-    @NotBlank
-    @Size(max = 12)
-    private String pwd;
-
+        @NotBlank
+        @Size(max = 12)
+        String pwd
+) {
 }

@@ -36,20 +36,20 @@ public class AccountBookService {
      */
     @Transactional
     public void writeIncome(IncomeWriteDto incomeWriteDto) {
-        Member findMember = memberRepository.findById(incomeWriteDto.getMid()).orElseThrow(
+        Member findMember = memberRepository.findById(incomeWriteDto.mid()).orElseThrow(
                 () -> new CustomApiException("사용자가 없습니다.")
         );
 
         // 잔여금을 계산해 수정한다.
-        findMember.increaseRest(incomeWriteDto.getIncomeMoney());
+        findMember.increaseRest(incomeWriteDto.incomeMoney());
 
         // 년, 월을 계산한다.
-        String month = incomeWriteDto.getMonth();
+        String month = incomeWriteDto.month();
         String year = month.substring(0,4);
 
         Income income = Income.builder()
-                            .incomeMoney(incomeWriteDto.getIncomeMoney())
-                            .incomeReason(incomeWriteDto.getIncomeReason())
+                            .incomeMoney(incomeWriteDto.incomeMoney())
+                            .incomeReason(incomeWriteDto.incomeReason())
                             .year(year)
                             .month(month)
                             .member(findMember)
@@ -65,22 +65,22 @@ public class AccountBookService {
      */
     @Transactional
     public void writeExpense(ExpenseWriteDto expenseWriteDto) {
-        Member findMember = memberRepository.findById(expenseWriteDto.getMid()).orElseThrow(
+        Member findMember = memberRepository.findById(expenseWriteDto.mid()).orElseThrow(
                 () -> new CustomApiException("사용자가 없습니다.")
         );
 
         // 잔여금을 계산해 수정한다.
-        findMember.decreaseRest(expenseWriteDto.getExpenseMoney());
+        findMember.decreaseRest(expenseWriteDto.expenseMoney());
 
         // 년, 월, 일을 계산한다.
-        String date = expenseWriteDto.getDate();
+        String date = expenseWriteDto.date();
         String year = date.substring(0, 4);
         String month = date.substring(0,6);
 
         Expense expense = Expense.builder()
-                            .expenseMoney(expenseWriteDto.getExpenseMoney())
-                            .expenseReason(expenseWriteDto.getExpenseReason())
-                            .expenseCategory(ExpenseCategoryEnum.valueOf(expenseWriteDto.getExpenseCategory()))
+                            .expenseMoney(expenseWriteDto.expenseMoney())
+                            .expenseReason(expenseWriteDto.expenseReason())
+                            .expenseCategory(ExpenseCategoryEnum.valueOf(expenseWriteDto.expenseCategory()))
                             .year(year)
                             .month(month)
                             .date(date)
@@ -97,10 +97,10 @@ public class AccountBookService {
      */
     @Transactional
     public void modifyIncome(IncomeModifyDto incomeModifyDto) {
-        Member findMember = memberRepository.findById(incomeModifyDto.getMid()).orElseThrow(
+        Member findMember = memberRepository.findById(incomeModifyDto.mid()).orElseThrow(
                 () -> new CustomApiException("사용자가 없습니다.")
         );
-        Income findIncome = incomeRepository.findById(incomeModifyDto.getInid()).orElseThrow(
+        Income findIncome = incomeRepository.findById(incomeModifyDto.mid()).orElseThrow(
                 () -> new CustomApiException("수입 내역이 없습니다.")
         );
 
@@ -108,10 +108,10 @@ public class AccountBookService {
         findMember.decreaseRest(findIncome.getIncomeMoney());
 
         // 입력받은 데이터로 수입 내용을 수정한다.
-        findIncome.modifyReasonAndMoney(incomeModifyDto.getIncomeReason(), incomeModifyDto.getIncomeMoney());
+        findIncome.modifyReasonAndMoney(incomeModifyDto.incomeReason(), incomeModifyDto.incomeMoney());
 
         // 최종 잔여금을 계산한다.
-        findMember.increaseRest(incomeModifyDto.getIncomeMoney());
+        findMember.increaseRest(incomeModifyDto.incomeMoney());
     }
 
 
@@ -121,10 +121,10 @@ public class AccountBookService {
      */
     @Transactional
     public void modifyExpense(ExpenseModifyDto expenseModifyDto) {
-        Member findMember = memberRepository.findById(expenseModifyDto.getMid()).orElseThrow(
+        Member findMember = memberRepository.findById(expenseModifyDto.mid()).orElseThrow(
                 () -> new CustomApiException("사용자가 없습니다.")
         );
-        Expense findExpense = expenseRepository.findById(expenseModifyDto.getExid()).orElseThrow(
+        Expense findExpense = expenseRepository.findById(expenseModifyDto.exid()).orElseThrow(
                 () -> new CustomApiException("지출 내역이 없습니다.")
         );
 
@@ -132,10 +132,10 @@ public class AccountBookService {
         findMember.increaseRest(findExpense.getExpenseMoney());
 
         // 입력받은 데이터로 지출 내용을 수정한다.
-        findExpense.modifyReasonAndMoneyAndCategory(expenseModifyDto.getExpenseReason(), expenseModifyDto.getExpenseMoney(), ExpenseCategoryEnum.valueOf(expenseModifyDto.getExpenseCategory()));
+        findExpense.modifyReasonAndMoneyAndCategory(expenseModifyDto.expenseReason(), expenseModifyDto.expenseMoney(), ExpenseCategoryEnum.valueOf(expenseModifyDto.expenseCategory()));
 
         // 최종 잔여금을 계산한다.
-        findMember.decreaseRest(expenseModifyDto.getExpenseMoney());
+        findMember.decreaseRest(expenseModifyDto.expenseMoney());
     }
 
 
@@ -145,10 +145,10 @@ public class AccountBookService {
      */
     @Transactional
     public void deleteIncome(@RequestBody IncomeDeleteDto incomeDeleteDto) {
-        Member findMember = memberRepository.findById(incomeDeleteDto.getMid()).orElseThrow(
+        Member findMember = memberRepository.findById(incomeDeleteDto.mid()).orElseThrow(
                 () -> new CustomApiException("사용자가 없습니다.")
         );
-        Income findIncome = incomeRepository.findById(incomeDeleteDto.getInid()).orElseThrow(
+        Income findIncome = incomeRepository.findById(incomeDeleteDto.mid()).orElseThrow(
                 () -> new CustomApiException("수입 내역이 없습니다.")
         );
 
@@ -156,7 +156,7 @@ public class AccountBookService {
         findMember.decreaseRest(findIncome.getIncomeMoney());
 
         // 수입을 삭제한다.
-        incomeRepository.deleteById(incomeDeleteDto.getInid());
+        incomeRepository.deleteById(incomeDeleteDto.inid());
     }
 
 
@@ -166,10 +166,10 @@ public class AccountBookService {
      */
     @Transactional
     public void deleteExpense(ExpenseDeleteDto expenseDeleteDto) {
-        Member findMember = memberRepository.findById(expenseDeleteDto.getMid()).orElseThrow(
+        Member findMember = memberRepository.findById(expenseDeleteDto.mid()).orElseThrow(
                 () -> new CustomApiException("사용자가 없습니다.")
         );
-        Expense findExpense = expenseRepository.findById(expenseDeleteDto.getExid()).orElseThrow(
+        Expense findExpense = expenseRepository.findById(expenseDeleteDto.exid()).orElseThrow(
                 () -> new CustomApiException("지출 내역이 없습니다.")
         );
 
@@ -177,7 +177,7 @@ public class AccountBookService {
         findMember.increaseRest(findExpense.getExpenseMoney());
 
         // 지출을 삭제한다.
-        expenseRepository.deleteById(expenseDeleteDto.getExid());
+        expenseRepository.deleteById(expenseDeleteDto.exid());
     }
 
 
@@ -251,7 +251,7 @@ public class AccountBookService {
      */
     public int totalizeIncome(List<IncomeReturnDto> incomeReturnDtos, int incomeSum) {
         for (IncomeReturnDto income : incomeReturnDtos) {
-            incomeSum += income.getIncomeMoney();
+            incomeSum += income.incomeMoney();
         }
 
         return incomeSum;
@@ -266,7 +266,7 @@ public class AccountBookService {
      */
     public int totalizeExpense(List<ExpenseReturnDto> expenseReturnDtos, int expenseSum) {
         for (ExpenseReturnDto expense : expenseReturnDtos) {
-            expenseSum += expense.getExpenseMoney();
+            expenseSum += expense.expenseMoney();
         }
 
         return expenseSum;

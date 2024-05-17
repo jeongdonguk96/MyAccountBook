@@ -1,15 +1,12 @@
 package com.accountbook.myaccountbook.dto.accountbook;
 
-import lombok.Data;
-
 import javax.validation.constraints.NotNull;
 
-@Data
-public class IncomeDeleteDto {
+public record IncomeDeleteDto(
+    @NotNull
+    int mid,
 
     @NotNull
-    private int mid;
-
-    @NotNull
-    private int inid;
+    int inid
+) {
 }
