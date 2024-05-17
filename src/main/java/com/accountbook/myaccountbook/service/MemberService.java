@@ -48,13 +48,13 @@ public class MemberService {
      */
     @Transactional
     public void join(JoinRequestDto joinDto) {
-        Job job = new Job(joinDto.getField(), joinDto.getYear(), joinDto.getSalary());
+        Job job = new Job(joinDto.field(), joinDto.year(), joinDto.salary());
 
         Member member = Member.builder()
-                            .username(joinDto.getUsername())
-                            .pwd(passwordEncoder.encode(joinDto.getPwd()))
-                            .name(joinDto.getName())
-                            .age(joinDto.getAge())
+                            .username(joinDto.username())
+                            .pwd(passwordEncoder.encode(joinDto.pwd()))
+                            .name(joinDto.name())
+                            .age(joinDto.age())
                             .job(job)
                             .role(RoleEnum.CUSTOMER)
                             .build();
@@ -68,7 +68,6 @@ public class MemberService {
      * @param response 응답
      * @param accessToken 유효한 액세스 토큰
      * @param refreshToken 유효한 리프레시 토큰
-     * @return
      */
     @Transactional
     public void logout(HttpServletResponse response, String accessToken, String refreshToken) {
