@@ -50,11 +50,11 @@
             <td th:text="|${ dayStat.count }일|"></td>
             <td>
                 <th:block th:each="expense: ${ expenses }">
-                    <th:block th:if="${ dayStat.count } == ${ expense.getDate().substring(6, 8) }">
+                    <th:block th:if="${ dayStat.count } == ${ expense.date.substring(6, 8) }">
                         <a href="#" th:onclick="'javascript:index.openExpenseHistory(this);'" data-toggle="modal" data-target="#expense-history-modal"
                            th:data-exid="${expense.exid}" th:data-expenseMoney="${expense.expenseMoney}"
                            th:data-expenseReason="${expense.expenseReason}" th:data-expenseCategory="${expense.expenseCategory}">
-                            <span th:text="|${ #numbers.formatInteger(expense.getExpenseMoney(), 3, 'COMMA') }원, ${ expense.getExpenseReason() }|" />
+                            <span th:text="|${ #numbers.formatInteger(expense.expenseMoney, 3, 'COMMA') }원, ${ expense.expenseReason }|" />
                         </a> <br>
                     </th:block>
                 </th:block>
