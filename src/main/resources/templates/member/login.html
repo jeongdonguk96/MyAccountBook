@@ -51,8 +51,7 @@ $("#login").click(function () {
             console.log("error = ", JSON.stringify(error));
             if (error.responseJSON.code === 401) {
                 alert("로그인에 실패했습니다");
-            }
-            else {
+            } else {
                 alert('서버 장애로 인해 오류가 발생했습니다 \n다시 시도해주세요');
             }
         });

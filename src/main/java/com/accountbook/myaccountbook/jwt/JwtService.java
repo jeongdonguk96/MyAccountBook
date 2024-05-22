@@ -87,8 +87,7 @@ public class JwtService {
             CookieUtil.addCookie(response, "refreshToken", newRefreshToken, JwtConstant.REFRESH_TOKEN_MAX_AGE, true, true);
 
             return new CustomUserDetails(findMember.get());
-        }
-        else {
+        } else {
             return null;
         }
     }
