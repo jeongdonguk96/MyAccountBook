@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .loginPage("/login");
         http
                 .authorizeHttpRequests()
-                .antMatchers("/", "/join", "/login", "/logout", "/api/join", "/api/login", "/api/checkId", "api/refreshToken", "/error")
+                .antMatchers("/", "/join", "/login", "/logout", "/api/join", "/api/login", "/api/checkId", "api/refreshToken", "/error", "/actuator/**", "purchase", "cancel")
                 .permitAll()
                 .antMatchers("/book2")
                 .hasRole("ADMIN")

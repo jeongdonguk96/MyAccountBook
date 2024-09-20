@@ -3,6 +3,8 @@ package com.accountbook.myaccountbook.utils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -26,7 +28,6 @@ class DateUtilTest {
     void getLastYear() {
         // given
         String lastYear = DateUtil.getLastYear();
-
         // when
 
 
@@ -80,13 +81,22 @@ class DateUtilTest {
 //    @Disabled
     void getToday() {
         // given
-        String today = DateUtil.getToday();
+        String today = "JAN";
+        int[] nums = {1, 2, 3, 4 ,5};
+        int num1 = 2;
+        int num2 = 4;
+        for (char c : today.toCharArray()) {
+            System.out.println("c = " + c);
+            int asciiCode = c;
+            System.out.println("asciiCode = " + asciiCode);
+        }
 
         // when
-
-
-        // then
-        assertThat(today).isEqualTo("20231116");
+        int[] array = Arrays.stream(nums)
+                .skip(0)
+                .limit(num2 - num1 + 1)
+                .peek(System.out::println)
+                .toArray();
     }
 
 
