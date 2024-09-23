@@ -1,8 +1,7 @@
 package com.accountbook.myaccountbook.metric;
 
 import io.micrometer.core.annotation.Counted;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,38 +15,23 @@ import java.util.Random;
 public class OrderController {
 
     private final OrderService orderService;
-    private final MeterRegistry registry;
 
 
+    @Timed("my.order")
     @Counted("my.order")
     @GetMapping("/purchase")
     public void purchase() {
-        Timer timer = Timer.builder("my.order")
-                .tag("class", this.getClass().getName())
-                .tag("method", "purchase")
-                .description("구매")
-                .register(registry);
-
-        timer.record(() -> {
-            orderService.increase();
-            sleep(500);
-        });
+        orderService.increase();
+        sleep(500);
     }
 
 
+    @Timed("my.order")
     @Counted("my.order")
     @GetMapping("/cancel")
     public void cancel() {
-        Timer timer = Timer.builder("my.order")
-                .tag("class", this.getClass().getName())
-                .tag("method", "cancel")
-                .description("취소")
-                .register(registry);
-
-        timer.record(() -> {
-            orderService.decrease();
-            sleep(150);
-        });
+        orderService.decrease();
+        sleep(150);
     }
 
 
